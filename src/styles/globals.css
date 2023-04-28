@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TAILWIND */
+.base-bg {
+	@apply bg-[#0E51FF];
+}
+
+.base-col {
+	@apply text-[#0E51FF];
+}
+
+.base-btn {
+	@apply bg-[#0E51FF] text-white px-2 py-1 rounded-md;
+}
