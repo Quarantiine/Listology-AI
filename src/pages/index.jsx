@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import MainContent from "../components/MainContent/MainContent";
 import React, { createContext, useContext } from "react";
 import { StateCtx } from "../components/Layout";
+import Image from "next/image";
 
 export const UserCredentialCtx = createContext();
 
@@ -15,6 +16,19 @@ export default function Home() {
 			<Head>
 				<title>Home | Listology</title>
 			</Head>
+			<>
+				{/* Loader */}
+				<div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-[-5]">
+					<Image
+						className="w-auto h-[50px] animate-spin"
+						src={"/icons/loader.svg"}
+						alt="loader"
+						width={30}
+						height={30}
+						priority="true"
+					/>
+				</div>
+			</>
 			{auth.currentUser &&
 				registration.allusers?.map((user) => {
 					if (auth.currentUser?.uid === user.userID) {

@@ -44,12 +44,13 @@ export default function ImageControls() {
 						<button onClick={handleDropdown} className="text-btn text-sm">
 							Gallery
 						</button>
-						<button onClick={handleDropdown} className="text-btn text-sm">
+						<button onClick={null && handleDropdown} className="text-sm select-none cursor-not-allowed text-gray-400">
 							Upload
 						</button>
 					</div>
 				)}
 
+				{/* TODO: Create and Finish the Gallery Modal */}
 				{null && <GalleryModal />}
 			</div>
 		</>

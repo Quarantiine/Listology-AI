@@ -12,7 +12,6 @@ export default function Layout({ children }) {
 	const router = useRouter();
 	const [themeColor, setThemeColor] = useState(true);
 	const [closeSidebar, setCloseSidebar] = useState(false);
-	const [windowLoaded, setWindowLoaded] = useState(false);
 
 	useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
@@ -37,10 +36,6 @@ export default function Layout({ children }) {
 		return () => window.removeEventListener("resize", mobileSidebar);
 	}, []);
 
-	useEffect(() => {
-		document.readyState === "loading" ? setWindowLoaded(true) : setWindowLoaded(false);
-	}, [windowLoaded]);
-
 	return (
 		<>
 			<Head>
@@ -48,17 +43,7 @@ export default function Layout({ children }) {
 			</Head>
 
 			<>
-				<StateCtx.Provider value={{ windowLoaded, themeColor, setThemeColor, closeSidebar, setCloseSidebar }}>
-					<div className="fixed top-0 left-0 w-full h-full flex justify-center items-center z-[-5]">
-						<Image
-							className="w-auto h-[50px] animate-spin"
-							src={"/icons/loader.svg"}
-							alt="loader"
-							width={30}
-							height={30}
-							priority="true"
-						/>
-					</div>
+				<StateCtx.Provider value={{ themeColor, setThemeColor, closeSidebar, setCloseSidebar }}>
 					<div>{children}</div>
 				</StateCtx.Provider>
 			</>
