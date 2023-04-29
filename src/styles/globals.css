@@ -14,3 +14,22 @@
 .base-btn {
 	@apply bg-[#0E51FF] text-white px-2 py-1 rounded-md;
 }
+
+.text-btn {
+	@apply cursor-pointer hover:opacity-60 transition-all;
+}
+
+/* CSS */
+.main-content-overflow::-webkit-scrollbar {
+	width: 5px;
+}
+.main-content-overflow::-webkit-scrollbar-thumb {
+	background-color: #777;
+}
+.main-content-overflow::-webkit-scrollbar-track {
+	background-color: #eee;
+}
+
+.folders-overflow::-webkit-scrollbar {
+	width: 5px;
+}

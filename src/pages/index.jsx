@@ -1,14 +1,14 @@
 import Head from "next/head";
 import FirebaseApi from "./api/firebaseApi";
-import { useEffect } from "react";
+import Sidebar from "../components/Sidebar/Sidebar";
+import MainContent from "../components/MainContent/MainContent";
+import React, { createContext, useContext } from "react";
+import { StateCtx } from "../components/Layout";
+
+export const UserCredentialCtx = createContext();
 
 export default function Home() {
 	const { auth, registration } = FirebaseApi();
-
-	const handleSigningOut = (e) => {
-		e.preventDefault();
-		registration.signingOut();
-	};
 
 	return (
 		<>
@@ -19,27 +19,19 @@ export default function Home() {
 				registration.allusers?.map((user) => {
 					if (auth.currentUser?.uid === user.userID) {
 						return (
-							<>
-								<main>
-									<div className="p-10 flex flex-col justify-start items-start gap-2">
-										<p>
-											<span className="font-bold">Username:</span> {user.username}
-										</p>
-										<p>
-											<span className="font-bold">Email:</span> {user.email}
-										</p>
-										<p>
-											<span className="font-bold">ID:</span> {user.id}
-										</p>
-										<p>
-											<span className="font-bold">UserID:</span> {user.userID}
-										</p>
-										<button onClick={handleSigningOut} className="base-btn">
-											Logout
-										</button>
-									</div>
-								</main>
-							</>
+							<React.Fragment key={user.id}>
+								<div
+									className={`transition-colors duration-300 ${
+										user.themeColor ? "bg-[#222]" : "bg-[#fff]"
+									} fixed top-0 left-0 w-full h-full z-[-1]`}
+								/>
+								<UserCredentialCtx.Provider value={{ user }}>
+									<main className="absolute top-0 left-0 flex justify-center items-start w-full h-full">
+										<Sidebar />
+										<MainContent />
+									</main>
+								</UserCredentialCtx.Provider>
+							</React.Fragment>
 						);
 					}
 				})}

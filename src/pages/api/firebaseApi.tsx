@@ -6,11 +6,13 @@ import {
 	Query,
 	addDoc,
 	collection,
+	doc,
 	getFirestore,
 	onSnapshot,
 	orderBy,
 	query,
 	serverTimestamp,
+	updateDoc,
 } from "firebase/firestore";
 import {
 	createUserWithEmailAndPassword,
@@ -99,10 +101,19 @@ export default function FirebaseApi() {
 					email: email,
 					username: username,
 					userID: auth.currentUser.uid,
+					themeColor: false,
 				});
 			} catch (err) {
 				console.log(`Adding To Database Error |`, err.message);
 			}
+		};
+
+		updatingThemeColor = async (themeColor: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				themeColor: themeColor,
+			});
 		};
 
 		signingIn = async (email: string, password: string) => {
@@ -118,7 +129,7 @@ export default function FirebaseApi() {
 				errorMesgRef.current = setTimeout(() => {
 					setErrorMesg("");
 					clearTimeout(errorMesgRef.current);
-				}, 7000);
+				}, 5000);
 			}
 		};
 
@@ -140,6 +151,7 @@ export default function FirebaseApi() {
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
+	const updatingThemeColor = RS.updatingThemeColor;
 	const signingIn = RS.signingIn;
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
@@ -162,6 +174,7 @@ export default function FirebaseApi() {
 			errorMesg,
 			allusers,
 			signingUp,
+			updatingThemeColor,
 			signingIn,
 			signingOut,
 			forgotPassword,
