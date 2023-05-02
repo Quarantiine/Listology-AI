@@ -102,6 +102,8 @@ export default function FirebaseApi() {
 					username: username,
 					userID: auth.currentUser.uid,
 					themeColor: false,
+					bannerImage: "",
+					bannerSize: false,
 				});
 			} catch (err) {
 				console.log(`Adding To Database Error |`, err.message);
@@ -113,6 +115,22 @@ export default function FirebaseApi() {
 
 			await updateDoc(docRef, {
 				themeColor: themeColor,
+			});
+		};
+
+		updatingBannerImage = async (bannerImage: string, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				bannerImage: bannerImage,
+			});
+		};
+
+		updatingBannerSize = async (bannerSize: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				bannerSize: bannerSize,
 			});
 		};
 
@@ -152,6 +170,8 @@ export default function FirebaseApi() {
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
 	const updatingThemeColor = RS.updatingThemeColor;
+	const updatingBannerImage = RS.updatingBannerImage;
+	const updatingBannerSize = RS.updatingBannerSize;
 	const signingIn = RS.signingIn;
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
@@ -175,6 +195,8 @@ export default function FirebaseApi() {
 			allusers,
 			signingUp,
 			updatingThemeColor,
+			updatingBannerImage,
+			updatingBannerSize,
 			signingIn,
 			signingOut,
 			forgotPassword,

@@ -33,3 +33,7 @@
 .folders-overflow::-webkit-scrollbar {
 	width: 5px;
 }
+
+.gallery-overflow::-webkit-scrollbar {
+	width: 5px;
+}

@@ -3,7 +3,7 @@ import React, { createContext, useEffect, useState } from "react";
 import FirebaseApi from "../pages/api/firebaseApi";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Image from "next/image";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export const StateCtx = createContext();
 
@@ -12,6 +12,34 @@ export default function Layout({ children }) {
 	const router = useRouter();
 	const [themeColor, setThemeColor] = useState(true);
 	const [closeSidebar, setCloseSidebar] = useState(false);
+	const [bannerImage, setBannerImage] = useState("");
+	const [clickedImageLoading, setClickedImageLoading] = useState(false);
+	const [startX, setStartX] = useState(null);
+	const [endX, setEndX] = useState(null);
+	const [increaseBannerSize, setIncreaseBannerSize] = useState(false);
+
+	function handleTouchStart(e) {
+		setStartX(e.touches[0].clientX);
+	}
+
+	function handleTouchMove(e) {
+		setEndX(e.touches[0].clientX);
+	}
+
+	function handleTouchEnd() {
+		if (endX && startX && endX - startX > 50) {
+			console.log("swiped right");
+			setCloseSidebar(false);
+		} else if (endX && startX && startX - endX > 50) {
+			console.log("swiped left");
+			setCloseSidebar(true);
+		}
+
+		setStartX(null);
+		setEndX(null);
+	}
+
+	const queryClient = new QueryClient();
 
 	useEffect(() => {
 		onAuthStateChanged(auth, (user) => {
@@ -42,11 +70,26 @@ export default function Layout({ children }) {
 				<link rel="shortcut icon" href="/icons/logo.svg" type="image/x-icon" />
 			</Head>
 
-			<>
-				<StateCtx.Provider value={{ themeColor, setThemeColor, closeSidebar, setCloseSidebar }}>
-					<div>{children}</div>
+			<QueryClientProvider client={queryClient}>
+				<StateCtx.Provider
+					value={{
+						bannerImage,
+						setBannerImage,
+						themeColor,
+						setThemeColor,
+						closeSidebar,
+						setCloseSidebar,
+						clickedImageLoading,
+						setClickedImageLoading,
+						increaseBannerSize,
+						setIncreaseBannerSize,
+					}}
+				>
+					<div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+						{children}
+					</div>
 				</StateCtx.Provider>
-			</>
+			</QueryClientProvider>
 		</>
 	);
 }
