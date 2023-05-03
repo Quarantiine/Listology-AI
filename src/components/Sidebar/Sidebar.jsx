@@ -143,9 +143,23 @@ const Misc = ({ user }) => {
 					className={`flex flex-col justify-start items-start gap-2 ${user.themeColor ? "text-white" : "text-black"}`}
 				>
 					<h1 className="text-2xl font-semibold">Misc</h1>
-					<div className="flex flex-col justify-start items-start gap-1">
-						<button className="text-btn">Settings</button>
-						<button className="text-btn">Tutorials</button>
+					<div className="flex flex-col justify-start items-start gap-3">
+						<div className="flex flex-col justify-start items-start">
+							<button
+								onClick={null}
+								className={`cursor-not-allowed hover:opacity-80 ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}
+								disabled
+							>
+								Tutorials
+							</button>
+							<button
+								onClick={null}
+								className={`cursor-not-allowed hover:opacity-80 ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}
+								disabled
+							>
+								Settings
+							</button>
+						</div>
 						<button onClick={handleSigningOut} className="base-btn">
 							Logout
 						</button>

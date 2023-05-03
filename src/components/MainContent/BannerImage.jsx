@@ -1,11 +1,7 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
-import { StateCtx } from "../Layout";
-import { UserCredentialCtx } from "../../pages";
+import React from "react";
 
 export default function BannerImage({ user }) {
-	const { increaseBannerSize } = useContext(StateCtx);
-
 	return (
 		<>
 			<div
@@ -19,7 +15,6 @@ export default function BannerImage({ user }) {
 					src={user.bannerImage ? user.bannerImage : "/images/default-banner-img.jpeg"}
 					alt="banner-image"
 					fill
-					sizes="true"
 					priority="true"
 				/>
 				<div

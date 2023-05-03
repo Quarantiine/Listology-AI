@@ -113,18 +113,16 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 					)}
 					<div className="flex justify-between items-center gap-2 relative w-full">
 						<h1 className="text-2xl font-semibold">Create Folder</h1>
-						<div className="hidden sm:block">
+						<div className="cursor-pointer">
 							{emoji ? (
 								<div onClick={handleEmojiModal}>
 									<p className="text-4xl">{emoji.native}</p>
 								</div>
 							) : (
-								<div onClick={handleEmojiModal} className="w-10 h-10 rounded-full bg-gray-400" />
+								<div onClick={handleEmojiModal} className="w-10 text-btn h-10 rounded-full bg-gray-400" />
 							)}
 							{openEmojiModal && (
-								<div
-									className={`emoji-modal z-10 w-40 fixed top-64 left-1/2 -translate-x-1/2 sm:absolute sm:top-10 sm:right-0`}
-								>
+								<div className={`emoji-modal z-10 w-40 fixed left-1/2 -translate-x-1/2 sm:absolute top-12 sm:right-0`}>
 									<Picker dynamicWidth={false} data={data} onEmojiSelect={setEmoji} />
 								</div>
 							)}

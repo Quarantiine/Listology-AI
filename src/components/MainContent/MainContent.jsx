@@ -85,6 +85,8 @@ export default function MainContent() {
 											</button>
 										</div>
 									</div>
+
+									{/* Start on the Todo list System */}
 									{<TodolistPlaceholder />}
 								</div>
 							)}

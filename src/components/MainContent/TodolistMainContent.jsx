@@ -165,7 +165,6 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 										todolistFolder.folderEmoji
 									) : (
 										<>
-											{/* TODO: Add emojis */}
 											<div className="text-btn w-10 h-10 rounded-full bg-gray-400" />
 										</>
 									)}
