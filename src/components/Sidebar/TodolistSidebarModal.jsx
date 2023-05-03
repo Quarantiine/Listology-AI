@@ -115,11 +115,11 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 						<h1 className="text-2xl font-semibold">Create Folder</h1>
 						<div className="hidden sm:block">
 							{emoji ? (
-								<button onClick={handleEmojiModal}>
+								<div onClick={handleEmojiModal}>
 									<p className="text-4xl">{emoji.native}</p>
-								</button>
+								</div>
 							) : (
-								<button onClick={handleEmojiModal} className="w-10 h-10 rounded-full bg-gray-400" />
+								<div onClick={handleEmojiModal} className="w-10 h-10 rounded-full bg-gray-400" />
 							)}
 							{openEmojiModal && (
 								<div

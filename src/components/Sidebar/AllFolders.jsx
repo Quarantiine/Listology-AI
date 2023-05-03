@@ -8,17 +8,17 @@ import { StateCtx } from "../Layout";
 const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
 	const { folders, todolistFolders } = FirebaseApi();
-	const { openTodolistSidebar, setOpenTodolistSidebar, clickedFolder } = useContext(StateCtx);
+	const { openTodolistSidebar, setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder } = useContext(StateCtx);
 	const [completedFolder, setCompletedFolder] = useState(true);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 	const [closeTodolistSidebar, setCloseTodolistSidebar] = useState(false);
 
-	useEffect(() => {
-		window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
-		window.addEventListener("resize", () => {
-			window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
-		});
-	}, [closeTodolistSidebar]);
+	// useEffect(() => {
+	// 	window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
+	// 	window.addEventListener("resize", () => {
+	// 		window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
+	// 	});
+	// }, [closeTodolistSidebar]);
 
 	const handleCompletedFolder = () => {
 		folders.updatingCompletionFolder(folder.id, completedFolder);
@@ -31,6 +31,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 
 	const handleDeleteFolder = () => {
 		folders.deletingFolder(folder.id);
+		setClickedTodoFolder("");
 		todolistFolders.allTodoFolders
 			.filter((value) => value.folderName === clickedFolder)
 			?.map((todolistFolder) => todolistFolders.deletingTodoFolder(todolistFolder.id));
@@ -38,7 +39,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	};
 
 	const handleTodolistSidebar = (e) => {
-		setOpenTodolistSidebar(!openTodolistSidebar);
+		setOpenTodolistSidebar(true);
 		setClickedFolder(folder.folderName);
 	};
 
@@ -47,7 +48,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 			<div className="flex justify-between items-center gap-2">
 				<button
 					onClick={() => {
-						closeTodolistSidebar && handleTodolistSidebar();
+						handleTodolistSidebar();
 					}}
 					className="flex justify-center items-center gap-2"
 				>

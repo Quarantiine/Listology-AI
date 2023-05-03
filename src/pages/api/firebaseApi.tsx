@@ -223,20 +223,6 @@ export default function FirebaseApi() {
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
 
-	class TodoListSystem {
-		constructor() {}
-
-		addingTodos = async (folderID: string) => {
-			addDoc(colRefTodoList, {
-				todo: "Untitled Todo Text",
-				folderID: folderID,
-				createdTime: serverTimestamp(),
-			});
-		};
-	}
-	const TLS = new TodoListSystem();
-	const addingTodos = TLS.addingTodos;
-
 	class FolderSystem {
 		constructor() {}
 
@@ -282,8 +268,37 @@ export default function FirebaseApi() {
 					folderDescription ||
 					"Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
 				folderName: folderName,
+				completed: false,
 				userID: auth.currentUser.uid,
 				createdTime: serverTimestamp(),
+			});
+		};
+
+		updatingCompletion = async (id: string, completed: boolean) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				completed: completed,
+			});
+		};
+
+		updatingFolderTitle = async (id: string, folderTitle: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				folderTitle: folderTitle,
+			});
+		};
+
+		updatingFolderEmoji = async (id: string, folderEmoji: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				folderEmoji: folderEmoji,
+			});
+		};
+
+		updatingFolderDescription = async (id: string, folderDescription: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				folderDescription: folderDescription,
 			});
 		};
 
@@ -295,6 +310,24 @@ export default function FirebaseApi() {
 	const TLFS = new TodolistFolderSystem();
 	const addingTodoFolder = TLFS.addingTodoFolder;
 	const deletingTodoFolder = TLFS.deletingTodoFolder;
+	const updatingCompletion = TLFS.updatingCompletion;
+	const updatingFolderTitle = TLFS.updatingFolderTitle;
+	const updatingFolderEmoji = TLFS.updatingFolderEmoji;
+	const updatingFolderDescription = TLFS.updatingFolderDescription;
+
+	class TodoListSystem {
+		constructor() {}
+
+		addingTodos = async (folderID: string) => {
+			addDoc(colRefTodoList, {
+				todo: "Untitled Todo Text",
+				folderID: folderID,
+				createdTime: serverTimestamp(),
+			});
+		};
+	}
+	const TLS = new TodoListSystem();
+	const addingTodos = TLS.addingTodos;
 
 	return {
 		auth,
@@ -310,10 +343,6 @@ export default function FirebaseApi() {
 			signingOut,
 			forgotPassword,
 		},
-		todoLists: {
-			allTodoList,
-			addingTodos,
-		},
 		folders: {
 			allFolders,
 			addingFolder,
@@ -321,9 +350,17 @@ export default function FirebaseApi() {
 			deletingFolder,
 		},
 		todolistFolders: {
+			updatingFolderDescription,
+			updatingFolderTitle,
+			updatingFolderEmoji,
+			updatingCompletion,
 			deletingTodoFolder,
 			addingTodoFolder,
 			allTodoFolders,
+		},
+		todoLists: {
+			allTodoList,
+			addingTodos,
 		},
 	};
 }

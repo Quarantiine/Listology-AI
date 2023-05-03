@@ -19,7 +19,7 @@ export default function Folders() {
 				} folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-3`}
 			>
 				<div className="flex justify-between items-center gap-1">
-					<h1 className="text-2xl font-semibold">My Folders</h1>
+					<h1 className="text-2xl font-semibold">Main Folders</h1>
 					<button onClick={() => setOpenFolderModal(true)} className="flex justify-center items-center relative">
 						<Image
 							className="w-auto h-[20px]"

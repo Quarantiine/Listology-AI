@@ -1,8 +1,5 @@
-import React, { use, useContext, useEffect, useReducer, useRef, useState } from "react";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
-import { UserCredentialCtx } from "../../pages";
 import Image from "next/image";
 
 const reducer = (state, { type, payload }) => {

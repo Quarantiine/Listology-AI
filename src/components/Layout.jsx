@@ -20,6 +20,7 @@ export default function Layout({ children }) {
 	const [openFolderModal, setOpenFolderModal] = useState(false);
 	const [openTodolistSidebar, setOpenTodolistSidebar] = useState(false);
 	const [clickedFolder, setClickedFolder] = useState("");
+	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
 
 	function handleTouchStart(e) {
 		setStartX(e.touches[0].clientX);
@@ -92,6 +93,8 @@ export default function Layout({ children }) {
 						setOpenTodolistSidebar,
 						clickedFolder,
 						setClickedFolder,
+						clickedTodoFolder,
+						setClickedTodoFolder,
 					}}
 				>
 					<div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>

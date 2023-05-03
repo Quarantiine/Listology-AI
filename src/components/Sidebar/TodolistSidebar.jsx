@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserCredentialCtx } from "../../pages";
 import Image from "next/image";
 import { StateCtx } from "../Layout";
@@ -6,13 +6,25 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { createPortal } from "react-dom";
 import TodolistSidebarModal from "./TodolistSidebarModal";
 import TodoListFoldersPlaceholder from "./TodoListFoldersPlaceholder";
+import AllTodoFolders from "./AllTodoFolders";
 
 export default function TodolistSidebar() {
 	const { auth, todolistFolders, folders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const { clickedFolder } = useContext(StateCtx);
-	const { openTodolistSidebar, setOpenTodolistSidebar } = useContext(StateCtx);
+	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } = useContext(StateCtx);
 	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] = useState(false);
+	const [todoFolderDeletionIndicator, setTodoFolderDeletionIndicator] = useState(false);
+	const [todoFolderDeletionIndicatorNumber, setTodoFolderDeletionIndicatorNumber] = useState(0);
+	const [windowWidthCheck, setWindowWidthCheck] = useState(false);
+	const todoFolderDeletionRef = useRef();
+
+	useEffect(() => {
+		window.innerWidth < 768 ? setWindowWidthCheck(true) : setWindowWidthCheck(false);
+		window.addEventListener("resize", () => {
+			window.innerWidth < 768 ? setWindowWidthCheck(true) : setWindowWidthCheck(false);
+		});
+	}, [windowWidthCheck]);
 
 	useEffect(() => {
 		const closeTodoListSidebar = (e) => {
@@ -30,7 +42,22 @@ export default function TodolistSidebar() {
 	};
 
 	const handleCreateTodos = () => {
-		setOpenTodolistSidebarModal(!openTodolistSidebarModal);
+		setOpenTodolistSidebarModal(clickedFolder && !openTodolistSidebarModal);
+	};
+
+	const handleCreateFolder = () => {
+		const folderDescriptionText =
+			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos nesciunt quas, fugiat aliquid nemo unde, sit labore assumenda asperiores a vero magnam iusto delectus cupiditate placeat consequatur nihil facere. Voluptates?";
+		todolistFolders.addingTodoFolder("", "Untitled", folderDescriptionText, clickedFolder);
+	};
+
+	const handleDeletionIndicator = () => {
+		setTodoFolderDeletionIndicator(true);
+		setTodoFolderDeletionIndicatorNumber(todoFolderDeletionIndicatorNumber + 1);
+		todoFolderDeletionRef.current = setTimeout(() => {
+			setTodoFolderDeletionIndicator(false);
+			setTodoFolderDeletionIndicatorNumber(0);
+		}, 4000);
 	};
 
 	return (
@@ -40,7 +67,7 @@ export default function TodolistSidebar() {
 					user.themeColor ? "bg-[#222] text-white" : "bg-white text-black"
 				} ${user.themeColor ? "border-[#333]" : "border-gray-200"} `}
 			>
-				<div className="flex justify-between items-center gap-2 w-full">
+				<div className="flex justify-between items-end gap-2 w-full">
 					<div className="flex flex-col justify-start items-start">
 						<>
 							{folders.allFolders
@@ -66,43 +93,58 @@ export default function TodolistSidebar() {
 								</svg>
 							)}
 						</button>
-						<button onClick={handleCreateTodos} className="flex justify-center items-center relative">
-							<Image
-								className="w-auto h-[20px]"
-								src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
-								alt=""
-								width={20}
-								height={20}
-							/>
-						</button>
+						{!windowWidthCheck ? (
+							<button onClick={handleCreateTodos} className="flex justify-center items-center relative">
+								<Image
+									className="w-auto h-[20px]"
+									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
+									alt=""
+									width={20}
+									height={20}
+								/>
+							</button>
+						) : (
+							<button onClick={handleCreateFolder} className="flex justify-center items-center relative">
+								<Image
+									className="w-auto h-[20px]"
+									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
+									alt=""
+									width={20}
+									height={20}
+								/>
+							</button>
+						)}
 					</div>
 				</div>
+
+				{todoFolderDeletionIndicator &&
+					createPortal(
+						<>
+							<div className="fixed top-0 left-0 w-full h-fit py-3 flex justify-center items-center text-white bg-red-500 z-50">
+								<p>Deleted Todo Folders: {todoFolderDeletionIndicatorNumber}</p>
+							</div>
+						</>,
+						document.body
+					)}
 				<div className="flex flex-col justify-start items-start gap-2 w-full">
 					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true) ? (
 						todolistFolders.allTodoFolders
 							.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
-							?.map((todoFolder) => {
+							?.map((todoFolder, index) => {
 								if (todoFolder.userID === auth.currentUser.uid) {
 									return (
-										<React.Fragment key={todoFolder.id}>
-											<button
-												onClick={null}
-												className="flex text-btn justify-between items-center gap-2 w-full text-start"
-											>
-												<h1 className="line-clamp-1 w-52" title={todoFolder.folderTitle}>
-													{todoFolder.folderTitle}
-												</h1>
-												<h1>
-													{todoFolder.folderEmoji ? (
-														todoFolder.folderEmoji
-													) : (
-														<>
-															<div className="w-4 h-4 rounded-full bg-gray-400" />
-														</>
-													)}
-												</h1>
-											</button>
-										</React.Fragment>
+										<AllTodoFolders
+											key={todoFolder.id}
+											todolistFolders={todolistFolders}
+											todoFolder={todoFolder}
+											user={user}
+											index={index}
+											setClickedTodoFolder={setClickedTodoFolder}
+											todoFolderDeletionIndicator={todoFolderDeletionIndicator}
+											setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
+											todoFolderDeletionRef={todoFolderDeletionRef}
+											handleDeletionIndicator={handleDeletionIndicator}
+										/>
 									);
 								}
 							})
