@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import countries from "../../data/countries.json";
 import Image from "next/image";
 
 const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationChange }) => {
@@ -19,6 +18,7 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 								type="text"
 								name="text"
 								placeholder="example123"
+								required
 							/>
 						</div>
 						<div className="flex flex-col justify-normal items-start gap-1 w-full">
@@ -29,6 +29,7 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 								type="email"
 								name="email"
 								placeholder="example123@example.com"
+								required
 							/>
 						</div>
 
@@ -46,6 +47,7 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 								type={passwordVisible ? "text" : "password"}
 								name="password"
 								placeholder="••••••••••••••"
+								required
 							/>
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}
@@ -67,6 +69,7 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 								type={passwordVisible ? "text" : "password"}
 								name="confirmPassword"
 								placeholder="••••••••••••••"
+								required
 							/>
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}

@@ -2,15 +2,26 @@ import React, { useContext, useEffect, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import Image from "next/image";
 import { StateCtx } from "../Layout";
-import FoldersPlaceholder from "./FoldersPlaceholder";
 import { UserCredentialCtx } from "../../pages";
+import Folders from "./Folders";
+import TodolistSidebar from "./TodolistSidebar";
 // import Filters from "./Filters";
-// import Folders from "./Folders";
 // import Misc from "./Misc";
 
 export default function Sidebar() {
 	const { user } = useContext(UserCredentialCtx);
-	const { closeSidebar, setCloseSidebar } = useContext(StateCtx);
+	const { closeSidebar, setCloseSidebar, openTodolistSidebar, setOpenTodolistSidebar } = useContext(StateCtx);
+
+	useEffect(() => {
+		const closeTodolistSidebar = (e) => {
+			if (!e.target.closest(".todolist-sidebar")) {
+				setOpenTodolistSidebar(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTodolistSidebar);
+		return () => document.removeEventListener("mousedown", closeTodolistSidebar);
+	}, [setOpenTodolistSidebar]);
 
 	useEffect(() => {
 		const handleCloseSidebar = (e) => {
@@ -35,14 +46,15 @@ export default function Sidebar() {
 		<>
 			{!closeSidebar ? (
 				<div
-					className={`sidebar z-50 transition-colors duration-300 ${
+					className={`sidebar todolist-sidebar z-50 transition-colors duration-300 ${
 						user.themeColor ? "bg-[#222]" : "bg-white"
 					} fixed md:sticky top-0 left-0 min-w-[280px] max-w-[280px] h-full flex flex-col justify-start items-start border-r-2 ${
 						user.themeColor ? "border-[#333]" : "border-gray-200"
 					}`}
 				>
+					{openTodolistSidebar && <TodolistSidebar />}
 					<Filters user={user} handleCloseSidebar={handleCloseSidebar} />
-					<Folders user={user} />
+					<Folders />
 					<Misc user={user} />
 				</div>
 			) : (
@@ -118,21 +130,6 @@ const Filters = ({ handleCloseSidebar, user }) => {
 						<p>Favorites</p>
 					</button>
 				</div>
-			</div>
-		</>
-	);
-};
-
-const Folders = ({ user }) => {
-	return (
-		<>
-			<div
-				className={`px-8 py-4 border-t-2 transition-colors duration-300 ${
-					user.themeColor ? "border-[#333] text-white" : "border-gray-200 text-black"
-				} folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-3`}
-			>
-				<h1 className="text-2xl font-semibold">My Folders</h1>
-				<FoldersPlaceholder />
 			</div>
 		</>
 	);

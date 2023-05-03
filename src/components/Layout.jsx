@@ -17,6 +17,8 @@ export default function Layout({ children }) {
 	const [startX, setStartX] = useState(null);
 	const [endX, setEndX] = useState(null);
 	const [increaseBannerSize, setIncreaseBannerSize] = useState(false);
+	const [openFolderModal, setOpenFolderModal] = useState(false);
+	const [openTodolistSidebar, setOpenTodolistSidebar] = useState(false);
 
 	function handleTouchStart(e) {
 		setStartX(e.touches[0].clientX);
@@ -83,6 +85,10 @@ export default function Layout({ children }) {
 						setClickedImageLoading,
 						increaseBannerSize,
 						setIncreaseBannerSize,
+						openFolderModal,
+						setOpenFolderModal,
+						openTodolistSidebar,
+						setOpenTodolistSidebar,
 					}}
 				>
 					<div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>

@@ -28,12 +28,12 @@ export default function SigningIn({ handleRegistrationChange }) {
 
 	const handleSigningIn = (e) => {
 		e.preventDefault();
+		setEmailExist(true);
 		clearTimeout(accountErrorRef.current);
 		if (
 			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.current.value) &&
 			password.current.value?.length > 5
 		) {
-			setEmailExist(true);
 			registration.signingIn(email.current.value, password.current.value);
 		}
 	};
@@ -83,6 +83,7 @@ export default function SigningIn({ handleRegistrationChange }) {
 									type="email"
 									name="email"
 									placeholder="example123@example.com"
+									required
 								/>
 							</div>
 							<div className="flex flex-col justify-normal items-start gap-1 w-full">
@@ -94,6 +95,7 @@ export default function SigningIn({ handleRegistrationChange }) {
 										ref={password}
 										className="bg-gray-100 px-2 py-1 rounded-md w-full"
 										type={passwordVisible ? "text" : "password"}
+										required
 									/>
 									<Image
 										onClick={() => setPasswordVisible(!passwordVisible)}

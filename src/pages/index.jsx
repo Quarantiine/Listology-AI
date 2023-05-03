@@ -2,14 +2,13 @@ import Head from "next/head";
 import FirebaseApi from "./api/firebaseApi";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MainContent from "../components/MainContent/MainContent";
-import React, { createContext, useContext } from "react";
-import { StateCtx } from "../components/Layout";
+import React, { createContext, useEffect } from "react";
 import Image from "next/image";
 
 export const UserCredentialCtx = createContext();
 
 export default function Home() {
-	const { auth, registration } = FirebaseApi();
+	const { auth, registration, folders } = FirebaseApi();
 
 	return (
 		<>

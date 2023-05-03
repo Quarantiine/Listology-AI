@@ -6,6 +6,7 @@ import {
 	Query,
 	addDoc,
 	collection,
+	deleteDoc,
 	doc,
 	getFirestore,
 	onSnapshot,
@@ -41,8 +42,13 @@ const db: Firestore = getFirestore(app);
 
 const colRefRegistration: CollectionReference = collection(db, "registration", "");
 
-const colRefTodoList: CollectionReference = collection(db, "todo-list", "");
+const colRefTodoList: CollectionReference = collection(db, "todo-lists", "");
 const queTodoList: Query = query(colRefTodoList, orderBy("createdTime"));
+
+const colRefFolders: CollectionReference = collection(db, "folders", "");
+const queFolders: Query = query(colRefFolders, orderBy("createdTime"));
+
+// ADD HERE -----
 
 // ==================
 
@@ -57,6 +63,10 @@ export default function FirebaseApi() {
 	// T0do List System ======
 	const [allTodoList, setAllTodoList] = useState<any>();
 
+	// Folder System ======
+	const [allFolders, setAllFolders] = useState<any>();
+
+	// Registration System ======
 	useEffect(() => {
 		onSnapshot(colRefRegistration, (ss) => {
 			const users: any = [];
@@ -71,6 +81,7 @@ export default function FirebaseApi() {
 		});
 	}, []);
 
+	// T0do List System ======
 	useEffect(() => {
 		onSnapshot(queTodoList, (ss) => {
 			const todos: any = [];
@@ -78,6 +89,21 @@ export default function FirebaseApi() {
 
 			ss.docs.map((doc) => {
 				todos.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+		});
+	}, []);
+
+	// Folder System ======
+	useEffect(() => {
+		onSnapshot(queFolders, (ss) => {
+			const folders: any = [];
+			setAllFolders(folders);
+
+			ss.docs.map((doc) => {
+				folders.unshift({
 					...doc.data(),
 					id: doc.id,
 				});
@@ -179,13 +205,45 @@ export default function FirebaseApi() {
 	class TodoListSystem {
 		constructor() {}
 
-		addingTodos = async (text: string) => {
+		addingTodos = async (folderID: string) => {
 			addDoc(colRefTodoList, {
-				todo: text,
+				todo: "Untitled Todo Text",
+				folderID: folderID,
 				createdTime: serverTimestamp(),
 			});
 		};
 	}
+	const TLS = new TodoListSystem();
+	const addingTodos = TLS.addingTodos;
+
+	class FolderSystem {
+		constructor() {}
+
+		addingFolder = async (folderName: string) => {
+			await addDoc(colRefFolders, {
+				folderName: folderName,
+				userID: auth.currentUser.uid,
+				createdTime: serverTimestamp(),
+				completed: false,
+			});
+		};
+
+		updatingCompletionFolder = async (id: string, completedFolder: boolean) => {
+			const docRef = doc(colRefFolders, id);
+			await updateDoc(docRef, {
+				completed: completedFolder,
+			});
+		};
+
+		deletingFolder = async (id: string) => {
+			const docRef = doc(colRefFolders, id);
+			await deleteDoc(docRef);
+		};
+	}
+	const FS = new FolderSystem();
+	const addingFolder = FS.addingFolder;
+	const updatingCompletionFolder = FS.updatingCompletionFolder;
+	const deletingFolder = FS.deletingFolder;
 
 	return {
 		auth,
@@ -201,8 +259,15 @@ export default function FirebaseApi() {
 			signingOut,
 			forgotPassword,
 		},
-		todoList: {
+		todoLists: {
 			allTodoList,
+			addingTodos,
+		},
+		folders: {
+			allFolders,
+			addingFolder,
+			updatingCompletionFolder,
+			deletingFolder,
 		},
 	};
 }
