@@ -98,6 +98,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 						<Image className="w-auto h-[20px]" src={"/icons/plus-white.svg"} alt="" width={20} height={20} />
 					</div>
 				</button>
+
 				<div className="w-full h-auto flex flex-col justify-center items-start gap-3">
 					<div className="flex justify-between items-center gap-2 w-full">
 						<div className="flex justify-start items-center gap-5 w-full">
@@ -209,7 +210,9 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 						</div>
 					)}
 				</div>
-				{<TodolistPlaceholder />}
+
+				{/* Start on the Todo list System */}
+				{false ? "" : <TodolistPlaceholder />}
 			</div>
 		</>
 	);
