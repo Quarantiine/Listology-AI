@@ -91,7 +91,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 
 	return (
 		<>
-			<div className="flex flex-col gap-7 w-full h-auto">
+			<div className="flex flex-col gap-7 w-full 2xl:w-[70%] h-auto">
 				<button onClick={null} className="base-btn w-fit flex justify-start items-center gap-3">
 					<h1 className={`text-white`}>Add Todo</h1>
 					<div className="flex justify-center items-center relative">
@@ -159,7 +159,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 										handleActivateFolderEmojiEdit();
 										handleWindowWidth();
 									}}
-									className="text-3xl"
+									className="text-5xl"
 								>
 									{todolistFolder.folderEmoji ? (
 										todolistFolder.folderEmoji
@@ -170,7 +170,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 									)}
 								</button>
 								{editFolderEmoji && (
-									<div className="emoji-dropdown absolute top-12 right-0 z-10">
+									<div className="emoji-dropdown absolute top-[56px] right-0 z-10">
 										<Picker data={data} onEmojiSelect={handleFolderEmojiEdit} />
 									</div>
 								)}

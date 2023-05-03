@@ -71,7 +71,7 @@ export default function ImageControls() {
 					onClick={handleDropdown}
 					className="flex justify-center items-center w-fit h-fit bg-white py-2 px-1 rounded-r-md text-btn"
 				>
-					<Image className="w-auto h-[18px]" src={"/icons/picture-black.svg"} alt="" width={20} height={20} />
+					<Image className="w-auto h-[17px]" src={"/icons/picture-black.svg"} alt="" width={20} height={20} />
 				</button>
 
 				{openDropdown && (

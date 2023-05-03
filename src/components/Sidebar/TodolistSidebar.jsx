@@ -67,9 +67,10 @@ export default function TodolistSidebar() {
 					user.themeColor ? "bg-[#222] text-white" : "bg-white text-black"
 				} ${user.themeColor ? "border-[#333]" : "border-gray-200"} `}
 			>
-				<div className="flex justify-between items-end gap-2 w-full">
+				<div className="flex justify-between items-start gap-2 w-full">
 					<div className="flex flex-col justify-start items-start">
 						<>
+							<h1 className="text-2xl font-semibold">Todo Folders</h1>
 							{folders.allFolders
 								?.filter((value) => value.folderName === clickedFolder)
 								.slice(0, 1)
@@ -81,9 +82,8 @@ export default function TodolistSidebar() {
 									</React.Fragment>
 								))}
 						</>
-						<h1 className="text-2xl font-semibold">Todo Folders</h1>
 					</div>
-					<div className="flex justify-center items-center gap-2">
+					<div className="flex justify-center items-center gap-2 pt-1">
 						<button className="w-fit h-fit relative text-btn" onClick={handleTodolistSidebar}>
 							{!user.themeColor ? (
 								<Image src={"/icons/menu-open.svg"} alt="completed icon" width={25} height={25} />
