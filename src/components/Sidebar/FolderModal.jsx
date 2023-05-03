@@ -93,7 +93,7 @@ export default function FolderModal({ handleFolderCreation }) {
 
 	return (
 		<>
-			<div className="z-50 flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
+			<div className="sidebar z-50 flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
 				<form className="folder-modal flex flex-col justify-center items-start gap-4 w-[80%] md:w-[40%] xl:w-[30%] h-fit p-5 bg-white rounded-md">
 					{errorMesg && (
 						<>

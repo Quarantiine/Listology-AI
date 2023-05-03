@@ -103,7 +103,7 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 
 	return (
 		<>
-			<div className="z-50 todolist-sidebar flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
+			<div className="z-50 todolist-sidebar sidebar flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
 				<form className="todolist-sidebar-modal flex flex-col justify-center items-start gap-4 w-[80%] md:w-[40%] xl:w-[30%] h-fit p-5 bg-white rounded-md">
 					{errorMesg && (
 						<>
