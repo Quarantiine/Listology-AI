@@ -5,12 +5,25 @@ import { StateCtx } from "../Layout";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { createPortal } from "react-dom";
 import TodolistSidebarModal from "./TodolistSidebarModal";
+import TodoListFoldersPlaceholder from "./TodoListFoldersPlaceholder";
 
 export default function TodolistSidebar() {
-	const { folders } = FirebaseApi();
+	const { auth, todolistFolders, folders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
+	const { clickedFolder } = useContext(StateCtx);
 	const { openTodolistSidebar, setOpenTodolistSidebar } = useContext(StateCtx);
 	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] = useState(false);
+
+	useEffect(() => {
+		const closeTodoListSidebar = (e) => {
+			if (!e.target.closest(".todolist-sidebar")) {
+				setOpenTodolistSidebar(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTodoListSidebar);
+		return () => document.removeEventListener("mousedown", closeTodoListSidebar);
+	}, [setOpenTodolistSidebar]);
 
 	const handleTodolistSidebar = () => {
 		setOpenTodolistSidebar(!openTodolistSidebar);
@@ -23,14 +36,26 @@ export default function TodolistSidebar() {
 	return (
 		<>
 			<div
-				className={`todolist-sidebar z-40 transition-colors duration-300 shadow-[10px_0px_20px_0px_rgba(0,0,0,0.3)] ${
+				className={`todolist-sidebar z-40 transition-colors duration-300 shadow-[10px_0px_20px_0px_rgba(0,0,0,0.3)] flex flex-col justify-start items-start p-7 absolute top-0 left-0 sm:left-[280px] min-w-[280px] max-w-[280px] h-full border-r-2 gap-5 ${
 					user.themeColor ? "bg-[#222] text-white" : "bg-white text-black"
-				} absolute top-0 left-0 sm:left-[280px] min-w-[280px] max-w-[280px] h-full flex flex-col justify-start items-start border-r-2 ${
-					user.themeColor ? "border-[#333]" : "border-gray-200"
-				} flex flex-col justify-start items-start p-7`}
+				} ${user.themeColor ? "border-[#333]" : "border-gray-200"} `}
 			>
 				<div className="flex justify-between items-center gap-2 w-full">
-					<h1 className="text-2xl font-semibold">Todo Lists</h1>
+					<div className="flex flex-col justify-start items-start">
+						<>
+							{folders.allFolders
+								?.filter((value) => value.folderName === clickedFolder)
+								.slice(0, 1)
+								?.map((folder) => (
+									<React.Fragment key={folder.id}>
+										<h3 className={`text-sm ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}>
+											{folder.folderName}
+										</h3>
+									</React.Fragment>
+								))}
+						</>
+						<h1 className="text-2xl font-semibold">Todo Folders</h1>
+					</div>
 					<div className="flex justify-center items-center gap-2">
 						<button className="w-fit h-fit relative text-btn" onClick={handleTodolistSidebar}>
 							{!user.themeColor ? (
@@ -52,15 +77,39 @@ export default function TodolistSidebar() {
 						</button>
 					</div>
 				</div>
-				{/* <div className="flex justify-start items-start gap-2">
-					{folders.allTodoFolders?.map((todoFolder) => {
-						return (
-							<React.Fragment key={todoFolder.id}>
-								<h1>{todoFolder.folderTitle}</h1>
-							</React.Fragment>
-						);
-					})}
-				</div> */}
+				<div className="flex flex-col justify-start items-start gap-2 w-full">
+					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true) ? (
+						todolistFolders.allTodoFolders
+							.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
+							?.map((todoFolder) => {
+								if (todoFolder.userID === auth.currentUser.uid) {
+									return (
+										<React.Fragment key={todoFolder.id}>
+											<button
+												onClick={null}
+												className="flex text-btn justify-between items-center gap-2 w-full text-start"
+											>
+												<h1 className="line-clamp-1 w-52" title={todoFolder.folderTitle}>
+													{todoFolder.folderTitle}
+												</h1>
+												<h1>
+													{todoFolder.folderEmoji ? (
+														todoFolder.folderEmoji
+													) : (
+														<>
+															<div className="w-4 h-4 rounded-full bg-gray-400" />
+														</>
+													)}
+												</h1>
+											</button>
+										</React.Fragment>
+									);
+								}
+							})
+					) : (
+						<TodoListFoldersPlaceholder />
+					)}
+				</div>
 				{openTodolistSidebarModal &&
 					createPortal(
 						<TodolistSidebarModal setOpenTodolistSidebarModal={setOpenTodolistSidebarModal} />,

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import FoldersPlaceholder from "./FoldersPlaceholder";
 import Image from "next/image";
 import FirebaseApi from "../../pages/api/firebaseApi";
@@ -7,9 +7,9 @@ import { StateCtx } from "../Layout";
 import AllFolders from "./AllFolders";
 
 export default function Folders() {
-	const { setOpenFolderModal } = useContext(StateCtx);
+	const { setOpenFolderModal, clickedFolder, setClickedFolder } = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, folders } = FirebaseApi();
+	const { auth, folders, todolistFolders } = FirebaseApi();
 
 	return (
 		<>
@@ -35,7 +35,7 @@ export default function Folders() {
 						if (folder.userID === auth.currentUser.uid) {
 							return (
 								<React.Fragment key={folder.id}>
-									<AllFolders folder={folder} />
+									<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
 								</React.Fragment>
 							);
 						}

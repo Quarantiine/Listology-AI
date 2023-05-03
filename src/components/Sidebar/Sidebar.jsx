@@ -10,26 +10,13 @@ import TodolistSidebar from "./TodolistSidebar";
 
 export default function Sidebar() {
 	const { user } = useContext(UserCredentialCtx);
-	const { closeSidebar, setCloseSidebar, openTodolistSidebar, setOpenTodolistSidebar } = useContext(StateCtx);
-
-	useEffect(() => {
-		const closeTodolistSidebar = (e) => {
-			if (!e.target.closest(".todolist-sidebar")) {
-				setOpenTodolistSidebar(false);
-			}
-		};
-
-		document.addEventListener("mousedown", closeTodolistSidebar);
-		return () => document.removeEventListener("mousedown", closeTodolistSidebar);
-	}, [setOpenTodolistSidebar]);
+	const { closeSidebar, setCloseSidebar, openTodolistSidebar } = useContext(StateCtx);
 
 	useEffect(() => {
 		const handleCloseSidebar = (e) => {
 			if (!e.target.closest(".sidebar")) {
 				if (window.innerWidth < 768) {
 					setCloseSidebar(true);
-				} else {
-					null;
 				}
 			}
 		};

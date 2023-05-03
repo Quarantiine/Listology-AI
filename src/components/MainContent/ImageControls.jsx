@@ -55,7 +55,7 @@ export default function ImageControls() {
 				{clickedImageLoading &&
 					createPortal(
 						<div className="image-loading-indicator w-full h-fit px-10 py-2 bg-green-500 text-white fixed left-1/2 -translate-x-1/2 z-50 flex justify-center items-center text-center">
-							<p className="">(Successful) Your Picture Will Arrive</p>
+							<p className="">(Successful) Your Picture is Arriving...</p>
 						</div>,
 						document.body
 					)}

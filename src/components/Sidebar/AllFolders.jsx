@@ -1,20 +1,24 @@
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { createPortal } from "react-dom";
 import { StateCtx } from "../Layout";
 
-const AllFolders = ({ folder }) => {
+const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
-	const { folders } = FirebaseApi();
-	const { openTodolistSidebar, setOpenTodolistSidebar } = useContext(StateCtx);
+	const { folders, todolistFolders } = FirebaseApi();
+	const { openTodolistSidebar, setOpenTodolistSidebar, clickedFolder } = useContext(StateCtx);
 	const [completedFolder, setCompletedFolder] = useState(true);
 	const [deleteWarning, setDeleteWarning] = useState(false);
-	// folderName
-	// folderEmoji
-	// folderTitle
-	// folderDescription
+	const [closeTodolistSidebar, setCloseTodolistSidebar] = useState(false);
+
+	useEffect(() => {
+		window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
+		window.addEventListener("resize", () => {
+			window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
+		});
+	}, [closeTodolistSidebar]);
 
 	const handleCompletedFolder = () => {
 		folders.updatingCompletionFolder(folder.id, completedFolder);
@@ -27,19 +31,27 @@ const AllFolders = ({ folder }) => {
 
 	const handleDeleteFolder = () => {
 		folders.deletingFolder(folder.id);
+		todolistFolders.allTodoFolders
+			.filter((value) => value.folderName === clickedFolder)
+			?.map((todolistFolder) => todolistFolders.deletingTodoFolder(todolistFolder.id));
 		setOpenTodolistSidebar(false);
 	};
 
-	const handleTodolistSidebar = () => {
+	const handleTodolistSidebar = (e) => {
 		setOpenTodolistSidebar(!openTodolistSidebar);
+		setClickedFolder(folder.folderName);
 	};
 
 	return (
 		<>
 			<div className="flex justify-between items-center gap-2">
-				<button onClick={handleTodolistSidebar} className="flex justify-center items-center gap-2">
+				<button
+					onClick={() => {
+						closeTodolistSidebar && handleTodolistSidebar();
+					}}
+					className="flex justify-center items-center gap-2"
+				>
 					<h1>{folder.folderName}</h1>
-					<h1>{folder.folderEmoji}</h1>
 				</button>
 
 				<div className="flex justify-center items-center gap-2">

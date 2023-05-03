@@ -2,6 +2,7 @@ import React, { use, useContext, useEffect, useReducer, useRef, useState } from 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import FirebaseApi from "../../pages/api/firebaseApi";
+import { StateCtx } from "../Layout";
 
 const reducer = (state, { type, payload }) => {
 	switch (type) {
@@ -16,7 +17,8 @@ const reducer = (state, { type, payload }) => {
 };
 
 export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
-	const { auth, folders } = FirebaseApi();
+	const { todolistFolders } = FirebaseApi();
+	const { clickedFolder } = useContext(StateCtx);
 	const [inputState, inputDispatch] = useReducer(reducer, {
 		folderTitle: "",
 		folderDescription: "",
@@ -80,16 +82,13 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 	const handleCreateFolder = (e) => {
 		e.preventDefault();
 		clearTimeout(errorMesgRef.current);
-		if (
-			emoji.native &&
-			inputState.folderTitle &&
-			!folders.allFolders
-				.filter((value) => auth.currentUser.uid === value.userID)
-				?.map((folder) => folder.folderName === inputState.folderName)
-				.includes(true)
-		) {
-			// TODO: FIXED THE TODO FOLDER SYSTEM
-			// folders. (emoji.native, inputState.folderTitle, inputState.folderDescription);
+		if (inputState.folderTitle) {
+			todolistFolders.addingTodoFolder(
+				emoji.native,
+				inputState.folderTitle,
+				inputState.folderDescription,
+				clickedFolder
+			);
 			setOpenTodolistSidebarModal(false);
 		} else {
 			handleErrorMesg();

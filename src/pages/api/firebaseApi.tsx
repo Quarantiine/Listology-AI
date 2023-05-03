@@ -48,6 +48,9 @@ const queTodoList: Query = query(colRefTodoList, orderBy("createdTime"));
 const colRefFolders: CollectionReference = collection(db, "folders", "");
 const queFolders: Query = query(colRefFolders, orderBy("createdTime"));
 
+const colRefTodoFolders: CollectionReference = collection(db, "todo-folders", "");
+const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
+
 // ADD HERE -----
 
 // ==================
@@ -65,6 +68,9 @@ export default function FirebaseApi() {
 
 	// Folder System ======
 	const [allFolders, setAllFolders] = useState<any>();
+
+	// T0do Folder System ======
+	const [allTodoFolders, setAllTodoFolders] = useState<any>();
 
 	// Registration System ======
 	useEffect(() => {
@@ -104,6 +110,21 @@ export default function FirebaseApi() {
 
 			ss.docs.map((doc) => {
 				folders.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+		});
+	}, []);
+
+	// T0do Folders System ======
+	useEffect(() => {
+		onSnapshot(queTodoFolders, (ss) => {
+			const todoFolders: any = [];
+			setAllTodoFolders(todoFolders);
+
+			ss.docs.map((doc) => {
+				todoFolders.unshift({
 					...doc.data(),
 					id: doc.id,
 				});
@@ -245,6 +266,36 @@ export default function FirebaseApi() {
 	const updatingCompletionFolder = FS.updatingCompletionFolder;
 	const deletingFolder = FS.deletingFolder;
 
+	class TodolistFolderSystem {
+		constructor() {}
+
+		addingTodoFolder = async (
+			folderEmoji: string,
+			folderTitle: string,
+			folderDescription: string,
+			folderName: string
+		) => {
+			await addDoc(colRefTodoFolders, {
+				folderEmoji: folderEmoji || "",
+				folderTitle: folderTitle,
+				folderDescription:
+					folderDescription ||
+					"Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+				folderName: folderName,
+				userID: auth.currentUser.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		deletingTodoFolder = async (id: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			deleteDoc(docRef);
+		};
+	}
+	const TLFS = new TodolistFolderSystem();
+	const addingTodoFolder = TLFS.addingTodoFolder;
+	const deletingTodoFolder = TLFS.deletingTodoFolder;
+
 	return {
 		auth,
 		registration: {
@@ -268,6 +319,11 @@ export default function FirebaseApi() {
 			addingFolder,
 			updatingCompletionFolder,
 			deletingFolder,
+		},
+		todolistFolders: {
+			deletingTodoFolder,
+			addingTodoFolder,
+			allTodoFolders,
 		},
 	};
 }

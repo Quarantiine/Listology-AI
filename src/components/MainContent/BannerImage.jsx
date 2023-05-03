@@ -52,9 +52,9 @@ const Fallback = ({ user }) => {
 	return (
 		<>
 			<div
-				className={`transition-colors duration-300 w-full min-h-[230px] ${
-					user.themeColor ? "bg-[#333]" : "bg-gray-300"
-				}`}
+				className={`transition-all duration-500 w-full ${
+					user.bannerSize ? "min-h-[400px] md:min-h-[450px]" : "min-h-[230px]"
+				} ${user.themeColor ? "bg-[#333]" : "bg-gray-300"}`}
 			></div>
 		</>
 	);

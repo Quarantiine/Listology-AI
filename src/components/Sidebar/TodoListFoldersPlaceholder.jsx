@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
-import { StateCtx } from "../Layout";
 import { UserCredentialCtx } from "../../pages";
 
-export default function FoldersPlaceholder() {
+export default function TodoListFoldersPlaceholder() {
 	const { user } = useContext(UserCredentialCtx);
 
 	return (
