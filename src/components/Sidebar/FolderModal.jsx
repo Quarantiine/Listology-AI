@@ -107,9 +107,9 @@ export default function FolderModal({ handleFolderCreation }) {
 							<label htmlFor="folder-name">Folder Name</label>
 							<p className="text-sm text-gray-400">Required</p>
 							<div className="w-fit h-fit relative flex justify-center items-center">
-								<button onClick={handleInfo} className="text-btn">
+								<div onClick={handleInfo} className="text-btn">
 									<Image className="w-auto h-[18px]" src={"/icons/info.svg"} alt="info" width={20} height={20} />
-								</button>
+								</div>
 								{showInfo && (
 									<div className="info-pop-up absolute top-5 right-0 sm:left-0 bg-white w-36 h-fit p-2 rounded-md border shadow-md">
 										<p className="text-sm">Folder Name should be unique</p>

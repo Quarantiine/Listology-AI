@@ -84,7 +84,7 @@ export default function TodolistSidebar() {
 						</>
 					</div>
 					<div className="flex justify-center items-center gap-2 pt-1">
-						<button className="w-fit h-fit relative text-btn" onClick={handleTodolistSidebar}>
+						<button className="min-w-[20px] max-w-[20px] relative text-btn" onClick={handleTodolistSidebar}>
 							{!user.themeColor ? (
 								<Image src={"/icons/menu-open.svg"} alt="completed icon" width={25} height={25} />
 							) : (
@@ -94,7 +94,10 @@ export default function TodolistSidebar() {
 							)}
 						</button>
 						{!windowWidthCheck ? (
-							<button onClick={handleCreateTodos} className="flex justify-center items-center relative">
+							<button
+								onClick={handleCreateTodos}
+								className="min-w-[20px] max-w-[20px] flex justify-center items-center relative"
+							>
 								<Image
 									className="w-auto h-[20px]"
 									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
@@ -104,7 +107,10 @@ export default function TodolistSidebar() {
 								/>
 							</button>
 						) : (
-							<button onClick={handleCreateFolder} className="flex justify-center items-center relative">
+							<button
+								onClick={handleCreateFolder}
+								className="min-w-[20px] max-w-[20px] flex justify-center items-center relative"
+							>
 								<Image
 									className="w-auto h-[20px]"
 									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}

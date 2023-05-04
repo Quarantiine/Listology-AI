@@ -1,13 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import TodolistPlaceholder from "./TodolistPlaceholder";
 import { createPortal } from "react-dom";
+import FirebaseApi from "../../pages/api/firebaseApi";
+import { StateCtx } from "../Layout";
+import { UserCredentialCtx } from "../../pages";
+import TodosContent from "./TodosContent";
 
 export default function TodolistMainContent({ todolistFolder, user, todolistFolders }) {
-	const [editAppear, setEditAppear] = useState(false);
-	const [editAppearDescription, setEditAppearDescription] = useState(false);
+	const { auth, todoLists, folders } = FirebaseApi();
+	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
 	const [editFolderEmoji, setEditFolderEmoji] = useState(false);
@@ -47,17 +51,8 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 		return () => document.removeEventListener("mousedown", closeEmojiDropdown);
 	}, [editFolderEmoji]);
 
-	const handleEditAppearing = () => {
-		setEditAppear(true);
-	};
-
-	const handleEditDisappearing = () => {
-		setEditAppear(false);
-	};
-
 	const handleActivateFolderTitleEdit = () => {
 		setEditFolderTitleMode(!editFolderTitleMode);
-		setEditAppear(false);
 	};
 
 	const handleFolderTitleEdit = () => {
@@ -89,24 +84,37 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 		}
 	};
 
+	const handleAddingTodos = () => {
+		todoLists.addingTodos(todolistFolder.id);
+	};
+	useEffect(() => console.log());
+
 	return (
 		<>
-			<div className="flex flex-col gap-7 w-full 2xl:w-[70%] h-auto">
-				<button onClick={null} className="base-btn w-fit flex justify-start items-center gap-3">
+			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
+				<button onClick={handleAddingTodos} className="base-btn w-fit flex justify-start items-center gap-3">
 					<h1 className={`text-white`}>Add Todo</h1>
 					<div className="flex justify-center items-center relative">
 						<Image className="w-auto h-[20px]" src={"/icons/plus-white.svg"} alt="" width={20} height={20} />
 					</div>
 				</button>
 
-				<div className="w-full h-auto flex flex-col justify-center items-start gap-3">
+				<div className="w-full h-auto flex flex-col justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
 						<div className="flex justify-start items-center gap-5 w-full">
 							<div
-								onMouseOver={handleEditAppearing}
-								onMouseLeave={handleEditDisappearing}
-								className={`flex flex-col justify-start items-start gap-2 ${editFolderTitleMode ? "w-full" : "w-fit"}`}
+								className={`flex flex-col justify-start items-start gap-1 ${editFolderTitleMode ? "w-full" : "w-fit"}`}
 							>
+								{folders.allFolders
+									?.filter((value) => value.folderName === clickedFolder)
+									.slice(0, 1)
+									?.map((folder) => (
+										<React.Fragment key={folder.id}>
+											<h3 className={`text-sm ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}>
+												{folder.folderName}
+											</h3>
+										</React.Fragment>
+									))}
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									{editFolderTitleMode ? (
 										<input
@@ -199,11 +207,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 							</div>
 						</div>
 					) : (
-						<div
-							onMouseOver={() => setEditAppearDescription(true)}
-							onMouseLeave={() => setEditAppearDescription(false)}
-							className="flex flex-col justify-start items-start gap-2"
-						>
+						<div className="flex flex-col justify-start items-start gap-2">
 							<p className="text-btn" onClick={handleActivateFolderDescriptionEdit}>
 								{todolistFolder.folderDescription}
 							</p>
@@ -211,8 +215,26 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 					)}
 				</div>
 
-				{/* Start on the Todo list System */}
-				{false ? "" : <TodolistPlaceholder />}
+				<div className="flex flex-col justify-start items-start gap-3 w-full">
+					{todoLists.allTodoLists
+						?.filter((value) => value.folderID === todolistFolder.id && value.userID === auth.currentUser.uid)
+						?.map((todolist) => {
+							if (
+								todoLists.allTodoLists?.map((todolist) => todolist.folderID === clickedTodoFolder).includes(true) &&
+								todolist.folderID === clickedTodoFolder
+							) {
+								return <TodosContent key={todolist.id} todoLists={todoLists} todolist={todolist} />;
+							}
+						})}
+					{!todoLists.allTodoLists
+						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.map((todolist) => todolist.folderID === clickedTodoFolder)
+						.includes(true) && (
+						<div className="flex flex-col justify-start items-start gap-3 w-full">
+							<p className={user.themeColor ? "text-[#555]" : "text-gray-400"}>No Added Todo List</p>
+						</div>
+					)}
+				</div>
 			</div>
 		</>
 	);

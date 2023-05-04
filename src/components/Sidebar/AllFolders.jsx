@@ -50,9 +50,11 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 					onClick={() => {
 						handleTodolistSidebar();
 					}}
-					className="flex justify-center items-center gap-2"
+					className="flex justify-start items-center gap-2"
 				>
-					<h1>{folder.folderName}</h1>
+					<h1 title={folder.folderName} className="line-clamp-1 w-40 text-start">
+						{folder.folderName}
+					</h1>
 				</button>
 
 				<div className="flex justify-center items-center gap-2">
