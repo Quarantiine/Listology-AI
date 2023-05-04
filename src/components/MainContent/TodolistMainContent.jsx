@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
 import TodosContent from "./TodosContent";
+import Filters from "../Sidebar/Filters";
 
 export default function TodolistMainContent({ todolistFolder, user, todolistFolders }) {
 	const { auth, todoLists, folders } = FirebaseApi();
@@ -99,6 +100,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
+				<Filters user={user} />
 				<button onClick={handleAddingTodos} className="base-btn w-fit flex justify-start items-center gap-3">
 					<h1 className={`text-white`}>Add Todo</h1>
 					<div className="flex justify-center items-center relative">

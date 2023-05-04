@@ -69,6 +69,9 @@ export default function Layout({ children }) {
 		return () => window.removeEventListener("resize", mobileSidebar);
 	}, []);
 
+	const handleCloseSidebar = () => {
+		setCloseSidebar(!closeSidebar);
+	};
 	return (
 		<>
 			<Head>
@@ -96,6 +99,7 @@ export default function Layout({ children }) {
 						setClickedFolder,
 						clickedTodoFolder,
 						setClickedTodoFolder,
+						handleCloseSidebar,
 					}}
 				>
 					<div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
