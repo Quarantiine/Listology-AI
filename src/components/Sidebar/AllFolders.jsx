@@ -40,7 +40,11 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 
 	return (
 		<>
-			<div className="flex justify-between items-center gap-2">
+			<div
+				className={`flex justify-between items-center gap-2 p-1 rounded-md ${
+					clickedFolder === folder.folderName ? (user.themeColor ? "bg-[#444]" : "bg-[#eee]") : ""
+				}`}
+			>
 				<button
 					onClick={() => {
 						handleTodolistSidebar();

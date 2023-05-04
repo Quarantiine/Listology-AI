@@ -18,6 +18,7 @@ export default function TodolistSidebar() {
 	const [todoFolderDeletionIndicatorNumber, setTodoFolderDeletionIndicatorNumber] = useState(0);
 	const [windowWidthCheck, setWindowWidthCheck] = useState(false);
 	const todoFolderDeletionRef = useRef();
+	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
 		window.innerWidth < 768 ? setWindowWidthCheck(true) : setWindowWidthCheck(false);
@@ -123,6 +124,10 @@ export default function TodolistSidebar() {
 					</div>
 				</div>
 
+				<div className="w-full h-fit hidden md:block">
+					<TodoListFolderSearchBar user={user} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+				</div>
+
 				{todoFolderDeletionIndicator &&
 					createPortal(
 						<>
@@ -138,20 +143,28 @@ export default function TodolistSidebar() {
 							.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
 							?.map((todoFolder, index) => {
 								if (todoFolder.userID === auth.currentUser.uid) {
-									return (
-										<AllTodoFolders
-											key={todoFolder.id}
-											todolistFolders={todolistFolders}
-											todoFolder={todoFolder}
-											user={user}
-											index={index}
-											setClickedTodoFolder={setClickedTodoFolder}
-											todoFolderDeletionIndicator={todoFolderDeletionIndicator}
-											setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
-											todoFolderDeletionRef={todoFolderDeletionRef}
-											handleDeletionIndicator={handleDeletionIndicator}
-										/>
-									);
+									if (
+										todoFolder.folderTitle
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+									) {
+										return (
+											<AllTodoFolders
+												key={todoFolder.id}
+												todolistFolders={todolistFolders}
+												todoFolder={todoFolder}
+												user={user}
+												index={index}
+												setClickedTodoFolder={setClickedTodoFolder}
+												todoFolderDeletionIndicator={todoFolderDeletionIndicator}
+												setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
+												todoFolderDeletionRef={todoFolderDeletionRef}
+												handleDeletionIndicator={handleDeletionIndicator}
+											/>
+										);
+									}
 								}
 							})
 					) : (
@@ -167,3 +180,28 @@ export default function TodolistSidebar() {
 		</>
 	);
 }
+
+const TodoListFolderSearchBar = ({ user, searchQuery, setSearchQuery }) => {
+	return (
+		<>
+			<div className="w-full h-auto flex justify-start items-center gap-3 relative">
+				<Image
+					className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+					src={"/icons/search.svg"}
+					alt="search"
+					width={20}
+					height={20}
+				/>
+				<input
+					className={`w-full text-white pl-10 pr-2 py-1 rounded-md outline-none ${
+						user.themeColor ? "bg-[#333]" : "bg-gray-500"
+					}`}
+					type="search"
+					name="search"
+					onChange={(e) => setSearchQuery(e.target.value)}
+					value={searchQuery}
+				/>
+			</div>
+		</>
+	);
+};

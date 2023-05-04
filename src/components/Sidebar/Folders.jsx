@@ -30,19 +30,21 @@ export default function Folders() {
 						/>
 					</button>
 				</div>
-				{folders.allFolders?.map((folder) => folder.userID === auth.currentUser.uid).includes(true) ? (
-					folders.allFolders?.map((folder) => {
-						if (folder.userID === auth.currentUser.uid) {
-							return (
-								<React.Fragment key={folder.id}>
-									<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
-								</React.Fragment>
-							);
-						}
-					})
-				) : (
-					<FoldersPlaceholder />
-				)}
+				<div className="flex flex-col justify-center items-start gap-1">
+					{folders.allFolders?.map((folder) => folder.userID === auth.currentUser.uid).includes(true) ? (
+						folders.allFolders?.map((folder) => {
+							if (folder.userID === auth.currentUser.uid) {
+								return (
+									<React.Fragment key={folder.id}>
+										<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
+									</React.Fragment>
+								);
+							}
+						})
+					) : (
+						<FoldersPlaceholder />
+					)}
+				</div>
 			</div>
 		</>
 	);

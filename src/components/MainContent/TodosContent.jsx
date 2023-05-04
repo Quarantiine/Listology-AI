@@ -58,8 +58,8 @@ export default function TodosContent({ todoLists, todolist }) {
 	return (
 		<>
 			<div
-				className={`flex justify-start items-center gap-5 w-full ${
-					todolist.favorited ? (user.themeColor ? "bg-[#292929] py-[2px]" : "bg-[#eee] py-[2px]") : ""
+				className={`flex justify-start items-center gap-5 w-full rounded-lg px-2 py-1 ${
+					todolist.favorited ? (user.themeColor ? "bg-[#292929]" : "bg-[#eee]") : ""
 				}`}
 			>
 				<button className="min-w-[18px] max-w-[18px]" onClick={handleCompletedTodo}>
@@ -80,7 +80,7 @@ export default function TodosContent({ todoLists, todolist }) {
 
 				{editTextActive && !todolist.completed ? (
 					<div className="flex justify-start items-center gap-2 w-full">
-						<input
+						<textarea
 							ref={editTextActiveRef}
 							onChange={(e) => setTodoText(e.target.value)}
 							onKeyDown={handleKeyedChangeEditText}

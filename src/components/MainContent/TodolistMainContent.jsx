@@ -49,11 +49,13 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 		return () => document.removeEventListener("mousedown", closeEmojiDropdown);
 	}, [editFolderEmoji]);
 
-	const handleActivateFolderTitleEdit = () => {
+	const handleActivateFolderTitleEdit = (e) => {
+		e.preventDefault();
 		setEditFolderTitleMode(!editFolderTitleMode);
 	};
 
-	const handleFolderTitleEdit = () => {
+	const handleFolderTitleEdit = (e) => {
+		e.preventDefault();
 		if (editFolderTitle.length > 0) {
 			todolistFolders.updatingFolderTitle(todolistFolder.id, editFolderTitle);
 			setEditFolderTitleMode(false);
@@ -70,11 +72,13 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 		todolistFolders.updatingFolderEmoji(todolistFolder.id, emoji.native);
 	};
 
-	const handleActivateFolderDescriptionEdit = () => {
+	const handleActivateFolderDescriptionEdit = (e) => {
+		e.preventDefault();
 		setEditFolderDescriptionMode(!editFolderDescriptionMode);
 	};
 
-	const handleFolderDescriptionEdit = () => {
+	const handleFolderDescriptionEdit = (e) => {
+		e.preventDefault();
 		if (editFolderDescription) {
 			todolistFolders.updatingFolderDescription(todolistFolder.id, editFolderDescription);
 			setEditFolderDescriptionMode(false);
@@ -105,7 +109,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 				<div className="w-full h-auto flex flex-col gap-2 justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
 						<div className="flex justify-start items-center gap-5 w-full">
-							<div
+							<form
 								className={`flex flex-col justify-start items-start gap-1 ${editFolderTitleMode ? "w-full" : "w-fit"}`}
 							>
 								{folders.allFolders
@@ -151,7 +155,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 										</div>
 									</>
 								)}
-							</div>
+							</form>
 						</div>
 						{windowWidthCheck &&
 							createPortal(
@@ -190,7 +194,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 						)}
 					</div>
 					{editFolderDescriptionMode ? (
-						<div className="flex flex-col justify-start items-start gap-3 w-full">
+						<form className="flex flex-col justify-start items-start gap-3 w-full">
 							<textarea
 								className={`border-none rounded-md px-3 py-2 w-full min-h-[66px] h-[66px] max-h-[250px] ${
 									user.themeColor ? "text-white bg-[#333]" : "text-black bg-gray-200"
@@ -208,7 +212,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 									cancel
 								</button>
 							</div>
-						</div>
+						</form>
 					) : (
 						<div className="flex flex-col justify-start items-start gap-2">
 							<p className="text-btn" onClick={handleActivateFolderDescriptionEdit}>
