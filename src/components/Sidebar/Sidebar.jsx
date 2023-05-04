@@ -153,11 +153,13 @@ const Filters = ({ handleCloseSidebar, user }) => {
 
 const Misc = ({ user }) => {
 	const { registration } = FirebaseApi();
-	const { setOpenTodolistSidebar } = useContext(StateCtx);
+	const { setOpenTodolistSidebar, setClickedFolder, setClickedTodoFolder } = useContext(StateCtx);
 
 	const handleSigningOut = (e) => {
 		e.preventDefault();
 		setOpenTodolistSidebar(false);
+		setClickedFolder("");
+		setClickedTodoFolder("");
 		registration.signingOut();
 	};
 
