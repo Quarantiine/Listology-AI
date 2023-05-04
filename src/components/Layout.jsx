@@ -71,7 +71,7 @@ export default function Layout({ children }) {
 	return (
 		<>
 			<Head>
-				<link rel="shortcut icon" href="/icons/logo.svg" type="image/x-icon" />
+				<link rel="shortcut icon" href="/icons/logo-2.svg" type="image/x-icon" />
 			</Head>
 
 			<QueryClientProvider client={queryClient}>
