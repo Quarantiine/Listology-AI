@@ -7,18 +7,10 @@ import { StateCtx } from "../Layout";
 
 const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
-	const { folders, todolistFolders } = FirebaseApi();
+	const { auth, folders, todolistFolders, todoLists } = FirebaseApi();
 	const { openTodolistSidebar, setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder } = useContext(StateCtx);
 	const [completedFolder, setCompletedFolder] = useState(true);
 	const [deleteWarning, setDeleteWarning] = useState(false);
-	const [closeTodolistSidebar, setCloseTodolistSidebar] = useState(false);
-
-	// useEffect(() => {
-	// 	window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
-	// 	window.addEventListener("resize", () => {
-	// 		window.innerWidth < 768 ? setCloseTodolistSidebar(false) : setCloseTodolistSidebar(true);
-	// 	});
-	// }, [closeTodolistSidebar]);
 
 	const handleCompletedFolder = () => {
 		folders.updatingCompletionFolder(folder.id, completedFolder);
@@ -33,12 +25,15 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		folders.deletingFolder(folder.id);
 		setClickedTodoFolder("");
 		todolistFolders.allTodoFolders
-			.filter((value) => value.folderName === clickedFolder)
+			.filter((value) => value.folderName === clickedFolder && auth.currentUser.uid === value.userID)
 			?.map((todolistFolder) => todolistFolders.deletingTodoFolder(todolistFolder.id));
+		todoLists.allTodoLists
+			.filter((value) => value.mainFolder[0] === folder.folderName && auth.currentUser.uid === value.userID)
+			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 		setOpenTodolistSidebar(false);
 	};
 
-	const handleTodolistSidebar = (e) => {
+	const handleTodolistSidebar = () => {
 		setOpenTodolistSidebar(true);
 		setClickedFolder(folder.folderName);
 	};
@@ -79,7 +74,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 								<div className="sidebar flex z-50 justify-center items-center w-full h-full fixed top-0 left-0 bg-[rgba(0,0,0,0.8)]">
 									<div className="w-fit h-fit p-5 rounded-md bg-white text-center flex flex-col gap-5">
 										<div className="flex flex-col justify-center items-center gap-0">
-											<h1 className="text-2xl font-semibold">Deleting Folder</h1>
+											<h1 className="text-2xl font-semibold">Deleting Main Folder</h1>
 											<p>Are you sure you want to delete?</p>
 										</div>
 										<div className="flex justify-center items-center gap-4">

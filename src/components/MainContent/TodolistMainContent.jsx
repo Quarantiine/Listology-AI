@@ -2,11 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import TodolistPlaceholder from "./TodolistPlaceholder";
 import { createPortal } from "react-dom";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
-import { UserCredentialCtx } from "../../pages";
 import TodosContent from "./TodosContent";
 
 export default function TodolistMainContent({ todolistFolder, user, todolistFolders }) {
@@ -85,9 +83,14 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 	};
 
 	const handleAddingTodos = () => {
-		todoLists.addingTodos(todolistFolder.id);
+		todoLists.addingTodos(
+			todolistFolder.id,
+			folders.allFolders
+				?.filter((value) => value.folderName === clickedFolder)
+				.slice(0, 1)
+				?.map((folder) => folder.folderName)
+		);
 	};
-	useEffect(() => console.log());
 
 	return (
 		<>
@@ -99,7 +102,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 					</div>
 				</button>
 
-				<div className="w-full h-auto flex flex-col justify-center items-start">
+				<div className="w-full h-auto flex flex-col gap-2 justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
 						<div className="flex justify-start items-center gap-5 w-full">
 							<div

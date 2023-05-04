@@ -1,6 +1,8 @@
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import FirebaseApi from "../../pages/api/firebaseApi";
+import { StateCtx } from "../Layout";
 
 export default function AllTodoFolders({
 	todolistFolders,
@@ -11,6 +13,8 @@ export default function AllTodoFolders({
 	todoFolderDeletionRef,
 	handleDeletionIndicator,
 }) {
+	const { todoLists } = FirebaseApi();
+	const { setOpenTodolistSidebar } = useContext(StateCtx);
 	const [todoFolderComplete, setTodoFolderComplete] = useState(true);
 	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] = useState(false);
 	const todoFolderCompleteRef = useRef();
@@ -33,6 +37,10 @@ export default function AllTodoFolders({
 
 	const handleDeletion = () => {
 		todolistFolders.deletingTodoFolder(todoFolder.id);
+		todoLists.allTodoLists
+			.filter((value) => value.folderID === todoFolder.id && auth.currentUser.uid === value.userID)
+			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
+		setOpenTodolistSidebar(false);
 		setClickedTodoFolder("");
 		clearTimeout(todoFolderDeletionRef.current);
 	};

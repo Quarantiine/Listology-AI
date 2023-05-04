@@ -97,7 +97,10 @@ export default function TodosContent({ todoLists, todolist }) {
 						</div>
 					</div>
 				) : (
-					<p onClick={handleEditTextActive} className={`text-btn ${todolist.completed ? "line-through" : ""}`}>
+					<p
+						onClick={handleEditTextActive}
+						className={`text-btn ${todolist.completed ? "line-through select-all" : ""}`}
+					>
 						{todolist.todo}
 					</p>
 				)}

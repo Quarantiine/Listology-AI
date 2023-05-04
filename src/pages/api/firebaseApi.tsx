@@ -313,9 +313,10 @@ export default function FirebaseApi() {
 	class TodoListSystem {
 		constructor() {}
 
-		addingTodos = async (folderID: string) => {
+		addingTodos = async (folderID: string, mainFolder: string) => {
 			await addDoc(colRefTodoLists, {
 				todo: "Untitled Todo Text",
+				mainFolder,
 				folderID: folderID,
 				favorited: false,
 				completed: false,
