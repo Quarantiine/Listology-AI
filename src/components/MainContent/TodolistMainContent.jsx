@@ -141,7 +141,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 								</div>
 								{editFolderTitleMode && (
 									<>
-										<div className="flex justify-center items-center gap-2">
+										<div className="flex justify-center items-center gap-2 mt-1">
 											<button onClick={handleFolderTitleEdit} className="base-btn">
 												change
 											</button>

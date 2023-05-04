@@ -57,7 +57,11 @@ export default function TodosContent({ todoLists, todolist }) {
 
 	return (
 		<>
-			<div className="flex justify-start items-center gap-5 w-full">
+			<div
+				className={`flex justify-start items-center gap-5 w-full ${
+					todolist.favorited ? (user.themeColor ? "bg-[#292929] py-[2px]" : "bg-[#eee] py-[2px]") : ""
+				}`}
+			>
 				<button className="min-w-[18px] max-w-[18px]" onClick={handleCompletedTodo}>
 					<Image
 						className="w-auto h-[20px]"
@@ -104,7 +108,7 @@ export default function TodosContent({ todoLists, todolist }) {
 						{todolist.todo}
 					</p>
 				)}
-				<div className="flex justify-center items-center gap-3 ml-auto">
+				<div className="flex w-20 justify-end items-center gap-3 ml-auto">
 					<>
 						{todolist.favorited ? (
 							<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
