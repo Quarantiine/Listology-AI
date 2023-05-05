@@ -14,7 +14,7 @@ export default function Filters({ user }) {
 				onClick={() => {
 					!closeFilterSidebar && handleFilterSidebar();
 				}}
-				className={`z-40 fixed top-32 md:top-1/2 -translate-y-1/2 ${
+				className={`z-40 fixed top-32 md:top-1/2 -translate-y-1/2 overflow-hidden ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
 				} right-[5px] px-5 pt-3 transition-all duration-500 ${
 					closeFilterSidebar
