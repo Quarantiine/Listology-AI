@@ -14,7 +14,7 @@ export default function AllTodoFolders({
 	handleDeletionIndicator,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
-	const { setOpenTodolistSidebar, clickedTodoFolder, clickedFolder } = useContext(StateCtx);
+	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
 	const [todoFolderComplete, setTodoFolderComplete] = useState(true);
 	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] = useState(false);
 	const [deletionWarning, setDeletionWarning] = useState(false);

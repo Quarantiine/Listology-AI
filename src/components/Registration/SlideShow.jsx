@@ -10,7 +10,6 @@ export default function SlideShow() {
 		slideCountRef.current = setInterval(() => {
 			setSlideCount((state) => state + 1);
 			slideCount >= imgs.length - 1 ? setSlideCount(0) : null;
-			// console.log(slideCount);
 		}, 5000);
 
 		return () => clearInterval(slideCountRef.current);

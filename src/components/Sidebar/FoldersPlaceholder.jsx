@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { StateCtx } from "../Layout";
 import { UserCredentialCtx } from "../../pages";
 
 export default function FoldersPlaceholder() {

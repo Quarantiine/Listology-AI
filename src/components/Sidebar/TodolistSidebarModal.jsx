@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect, useReducer, useRef, useState } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import FirebaseApi from "../../pages/api/firebaseApi";

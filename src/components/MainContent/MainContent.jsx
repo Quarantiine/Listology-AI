@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserCredentialCtx } from "../../pages";
 import TodolistPlaceholder from "./TodolistPlaceholder";
 import Banner from "./Banner";
@@ -17,7 +17,6 @@ export default function MainContent() {
 		clickedTodoFolder,
 		setOpenTodolistSidebarModal,
 		setOpenTodolistSidebar,
-		clickedFolder,
 	} = useContext(StateCtx);
 
 	useEffect(() => console.log());

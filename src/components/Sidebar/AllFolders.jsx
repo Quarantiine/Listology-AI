@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { createPortal } from "react-dom";
@@ -8,8 +8,7 @@ import { StateCtx } from "../Layout";
 const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders, todolistFolders, todoLists } = FirebaseApi();
-	const { openTodolistSidebar, setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder, clickedTodoFolder } =
-		useContext(StateCtx);
+	const { setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder, clickedTodoFolder } = useContext(StateCtx);
 	const [completedFolder, setCompletedFolder] = useState(true);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 

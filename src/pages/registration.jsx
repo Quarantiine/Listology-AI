@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import FirebaseApi from "../pages/api/firebaseApi";
 import Head from "next/head";
 import Image from "next/image";
@@ -20,7 +20,7 @@ const registrationReducer = (state, { type, payload }) => {
 };
 
 export default function Registration() {
-	const { auth, registration } = FirebaseApi();
+	const { registration } = FirebaseApi();
 	const [registrationState, registrationDispatch] = useReducer(registrationReducer, {
 		text: "",
 		email: "",

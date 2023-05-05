@@ -3,7 +3,7 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
 
 export default function Misc({ user }) {
-	const { auth, registration } = FirebaseApi();
+	const { registration } = FirebaseApi();
 	const { setOpenTodolistSidebar, setClickedFolder, setClickedTodoFolder } = useContext(StateCtx);
 
 	const handleSigningOut = (e) => {

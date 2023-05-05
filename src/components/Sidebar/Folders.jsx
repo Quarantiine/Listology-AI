@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import FoldersPlaceholder from "./FoldersPlaceholder";
 import Image from "next/image";
 import FirebaseApi from "../../pages/api/firebaseApi";
@@ -7,9 +7,9 @@ import { StateCtx } from "../Layout";
 import AllFolders from "./AllFolders";
 
 export default function Folders({ handleCloseSidebar }) {
-	const { setOpenFolderModal, clickedFolder, setClickedFolder } = useContext(StateCtx);
+	const { setOpenFolderModal, setClickedFolder } = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, folders, todolistFolders } = FirebaseApi();
+	const { auth, folders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
 
 	return (

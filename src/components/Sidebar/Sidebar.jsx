@@ -1,14 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import FirebaseApi from "../../pages/api/firebaseApi";
-import Image from "next/image";
+import React, { useContext, useEffect } from "react";
 import { StateCtx } from "../Layout";
 import { UserCredentialCtx } from "../../pages";
 import Folders from "./Folders";
 import TodolistSidebar from "./TodolistSidebar";
-import Filters from "./Filters";
 import Misc from "./Misc";
-// import Filters from "./Filters";
-// import Misc from "./Misc";
 
 export default function Sidebar() {
 	const { user } = useContext(UserCredentialCtx);

@@ -21,7 +21,6 @@ export default function FolderModal({ handleFolderCreation }) {
 		folderDescription: "",
 	});
 	const { auth, folders } = FirebaseApi();
-	const [emoji, setEmoji] = useState("");
 	const [openEmojiModal, setOpenEmojiModal] = useState(false);
 	const [errorMesg, setErrorMesg] = useState(false);
 	const errorMesgRef = useRef();
