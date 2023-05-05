@@ -84,7 +84,7 @@ export default function TodosContent({ todoLists, todolist }) {
 							ref={editTextActiveRef}
 							onChange={(e) => setTodoText(e.target.value)}
 							onKeyDown={handleKeyedChangeEditText}
-							className={`input-todo-text border-none w-full rounded-md px-3 py-2 ${
+							className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
 								user.themeColor ? "text-white bg-[#333]" : "text-black bg-gray-200"
 							}`}
 							// onChange={(e) => setEditFolderTitle(e.target.value)}
@@ -103,7 +103,7 @@ export default function TodosContent({ todoLists, todolist }) {
 				) : (
 					<p
 						onClick={handleEditTextActive}
-						className={`text-btn ${todolist.completed ? "line-through select-all" : ""}`}
+						className={`text-btn w-full ${todolist.completed ? "line-through select-all" : ""}`}
 					>
 						{todolist.todo}
 					</p>

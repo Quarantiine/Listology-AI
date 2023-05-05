@@ -11,9 +11,8 @@ import AllTodoFolders from "./AllTodoFolders";
 export default function TodolistSidebar() {
 	const { auth, todolistFolders, folders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
-	const { clickedFolder } = useContext(StateCtx);
+	const { clickedFolder, openTodolistSidebarModal, setOpenTodolistSidebarModal } = useContext(StateCtx);
 	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } = useContext(StateCtx);
-	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] = useState(false);
 	const [todoFolderDeletionIndicator, setTodoFolderDeletionIndicator] = useState(false);
 	const [todoFolderDeletionIndicatorNumber, setTodoFolderDeletionIndicatorNumber] = useState(0);
 	const [windowWidthCheck, setWindowWidthCheck] = useState(false);

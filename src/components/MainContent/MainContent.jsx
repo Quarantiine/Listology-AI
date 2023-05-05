@@ -10,8 +10,17 @@ import TodolistMainContent from "./TodolistMainContent";
 
 export default function MainContent() {
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, todolistFolders } = FirebaseApi();
-	const { openFolderModal, setOpenFolderModal, clickedTodoFolder } = useContext(StateCtx);
+	const { auth, todolistFolders, folders } = FirebaseApi();
+	const {
+		openFolderModal,
+		setOpenFolderModal,
+		clickedTodoFolder,
+		setOpenTodolistSidebarModal,
+		setOpenTodolistSidebar,
+		clickedFolder,
+	} = useContext(StateCtx);
+
+	useEffect(() => console.log());
 
 	useEffect(() => {
 		const closeFolderModal = (e) => {
@@ -26,6 +35,11 @@ export default function MainContent() {
 
 	const handleFolderCreation = () => {
 		setOpenFolderModal(!openFolderModal);
+	};
+
+	const handleTodolistFoldersCreation = () => {
+		setOpenTodolistSidebarModal(true);
+		setOpenTodolistSidebar(true);
 	};
 
 	return (
