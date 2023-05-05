@@ -80,25 +80,39 @@ export default function MainContent() {
 									)}
 								</>
 							) : (
-								<div className="w-[90%] h-full relative flex flex-col gap-10 justify-center items-center">
-									<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
-										<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
-											<h1 className="text-2xl font-semibold">Need a Short Tutorial?</h1>
-											<p className="">This will expedite your productivity significantly</p>
-											<button onClick={null} className="base-btn">
-												Start Tutorial
-											</button>
+								<>
+									{/* <div className="w-[90%] h-full relative flex flex-col gap-10 justify-center items-center">
+										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
+											<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
+												<h1 className="text-2xl font-semibold">Need a Short Tutorial?</h1>
+												<p className="">This will expedite your productivity significantly</p>
+												<button onClick={null} className="base-btn">
+													Start Tutorial
+												</button>
+											</div>
+											<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
+												<h1 className="text-2xl font-semibold">Create a Folder!</h1>
+												<p className="">Ensure that the chosen appellation is to your liking.</p>
+												<button onClick={handleFolderCreation} className="base-btn">
+													Create Folder
+												</button>
+											</div>
 										</div>
-										<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
-											<h1 className="text-2xl font-semibold">Create a Folder!</h1>
-											<p className="">Ensure that the chosen appellation is to your liking.</p>
-											<button onClick={handleFolderCreation} className="base-btn">
-												Create Folder
-											</button>
+										<TodolistPlaceholder />
+									</div> */}
+									<div className="w-[90%] h-full relative flex flex-col gap-10 justify-start items-start">
+										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
+											<div className="flex flex-col justify-center items-center gap-2 text-center">
+												<h1 className="text-2xl font-semibold">Create a Folder!</h1>
+												<p className="">Ensure that the chosen appellation is to your liking.</p>
+												<button onClick={handleFolderCreation} className="base-btn">
+													Create Folder
+												</button>
+											</div>
 										</div>
+										<TodolistPlaceholder />
 									</div>
-									<TodolistPlaceholder />
-								</div>
+								</>
 							)}
 						</>
 					</div>
