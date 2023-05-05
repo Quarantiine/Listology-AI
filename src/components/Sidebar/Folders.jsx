@@ -12,10 +12,6 @@ export default function Folders({ handleCloseSidebar }) {
 	const { auth, folders, todolistFolders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
 
-	useEffect(() => {
-		console.log();
-	});
-
 	return (
 		<>
 			<div
@@ -51,34 +47,47 @@ export default function Folders({ handleCloseSidebar }) {
 				</div>
 
 				<div className="flex flex-col justify-center items-start gap-2">
-					<div className="w-full h-auto flex justify-start items-center gap-3 relative">
-						<Image
-							className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
-							src={"/icons/search.svg"}
-							alt="search"
-							width={20}
-							height={20}
-						/>
-						<input
-							className={`w-full text-white pl-10 pr-2 py-1 rounded-md outline-none ${
-								user.themeColor ? "bg-[#333]" : "bg-gray-500"
-							}`}
-							type="search"
-							name="search"
-							onChange={(e) => setSearchQuery(e.target.value)}
-							value={searchQuery}
-						/>
-					</div>
+					{folders.allFolders
+						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.map((folder, index) => index + 1 > 5)
+						.includes(true) && (
+						<div className="w-full h-auto flex justify-start items-center gap-3 relative">
+							<Image
+								className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+								src={"/icons/search.svg"}
+								alt="search"
+								width={20}
+								height={20}
+							/>
+							<input
+								className={`w-full text-white pl-10 pr-2 py-1 rounded-md outline-none ${
+									user.themeColor ? "bg-[#333]" : "bg-gray-500"
+								}`}
+								type="search"
+								name="search"
+								onChange={(e) => setSearchQuery(e.target.value)}
+								value={searchQuery}
+							/>
+						</div>
+					)}
 
 					<div className="flex flex-col justify-center items-start gap-1">
 						{folders.allFolders?.map((folder) => folder.userID === auth.currentUser.uid).includes(true) ? (
 							folders.allFolders?.map((folder) => {
 								if (folder.userID === auth.currentUser.uid) {
-									return (
-										<React.Fragment key={folder.id}>
-											<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
-										</React.Fragment>
-									);
+									if (
+										folder.folderName
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+									) {
+										return (
+											<React.Fragment key={folder.id}>
+												<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
+											</React.Fragment>
+										);
+									}
 								}
 							})
 						) : (

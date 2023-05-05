@@ -14,13 +14,13 @@ export default function Layout({ children }) {
 	const [closeSidebar, setCloseSidebar] = useState(false);
 	const [bannerImage, setBannerImage] = useState("");
 	const [clickedImageLoading, setClickedImageLoading] = useState(false);
-	const [startX, setStartX] = useState(null);
-	const [endX, setEndX] = useState(null);
 	const [increaseBannerSize, setIncreaseBannerSize] = useState(true);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
 	const [openTodolistSidebar, setOpenTodolistSidebar] = useState(false);
 	const [clickedFolder, setClickedFolder] = useState("");
 	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
+	const [startX, setStartX] = useState(null);
+	const [endX, setEndX] = useState(null);
 
 	function handleTouchStart(e) {
 		setStartX(e.touches[0].clientX);

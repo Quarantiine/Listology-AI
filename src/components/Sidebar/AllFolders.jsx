@@ -19,6 +19,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	};
 
 	const handleDeleteWarning = () => {
+		setClickedFolder(folder.folderName);
 		setDeleteWarning(!deleteWarning);
 	};
 

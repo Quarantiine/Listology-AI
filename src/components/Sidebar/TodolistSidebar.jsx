@@ -138,39 +138,38 @@ export default function TodolistSidebar() {
 						document.body
 					)}
 				<div className="flex flex-col justify-start items-start gap-2 w-full">
-					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true) ? (
-						todolistFolders.allTodoFolders
-							.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
-							?.map((todoFolder, index) => {
-								if (todoFolder.userID === auth.currentUser.uid) {
-									if (
-										todoFolder.folderTitle
-											.normalize("NFD")
-											.replace(/\p{Diacritic}/gu, "")
-											.toLowerCase()
-											.includes(searchQuery.toLowerCase())
-									) {
-										return (
-											<AllTodoFolders
-												key={todoFolder.id}
-												todolistFolders={todolistFolders}
-												todoFolder={todoFolder}
-												user={user}
-												index={index}
-												setClickedTodoFolder={setClickedTodoFolder}
-												todoFolderDeletionIndicator={todoFolderDeletionIndicator}
-												setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
-												todoFolderDeletionRef={todoFolderDeletionRef}
-												handleDeletionIndicator={handleDeletionIndicator}
-											/>
-										);
+					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true)
+						? todolistFolders.allTodoFolders
+								.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
+								?.map((todoFolder, index) => {
+									if (todoFolder.userID === auth.currentUser.uid) {
+										if (
+											todoFolder.folderTitle
+												.normalize("NFD")
+												.replace(/\p{Diacritic}/gu, "")
+												.toLowerCase()
+												.includes(searchQuery.toLowerCase())
+										) {
+											return (
+												<AllTodoFolders
+													key={todoFolder.id}
+													todolistFolders={todolistFolders}
+													todoFolder={todoFolder}
+													user={user}
+													index={index}
+													setClickedTodoFolder={setClickedTodoFolder}
+													todoFolderDeletionIndicator={todoFolderDeletionIndicator}
+													setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
+													todoFolderDeletionRef={todoFolderDeletionRef}
+													handleDeletionIndicator={handleDeletionIndicator}
+												/>
+											);
+										}
 									}
-								}
-							})
-					) : (
-						<TodoListFoldersPlaceholder />
-					)}
+								})
+						: null}
 					{!todolistFolders.allTodoFolders
+						?.slice(0)
 						?.filter((value) => value.userID === auth.currentUser.uid)
 						?.map((todolistFolder) => todolistFolder.folderName === clickedFolder)
 						.includes(true) && <TodoListFoldersPlaceholder />}
