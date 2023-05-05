@@ -6,4 +6,4 @@ This simple and easy todo list management tool is a software application designe
 
 Overall, this todo list management tool can be a valuable tool for anyone looking to stay organized and productive, whether you're a busy professional, a student, or just someone trying to stay on top of your daily responsibilities.
 
-> Link: listology.vercel.app/
+> Link: https://listology.vercel.app/
