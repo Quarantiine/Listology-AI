@@ -228,10 +228,7 @@ export default function TodolistMainContent({ todolistFolder, user, todolistFold
 					{todoLists.allTodoLists
 						?.filter((value) => value.folderID === todolistFolder.id && value.userID === auth.currentUser.uid)
 						?.map((todolist) => {
-							if (
-								todoLists.allTodoLists?.map((todolist) => todolist.folderID === clickedTodoFolder).includes(true) &&
-								todolist.folderID === clickedTodoFolder
-							) {
+							if (todolist.folderID === clickedTodoFolder) {
 								return <TodosContent key={todolist.id} todoLists={todoLists} todolist={todolist} />;
 							}
 						})}

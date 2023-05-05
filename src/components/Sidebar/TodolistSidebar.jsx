@@ -170,6 +170,10 @@ export default function TodolistSidebar() {
 					) : (
 						<TodoListFoldersPlaceholder />
 					)}
+					{!todolistFolders.allTodoFolders
+						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.map((todolistFolder) => todolistFolder.folderName === clickedFolder)
+						.includes(true) && <TodoListFoldersPlaceholder />}
 				</div>
 				{openTodolistSidebarModal &&
 					createPortal(

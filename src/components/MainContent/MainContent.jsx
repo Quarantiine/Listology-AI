@@ -39,7 +39,6 @@ export default function MainContent() {
 								?.map((todolistFolder) => todolistFolder.userID === auth.currentUser.uid)
 								?.includes(true) && todolistFolders.allTodoFolders.length > 0 ? (
 								<>
-									{/* TODO: Create the Main Content Section's todo list content */}
 									{clickedTodoFolder ? (
 										todolistFolders.allTodoFolders
 											?.filter(

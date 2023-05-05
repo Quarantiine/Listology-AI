@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FoldersPlaceholder from "./FoldersPlaceholder";
 import Image from "next/image";
 import FirebaseApi from "../../pages/api/firebaseApi";
@@ -10,13 +10,18 @@ export default function Folders({ handleCloseSidebar }) {
 	const { setOpenFolderModal, clickedFolder, setClickedFolder } = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders, todolistFolders } = FirebaseApi();
+	const [searchQuery, setSearchQuery] = useState("");
+
+	useEffect(() => {
+		console.log();
+	});
 
 	return (
 		<>
 			<div
 				className={`px-8 py-4 border-t-2 transition-colors duration-300 ${
 					user.themeColor ? "border-[#333] text-white" : "border-gray-200 text-black"
-				} folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-4`}
+				} folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-5`}
 			>
 				<div className="flex justify-between items-center gap-1">
 					<div className="flex justify-between items-center gap-2">
@@ -44,20 +49,42 @@ export default function Folders({ handleCloseSidebar }) {
 						</button>
 					</div>
 				</div>
-				<div className="flex flex-col justify-center items-start">
-					{folders.allFolders?.map((folder) => folder.userID === auth.currentUser.uid).includes(true) ? (
-						folders.allFolders?.map((folder) => {
-							if (folder.userID === auth.currentUser.uid) {
-								return (
-									<React.Fragment key={folder.id}>
-										<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
-									</React.Fragment>
-								);
-							}
-						})
-					) : (
-						<FoldersPlaceholder />
-					)}
+
+				<div className="flex flex-col justify-center items-start gap-2">
+					<div className="w-full h-auto flex justify-start items-center gap-3 relative">
+						<Image
+							className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+							src={"/icons/search.svg"}
+							alt="search"
+							width={20}
+							height={20}
+						/>
+						<input
+							className={`w-full text-white pl-10 pr-2 py-1 rounded-md outline-none ${
+								user.themeColor ? "bg-[#333]" : "bg-gray-500"
+							}`}
+							type="search"
+							name="search"
+							onChange={(e) => setSearchQuery(e.target.value)}
+							value={searchQuery}
+						/>
+					</div>
+
+					<div className="flex flex-col justify-center items-start gap-1">
+						{folders.allFolders?.map((folder) => folder.userID === auth.currentUser.uid).includes(true) ? (
+							folders.allFolders?.map((folder) => {
+								if (folder.userID === auth.currentUser.uid) {
+									return (
+										<React.Fragment key={folder.id}>
+											<AllFolders setClickedFolder={setClickedFolder} folder={folder} />
+										</React.Fragment>
+									);
+								}
+							})
+						) : (
+							<FoldersPlaceholder />
+						)}
+					</div>
 				</div>
 			</div>
 		</>
