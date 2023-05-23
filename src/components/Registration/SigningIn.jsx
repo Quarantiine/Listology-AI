@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import Providers from "./Providers";
 
 export default function SigningIn({ handleRegistrationChange }) {
 	const { registration } = FirebaseApi();
@@ -112,6 +113,7 @@ export default function SigningIn({ handleRegistrationChange }) {
 							</button>
 						</div>
 					</div>
+					<Providers />
 					<div className="flex flex-col justify-start items-start gap-2 mt-2">
 						<button onClick={handleRegistrationChange} className="base-col cursor-pointer">
 							{`Don't`} have an account?

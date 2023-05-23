@@ -4,11 +4,9 @@ import { UserCredentialCtx } from "../../pages";
 
 export default function TodosContent({ todoLists, todolist }) {
 	const { user } = useContext(UserCredentialCtx);
-	const [completedTodo, setCompletedTodo] = useState(true);
 	const [todoText, setTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
 	const editTextActiveRef = useRef();
-	const [favorited, setFavorited] = useState(true);
 
 	useEffect(() => {
 		const closeTodoTextEdit = (e) => {
@@ -22,8 +20,7 @@ export default function TodosContent({ todoLists, todolist }) {
 	}, [editTextActive]);
 
 	const handleCompletedTodo = () => {
-		setCompletedTodo(!completedTodo);
-		todoLists.updatingTodolistCompleted(todolist.id, completedTodo);
+		todoLists.updatingTodolistCompleted(todolist.id, !todolist.completed);
 	};
 
 	const handleEditTextActive = () => {
@@ -47,8 +44,7 @@ export default function TodosContent({ todoLists, todolist }) {
 	};
 
 	const handleFavorited = () => {
-		setFavorited(!favorited);
-		todoLists.updatingTodolistFavorite(todolist.id, favorited);
+		todoLists.updatingTodolistFavorite(todolist.id, !todolist.favorited);
 	};
 
 	const handleDeleteTodo = () => {

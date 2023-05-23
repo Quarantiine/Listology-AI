@@ -1,12 +1,13 @@
 import Image from "next/image";
 import React from "react";
+import ImageControls from "./ImageControls";
 
 export default function BannerImage({ user }) {
 	return (
 		<>
 			<div
 				className={`w-full transition-all duration-500 overflow-hidden ${
-					user.bannerSize ? "min-h-[400px] md:min-h-[450px]" : "min-h-[230px]"
+					user.bannerSize ? "min-h-[0px]" : "min-h-[230px]"
 				} relative`}
 			>
 				<TextContent user={user} />
@@ -24,6 +25,11 @@ export default function BannerImage({ user }) {
 				></div>
 				{<Fallback user={user} />}
 			</div>
+			{user.bannerSize && (
+				<div className="fixed top-5 right-0 z-40 w-20 h-20">
+					<ImageControls />
+				</div>
+			)}
 		</>
 	);
 }
@@ -51,9 +57,9 @@ const Fallback = ({ user }) => {
 	return (
 		<>
 			<div
-				className={`transition-all duration-500 w-full ${
-					user.bannerSize ? "min-h-[400px] md:min-h-[450px]" : "min-h-[230px]"
-				} ${user.themeColor ? "bg-[#333]" : "bg-gray-300"}`}
+				className={`transition-all duration-500 w-full ${user.bannerSize ? "min-h-[0px]" : "min-h-[230px]"} ${
+					user.themeColor ? "bg-[#333]" : "bg-gray-300"
+				}`}
 			></div>
 		</>
 	);

@@ -9,8 +9,7 @@ import { UserCredentialCtx } from "../../pages";
 export default function ImageControls() {
 	const { user } = useContext(UserCredentialCtx);
 	const { registration } = FirebaseApi();
-	const { clickedImageLoading, setClickedImageLoading, increaseBannerSize, setIncreaseBannerSize } =
-		useContext(StateCtx);
+	const { clickedImageLoading, setClickedImageLoading } = useContext(StateCtx);
 	const [openDropdown, setOpenDropdown] = useState(false);
 	const [openGalleryModal, setOpenGalleryModal] = useState(false);
 
@@ -45,8 +44,7 @@ export default function ImageControls() {
 	};
 
 	const handleIncreaseBannerSize = () => {
-		registration.updatingBannerSize(increaseBannerSize, user.id);
-		setIncreaseBannerSize(!increaseBannerSize);
+		registration.updatingBannerSize(!user.bannerSize, user.id);
 	};
 
 	return (
@@ -62,17 +60,21 @@ export default function ImageControls() {
 
 				<button
 					onClick={handleIncreaseBannerSize}
-					className={`flex justify-center items-center w-fit h-fit bg-[#fff] p-2 text-btn rounded-l-md`}
+					className={`flex justify-center items-center w-fit h-fit bg-[#fff] p-2 text-btn ${
+						user.bannerSize ? "rounded-md" : "rounded-l-md"
+					}`}
 				>
 					<Image className="w-auto h-[18px]" src={"/icons/increase-size-black.svg"} alt="" width={20} height={20} />
 				</button>
 
-				<button
-					onClick={handleDropdown}
-					className="flex justify-center items-center w-fit h-fit bg-white py-2 px-1 rounded-r-md text-btn"
-				>
-					<Image className="w-auto h-[17px]" src={"/icons/picture-black.svg"} alt="" width={20} height={20} />
-				</button>
+				{!user.bannerSize && (
+					<button
+						onClick={handleDropdown}
+						className="flex justify-center items-center w-fit h-fit bg-white py-2 px-1 rounded-r-md text-btn"
+					>
+						<Image className="w-auto h-[17px]" src={"/icons/picture-black.svg"} alt="" width={20} height={20} />
+					</button>
+				)}
 
 				{openDropdown && (
 					<div

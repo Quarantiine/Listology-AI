@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
+import Providers from "./Providers";
 
 const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationChange }) => {
 	const [passwordVisible, setPasswordVisible] = useState(false);
@@ -82,6 +83,7 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 						</div>
 					</div>
 				</div>
+				<Providers />
 				<p onClick={handleRegistrationChange} className="base-col cursor-pointer">
 					Already have an account?
 				</p>

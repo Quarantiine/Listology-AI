@@ -136,7 +136,7 @@ export default function TodolistSidebar() {
 						</>,
 						document.body
 					)}
-				<div className="flex flex-col justify-start items-start gap-1 w-full">
+				<div className="todo-list-folders-overflow flex flex-col justify-start items-start gap-1 w-full overflow-y-scroll overflow-x-hidden">
 					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true)
 						? todolistFolders.allTodoFolders
 								.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)

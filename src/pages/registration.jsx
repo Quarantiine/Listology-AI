@@ -27,7 +27,7 @@ export default function Registration() {
 		password: "",
 		confirmPassword: "",
 	});
-	const [switchRegistration, setSwitchRegistration] = useState(false);
+	const [switchRegistration, setSwitchRegistration] = useState(true);
 	const [errorMesg, setErrorMesg] = useState(false);
 	const errorMesgRef = useRef();
 	const [successfulSignUp, setSuccessfulSignUp] = useState(false);

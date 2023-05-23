@@ -38,6 +38,10 @@
 	width: 5px;
 }
 
+.todo-list-folders-overflow::-webkit-scrollbar {
+	width: 0px;
+}
+
 @media screen and (max-width: 445px) {
 	.emoji-dropdown {
 		display: none;

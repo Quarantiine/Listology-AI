@@ -10,11 +10,9 @@ export const StateCtx = createContext();
 export default function Layout({ children }) {
 	const { auth } = FirebaseApi();
 	const router = useRouter();
-	const [themeColor, setThemeColor] = useState(true);
 	const [closeSidebar, setCloseSidebar] = useState(false);
 	const [bannerImage, setBannerImage] = useState("");
 	const [clickedImageLoading, setClickedImageLoading] = useState(false);
-	const [increaseBannerSize, setIncreaseBannerSize] = useState(true);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
 	const [openTodolistSidebar, setOpenTodolistSidebar] = useState(false);
 	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] = useState(false);
@@ -84,14 +82,10 @@ export default function Layout({ children }) {
 					value={{
 						bannerImage,
 						setBannerImage,
-						themeColor,
-						setThemeColor,
 						closeSidebar,
 						setCloseSidebar,
 						clickedImageLoading,
 						setClickedImageLoading,
-						increaseBannerSize,
-						setIncreaseBannerSize,
 						openFolderModal,
 						setOpenFolderModal,
 						openTodolistSidebar,

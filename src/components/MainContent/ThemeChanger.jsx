@@ -2,21 +2,18 @@ import Image from "next/image";
 import React, { useContext } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
-import { StateCtx } from "../Layout";
 
 export default function ThemeChanger() {
 	const { registration } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
-	const { themeColor, setThemeColor } = useContext(StateCtx);
 
 	const handleThemeChange = () => {
-		registration.updatingThemeColor(themeColor, user.id);
-		setThemeColor(!themeColor);
+		registration.updatingThemeColor(!user.themeColor, user.id);
 	};
 
 	return (
 		<>
-			<div className="fixed z-40 top-3 right-5 w-fit h-fit flex justify-center items-center">
+			<div className="fixed z-50 top-3 right-5 w-fit h-fit flex justify-center items-center">
 				<div
 					onClick={handleThemeChange}
 					className="flex justify-center items-center w-fit h-fit bg-[#fff] p-1 rounded-l-md text-btn"

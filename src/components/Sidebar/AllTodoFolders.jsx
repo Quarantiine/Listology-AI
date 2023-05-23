@@ -15,7 +15,6 @@ export default function AllTodoFolders({
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
 	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
-	const [todoFolderComplete, setTodoFolderComplete] = useState(true);
 	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] = useState(false);
 	const [deletionWarning, setDeletionWarning] = useState(false);
 	const todoFolderCompleteRef = useRef();
@@ -43,7 +42,7 @@ export default function AllTodoFolders({
 
 	const handleCompletion = () => {
 		clearTimeout(todoFolderCompleteRef.current);
-		todolistFolders.updatingCompletion(todoFolder.id, todoFolderComplete);
+		todolistFolders.updatingCompletion(todoFolder.id, !todoFolder.completed);
 	};
 
 	const handleDeletion = () => {
@@ -110,7 +109,6 @@ export default function AllTodoFolders({
 						onClick={() => {
 							handleCompletion();
 							handleCompletionIndicator();
-							setTodoFolderComplete(!todoFolderComplete);
 						}}
 					>
 						<Image

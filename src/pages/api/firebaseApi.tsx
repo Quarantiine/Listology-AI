@@ -24,6 +24,8 @@ import {
 	signInWithEmailAndPassword,
 	signOut,
 	sendPasswordResetEmail,
+	GoogleAuthProvider,
+	signInWithPopup,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -208,6 +210,30 @@ export default function FirebaseApi() {
 				console.log(`Forgot Password Error |`, err.message);
 			}
 		};
+
+		googleProvider = async () => {
+			const provider = new GoogleAuthProvider();
+			try {
+				await signInWithPopup(auth, provider).then(async (result) => {
+					const user = result.user;
+
+					if (user.email && allusers?.map((users: any) => users.email === user.email).includes(true)) {
+						console.log(null);
+					} else {
+						await addDoc(colRefRegistration, {
+							email: user.email,
+							username: user.displayName,
+							userID: user.uid,
+							themeColor: false,
+							bannerImage: "",
+							bannerSize: false,
+						});
+					}
+				});
+			} catch (err) {
+				console.log(`Google sign in Error |`, err.message);
+			}
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -217,6 +243,7 @@ export default function FirebaseApi() {
 	const signingIn = RS.signingIn;
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
+	const googleProvider = RS.googleProvider;
 
 	class FolderSystem {
 		constructor() {}
@@ -371,6 +398,7 @@ export default function FirebaseApi() {
 			signingIn,
 			signingOut,
 			forgotPassword,
+			googleProvider,
 		},
 		folders: {
 			allFolders,
