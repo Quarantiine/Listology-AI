@@ -1,4 +1,4 @@
-# Advance Todo List App
+# Advance Todo List Web App
 
 ## Intro:
 
@@ -7,3 +7,15 @@ This simple and easy todo list management tool is a software application designe
 Overall, this todo list management tool can be a valuable tool for anyone looking to stay organized and productive, whether you're a busy professional, a student, or just someone trying to stay on top of your daily responsibilities.
 
 > Link: https://listology.vercel.app/
+
+## Tech Stack:
+- React
+- Tailwind
+- JS
+- TS
+- Css
+- Next.js
+- Firebase
+- NPM
+- Figma
+- Git
