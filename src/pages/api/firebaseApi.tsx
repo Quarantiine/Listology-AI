@@ -26,6 +26,7 @@ import {
 	sendPasswordResetEmail,
 	GoogleAuthProvider,
 	signInWithPopup,
+	FacebookAuthProvider,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -42,12 +43,20 @@ const app: FirebaseApp = initializeApp(firebaseConfig);
 const auth: Auth = getAuth(app);
 const db: Firestore = getFirestore(app);
 
-const colRefRegistration: CollectionReference = collection(db, "registration", "");
+const colRefRegistration: CollectionReference = collection(
+	db,
+	"registration",
+	""
+);
 
 const colRefFolders: CollectionReference = collection(db, "folders", "");
 const queFolders: Query = query(colRefFolders, orderBy("createdTime"));
 
-const colRefTodoFolders: CollectionReference = collection(db, "todo-folders", "");
+const colRefTodoFolders: CollectionReference = collection(
+	db,
+	"todo-folders",
+	""
+);
 const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
 
 const colRefTodoLists: CollectionReference = collection(db, "todo-lists", "");
@@ -134,7 +143,11 @@ export default function FirebaseApi() {
 
 		signingUp = async (email: string, password: string, username: string) => {
 			try {
-				const user: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+				const user: UserCredential = await createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
 				await sendEmailVerification(user.user);
 			} catch (err) {
 				console.log(`Adding User Credentials Error |`, err.message);
@@ -213,11 +226,17 @@ export default function FirebaseApi() {
 
 		googleProvider = async () => {
 			const provider = new GoogleAuthProvider();
+
 			try {
 				await signInWithPopup(auth, provider).then(async (result) => {
 					const user = result.user;
 
-					if (user.email && allusers?.map((users: any) => users.email === user.email).includes(true)) {
+					if (
+						user.email &&
+						allusers
+							?.map((users: any) => users.email === user.email)
+							.includes(true)
+					) {
 						console.log(null);
 					} else {
 						await addDoc(colRefRegistration, {
@@ -234,6 +253,36 @@ export default function FirebaseApi() {
 				console.log(`Google sign in Error |`, err.message);
 			}
 		};
+
+		facebookProvider = async () => {
+			const provider = new FacebookAuthProvider();
+
+			try {
+				await signInWithPopup(auth, provider).then(async (result) => {
+					const user = result.user;
+
+					if (
+						user.email &&
+						allusers
+							?.map((users: any) => users.email === user.email)
+							.includes(true)
+					) {
+						console.log(null);
+					} else {
+						await addDoc(colRefRegistration, {
+							email: user.email,
+							username: user.displayName,
+							userID: user.uid,
+							themeColor: false,
+							bannerImage: "",
+							bannerSize: false,
+						});
+					}
+				});
+			} catch (err) {
+				console.log(`Facebook sign in Error |`, err.message);
+			}
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -244,6 +293,7 @@ export default function FirebaseApi() {
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
 	const googleProvider = RS.googleProvider;
+	const facebookProvider = RS.facebookProvider;
 
 	class FolderSystem {
 		constructor() {}
@@ -317,7 +367,10 @@ export default function FirebaseApi() {
 			});
 		};
 
-		updatingFolderDescription = async (id: string, folderDescription: string) => {
+		updatingFolderDescription = async (
+			id: string,
+			folderDescription: string
+		) => {
 			const docRef = doc(colRefTodoFolders, id);
 			await updateDoc(docRef, {
 				folderDescription: folderDescription,
@@ -399,6 +452,7 @@ export default function FirebaseApi() {
 			signingOut,
 			forgotPassword,
 			googleProvider,
+			facebookProvider,
 		},
 		folders: {
 			allFolders,
