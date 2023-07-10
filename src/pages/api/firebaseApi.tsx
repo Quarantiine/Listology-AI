@@ -27,6 +27,8 @@ import {
 	GoogleAuthProvider,
 	signInWithPopup,
 	FacebookAuthProvider,
+	AuthProvider,
+	TwitterAuthProvider,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -225,7 +227,7 @@ export default function FirebaseApi() {
 		};
 
 		googleProvider = async () => {
-			const provider = new GoogleAuthProvider();
+			const provider: AuthProvider = new GoogleAuthProvider();
 
 			try {
 				await signInWithPopup(auth, provider).then(async (result) => {
@@ -255,7 +257,7 @@ export default function FirebaseApi() {
 		};
 
 		facebookProvider = async () => {
-			const provider = new FacebookAuthProvider();
+			const provider: AuthProvider = new FacebookAuthProvider();
 
 			try {
 				await signInWithPopup(auth, provider).then(async (result) => {
@@ -283,6 +285,36 @@ export default function FirebaseApi() {
 				console.log(`Facebook sign in Error |`, err.message);
 			}
 		};
+
+		twitterProvider = async () => {
+			const provider: AuthProvider = new TwitterAuthProvider();
+
+			try {
+				await signInWithPopup(auth, provider).then(async (result) => {
+					const user = result.user;
+
+					if (
+						user.email &&
+						allusers
+							?.map((users: any) => users.email === user.email)
+							.includes(true)
+					) {
+						console.log(null);
+					} else {
+						await addDoc(colRefRegistration, {
+							email: user.email,
+							username: user.displayName,
+							userID: user.uid,
+							themeColor: false,
+							bannerImage: "",
+							bannerSize: false,
+						});
+					}
+				});
+			} catch (err) {
+				console.log(`Twitter sign in Error |`, err.message);
+			}
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -294,6 +326,7 @@ export default function FirebaseApi() {
 	const forgotPassword = RS.forgotPassword;
 	const googleProvider = RS.googleProvider;
 	const facebookProvider = RS.facebookProvider;
+	const twitterProvider = RS.twitterProvider;
 
 	class FolderSystem {
 		constructor() {}
@@ -453,6 +486,7 @@ export default function FirebaseApi() {
 			forgotPassword,
 			googleProvider,
 			facebookProvider,
+			twitterProvider,
 		},
 		folders: {
 			allFolders,
