@@ -302,7 +302,6 @@ export default function FirebaseApi() {
 						console.log(null);
 					} else {
 						await addDoc(colRefRegistration, {
-							email: user.email,
 							username: user.displayName,
 							userID: user.uid,
 							themeColor: false,

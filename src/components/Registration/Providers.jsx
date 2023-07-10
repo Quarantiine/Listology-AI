@@ -35,7 +35,7 @@ export default function Providers() {
 				<h1>Continue with Google</h1>
 			</button>
 
-			<button
+			{/* <button
 				onClick={handleFacebookSignIn}
 				className="flex justify-center items-center gap-2 border p-2 rounded-md"
 			>
@@ -46,9 +46,9 @@ export default function Providers() {
 					height={25}
 				/>
 				<h1>Continue with Facebook</h1>
-			</button>
+			</button> */}
 
-			<button
+			{/* <button
 				onClick={handleTwitterSignIn}
 				className="flex justify-center items-center gap-2 border p-2 rounded-md"
 			>
@@ -59,7 +59,7 @@ export default function Providers() {
 					height={25}
 				/>
 				<h1>Continue with Twitter</h1>
-			</button>
+			</button> */}
 		</div>
 	);
 }
