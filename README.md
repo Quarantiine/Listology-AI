@@ -10,6 +10,7 @@ Overall, this todo list management tool can be a valuable tool for anyone lookin
 
 ## Tech Stack:
 - React
+- Typescript
 - Tailwind
 - JS
 - TS
