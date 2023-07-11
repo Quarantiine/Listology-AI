@@ -45,13 +45,6 @@ const TextContent = ({ user }) => {
 		<>
 			<div className="absolute flex justify-center items-center z-10 w-full h-full">
 				<div className="w-full md:w-[80%] h-full flex flex-col justify-center items-center md:items-start gap-2">
-					<h1
-						className={`line-clamp-1 ${
-							user.themeColor ? "text-white" : "text-[#333]"
-						} text-5xl sm:text-7xl font-medium`}
-					>
-						{user.username || "USERNAME"}
-					</h1>
 					<p
 						className={`${
 							user.themeColor ? "text-white" : "text-[#333]"
@@ -59,6 +52,13 @@ const TextContent = ({ user }) => {
 					>
 						Welcome
 					</p>
+					<h1
+						className={`line-clamp-1 ${
+							user.themeColor ? "text-white" : "text-[#333]"
+						} text-5xl sm:text-7xl font-medium`}
+					>
+						{user.username || "USERNAME"}
+					</h1>
 				</div>
 			</div>
 		</>
