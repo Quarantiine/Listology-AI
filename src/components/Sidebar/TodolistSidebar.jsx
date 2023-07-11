@@ -11,18 +11,31 @@ import AllTodoFolders from "./AllTodoFolders";
 export default function TodolistSidebar() {
 	const { auth, todolistFolders, folders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
-	const { clickedFolder, openTodolistSidebarModal, setOpenTodolistSidebarModal } = useContext(StateCtx);
-	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } = useContext(StateCtx);
-	const [todoFolderDeletionIndicator, setTodoFolderDeletionIndicator] = useState(false);
-	const [todoFolderDeletionIndicatorNumber, setTodoFolderDeletionIndicatorNumber] = useState(0);
+	const {
+		clickedFolder,
+		openTodolistSidebarModal,
+		setOpenTodolistSidebarModal,
+	} = useContext(StateCtx);
+	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } =
+		useContext(StateCtx);
+	const [todoFolderDeletionIndicator, setTodoFolderDeletionIndicator] =
+		useState(false);
+	const [
+		todoFolderDeletionIndicatorNumber,
+		setTodoFolderDeletionIndicatorNumber,
+	] = useState(0);
 	const [windowWidthCheck, setWindowWidthCheck] = useState(false);
 	const todoFolderDeletionRef = useRef();
 	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
-		window.innerWidth < 768 ? setWindowWidthCheck(true) : setWindowWidthCheck(false);
+		window.innerWidth < 768
+			? setWindowWidthCheck(true)
+			: setWindowWidthCheck(false);
 		window.addEventListener("resize", () => {
-			window.innerWidth < 768 ? setWindowWidthCheck(true) : setWindowWidthCheck(false);
+			window.innerWidth < 768
+				? setWindowWidthCheck(true)
+				: setWindowWidthCheck(false);
 		});
 	}, [windowWidthCheck]);
 
@@ -34,7 +47,8 @@ export default function TodolistSidebar() {
 		};
 
 		document.addEventListener("mousedown", closeTodoListSidebar);
-		return () => document.removeEventListener("mousedown", closeTodoListSidebar);
+		return () =>
+			document.removeEventListener("mousedown", closeTodoListSidebar);
 	}, [setOpenTodolistSidebar]);
 
 	const handleTodolistSidebar = () => {
@@ -48,7 +62,12 @@ export default function TodolistSidebar() {
 	const handleCreateFolder = () => {
 		const folderDescriptionText =
 			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos nesciunt quas, fugiat aliquid nemo unde, sit labore assumenda asperiores a vero magnam iusto delectus cupiditate placeat consequatur nihil facere. Voluptates?";
-		todolistFolders.addingTodoFolder("", "Untitled", folderDescriptionText, clickedFolder);
+		todolistFolders.addingTodoFolder(
+			"",
+			"Untitled",
+			folderDescriptionText,
+			clickedFolder
+		);
 	};
 
 	const handleDeletionIndicator = () => {
@@ -76,7 +95,11 @@ export default function TodolistSidebar() {
 								.slice(0, 1)
 								?.map((folder) => (
 									<React.Fragment key={folder.id}>
-										<h3 className={`text-sm ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}>
+										<h3
+											className={`text-sm ${
+												user.themeColor ? "text-[#555]" : "text-gray-400"
+											}`}
+										>
 											{folder.folderName}
 										</h3>
 									</React.Fragment>
@@ -84,11 +107,25 @@ export default function TodolistSidebar() {
 						</>
 					</div>
 					<div className="flex justify-center items-center gap-2 pt-1">
-						<button className="min-w-[20px] max-w-[20px] relative text-btn" onClick={handleTodolistSidebar}>
+						<button
+							className="min-w-[20px] max-w-[20px] relative text-btn"
+							onClick={handleTodolistSidebar}
+						>
 							{!user.themeColor ? (
-								<Image src={"/icons/menu-open.svg"} alt="completed icon" width={25} height={25} />
+								<Image
+									src={"/icons/menu-open.svg"}
+									alt="completed icon"
+									width={25}
+									height={25}
+								/>
 							) : (
-								<svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 96 960 960" width="25" fill="white">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="25"
+									viewBox="0 96 960 960"
+									width="25"
+									fill="white"
+								>
 									<path d="M150 816q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T150 756h460q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T610 816H150Zm0-212q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T150 544h340q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T490 604H150Zm0-208q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T150 336h460q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T610 396H150Zm545 179 125 125q9 9 8.5 21t-9.5 21q-9 9-21.5 9t-21.5-9L630 596q-9-9-9-21t9-21l146-146q9-9 21.5-9t21.5 9q9 9 9 21.5t-9 21.5L695 575Z" />
 								</svg>
 							)}
@@ -100,7 +137,11 @@ export default function TodolistSidebar() {
 							>
 								<Image
 									className="w-auto h-[20px]"
-									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
+									src={
+										user.themeColor
+											? "/icons/plus-white.svg"
+											: "/icons/plus-black.svg"
+									}
 									alt=""
 									width={20}
 									height={20}
@@ -113,7 +154,11 @@ export default function TodolistSidebar() {
 							>
 								<Image
 									className="w-auto h-[20px]"
-									src={user.themeColor ? "/icons/plus-white.svg" : "/icons/plus-black.svg"}
+									src={
+										user.themeColor
+											? "/icons/plus-white.svg"
+											: "/icons/plus-black.svg"
+									}
 									alt=""
 									width={20}
 									height={20}
@@ -124,7 +169,11 @@ export default function TodolistSidebar() {
 				</div>
 
 				<div className="w-full h-fit hidden md:block">
-					<TodoListFolderSearchBar user={user} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+					<TodoListFolderSearchBar
+						user={user}
+						searchQuery={searchQuery}
+						setSearchQuery={setSearchQuery}
+					/>
 				</div>
 
 				{todoFolderDeletionIndicator &&
@@ -137,9 +186,15 @@ export default function TodolistSidebar() {
 						document.body
 					)}
 				<div className="todo-list-folders-overflow flex flex-col justify-start items-start gap-1 w-full overflow-y-scroll overflow-x-hidden">
-					{todolistFolders.allTodoFolders?.map((value) => value.userID === auth.currentUser.uid).includes(true)
+					{todolistFolders.allTodoFolders
+						?.map((value) => value.userID === auth.currentUser.uid)
+						.includes(true)
 						? todolistFolders.allTodoFolders
-								.filter((value) => value.userID === auth.currentUser.uid && value.folderName === clickedFolder)
+								.filter(
+									(value) =>
+										value.userID === auth.currentUser.uid &&
+										value.folderName === clickedFolder
+								)
 								?.map((todoFolder, index) => {
 									if (todoFolder.userID === auth.currentUser.uid) {
 										if (
@@ -157,8 +212,12 @@ export default function TodolistSidebar() {
 													user={user}
 													index={index}
 													setClickedTodoFolder={setClickedTodoFolder}
-													todoFolderDeletionIndicator={todoFolderDeletionIndicator}
-													setTodoFolderDeletionIndicator={setTodoFolderDeletionIndicator}
+													todoFolderDeletionIndicator={
+														todoFolderDeletionIndicator
+													}
+													setTodoFolderDeletionIndicator={
+														setTodoFolderDeletionIndicator
+													}
 													todoFolderDeletionRef={todoFolderDeletionRef}
 													handleDeletionIndicator={handleDeletionIndicator}
 												/>
@@ -170,12 +229,16 @@ export default function TodolistSidebar() {
 					{!todolistFolders.allTodoFolders
 						?.slice(0)
 						?.filter((value) => value.userID === auth.currentUser.uid)
-						?.map((todolistFolder) => todolistFolder.folderName === clickedFolder)
+						?.map(
+							(todolistFolder) => todolistFolder.folderName === clickedFolder
+						)
 						.includes(true) && <TodoListFoldersPlaceholder />}
 				</div>
 				{openTodolistSidebarModal &&
 					createPortal(
-						<TodolistSidebarModal setOpenTodolistSidebarModal={setOpenTodolistSidebarModal} />,
+						<TodolistSidebarModal
+							setOpenTodolistSidebarModal={setOpenTodolistSidebarModal}
+						/>,
 						document.body
 					)}
 			</div>

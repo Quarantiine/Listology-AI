@@ -15,7 +15,8 @@ export default function Layout({ children }) {
 	const [clickedImageLoading, setClickedImageLoading] = useState(false);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
 	const [openTodolistSidebar, setOpenTodolistSidebar] = useState(false);
-	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] = useState(false);
+	const [openTodolistSidebarModal, setOpenTodolistSidebarModal] =
+		useState(false);
 	const [clickedFolder, setClickedFolder] = useState("");
 	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
 	const [startX, setStartX] = useState(null);
@@ -74,7 +75,11 @@ export default function Layout({ children }) {
 	return (
 		<>
 			<Head>
-				<link rel="shortcut icon" href="/icons/logo-2.svg" type="image/x-icon" />
+				<link
+					rel="shortcut icon"
+					href="/icons/logo-2.svg"
+					type="image/x-icon"
+				/>
 			</Head>
 
 			<QueryClientProvider client={queryClient}>
@@ -99,7 +104,11 @@ export default function Layout({ children }) {
 						setOpenTodolistSidebarModal,
 					}}
 				>
-					<div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+					<div
+						onTouchStart={handleTouchStart}
+						onTouchMove={handleTouchMove}
+						onTouchEnd={handleTouchEnd}
+					>
 						{children}
 					</div>
 				</StateCtx.Provider>

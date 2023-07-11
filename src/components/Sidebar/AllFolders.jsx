@@ -8,7 +8,8 @@ import { StateCtx } from "../Layout";
 const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders, todolistFolders, todoLists } = FirebaseApi();
-	const { setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder } = useContext(StateCtx);
+	const { setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder } =
+		useContext(StateCtx);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 
 	const handleCompletedFolder = () => {
@@ -24,11 +25,29 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		folders.deletingFolder(folder.id);
 		setClickedTodoFolder("");
 		todolistFolders.allTodoFolders
-			.filter((value) => value.folderName === clickedFolder && auth.currentUser.uid === value.userID)
-			?.map((todolistFolder) => todolistFolders.deletingTodoFolder(todolistFolder.id));
+			.filter(
+				(value) =>
+					value.folderName === clickedFolder &&
+					auth.currentUser.uid === value.userID
+			)
+			?.map((todolistFolder) =>
+				todolistFolders.deletingTodoFolder(todolistFolder.id)
+			);
 		todoLists.allTodoLists
-			.filter((value) => value.mainFolder[0] === folder.folderName && auth.currentUser.uid === value.userID)
+			.filter(
+				(value) =>
+					value.mainFolder[0] === folder.folderName &&
+					auth.currentUser.uid === value.userID
+			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
+		todoLists.allSubTodos
+			.filter(
+				(value) =>
+					value.mainFolder[0] === folder.folderName &&
+					auth.currentUser.uid === value.userID
+			)
+			?.map((todoList) => todoLists.deletingSubTodo(todoList.id));
+
 		setOpenTodolistSidebar(false);
 	};
 
@@ -44,7 +63,11 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		<>
 			<div
 				className={`flex justify-between items-center gap-2 p-1 rounded-md ${
-					clickedFolder === folder.folderName ? (user.themeColor ? "bg-[#444]" : "bg-[#eee]") : ""
+					clickedFolder === folder.folderName
+						? user.themeColor
+							? "bg-[#444]"
+							: "bg-[#eee]"
+						: ""
 				}`}
 			>
 				<button
@@ -53,7 +76,10 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 					}}
 					className="flex justify-start items-center gap-2"
 				>
-					<h1 title={folder.folderName} className="line-clamp-1 w-40 text-start">
+					<h1
+						title={folder.folderName}
+						className="line-clamp-1 w-40 text-start"
+					>
 						{folder.folderName}
 					</h1>
 				</button>
@@ -80,14 +106,22 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 								<div className="sidebar flex z-50 justify-center items-center w-full h-full fixed top-0 left-0 bg-[rgba(0,0,0,0.8)]">
 									<div className="w-fit h-fit p-5 rounded-md bg-white text-center flex flex-col gap-5">
 										<div className="flex flex-col justify-center items-center gap-0">
-											<h1 className="text-2xl font-semibold">Deleting Main Folder</h1>
+											<h1 className="text-2xl font-semibold">
+												Deleting Main Folder
+											</h1>
 											<p>Are you sure you want to delete?</p>
 										</div>
 										<div className="flex justify-center items-center gap-4">
-											<button onClick={handleDeleteFolder} className="base-btn !bg-red-500">
+											<button
+												onClick={handleDeleteFolder}
+												className="base-btn !bg-red-500"
+											>
 												Delete
 											</button>
-											<button onClick={handleDeleteWarning} className="base-btn">
+											<button
+												onClick={handleDeleteWarning}
+												className="base-btn"
+											>
 												Cancel
 											</button>
 										</div>
@@ -97,7 +131,13 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 							document.body
 						)}
 					<button onClick={handleDeleteWarning}>
-						<Image className="w-auto h-[18px]" src={"/icons/trash.svg"} alt="trash" width={20} height={20} />
+						<Image
+							className="w-auto h-[18px]"
+							src={"/icons/trash.svg"}
+							alt="trash"
+							width={20}
+							height={20}
+						/>
 					</button>
 				</div>
 			</div>

@@ -14,8 +14,10 @@ export default function AllTodoFolders({
 	handleDeletionIndicator,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
-	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
-	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] = useState(false);
+	const { clickedTodoFolder, clickedFolder, setOpenTodolistSidebar } =
+		useContext(StateCtx);
+	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] =
+		useState(false);
 	const [deletionWarning, setDeletionWarning] = useState(false);
 	const todoFolderCompleteRef = useRef();
 
@@ -26,7 +28,8 @@ export default function AllTodoFolders({
 			}
 		};
 		document.addEventListener("mousedown", closeTodoFoldersModal);
-		return () => document.removeEventListener("mousedown", closeTodoFoldersModal);
+		return () =>
+			document.removeEventListener("mousedown", closeTodoFoldersModal);
 	}, [deletionWarning]);
 
 	const handleCompletionIndicator = () => {
@@ -47,15 +50,30 @@ export default function AllTodoFolders({
 
 	const handleDeletion = () => {
 		todolistFolders.deletingTodoFolder(todoFolder.id);
+
 		todoLists.allTodoLists
-			.filter((value) => value.folderID === todoFolder.id && auth.currentUser.uid === value.userID)
+			.filter(
+				(value) =>
+					value.folderID === todoFolder.id &&
+					auth.currentUser.uid === value.userID
+			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
+
+		todoLists.allSubTodos
+			.filter(
+				(value) =>
+					value.folderID === todoFolder.id &&
+					auth.currentUser.uid === value.userID
+			)
+			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
+
 		setClickedTodoFolder("");
 		clearTimeout(todoFolderDeletionRef.current);
 	};
 
 	const handleClickedTodoFolder = () => {
 		setClickedTodoFolder(todoFolder.id);
+		setOpenTodolistSidebar(false);
 	};
 
 	const handleDeletingWarning = () => {
@@ -86,7 +104,13 @@ export default function AllTodoFolders({
 						</>,
 						document.body
 					)}
-				<p className={`text-sm ${user.themeColor ? "text-[#888]" : "text-gray-400"}`}>{index + 1}</p>
+				<p
+					className={`text-sm ${
+						user.themeColor ? "text-[#888]" : "text-gray-400"
+					}`}
+				>
+					{index + 1}
+				</p>
 				<button
 					onClick={handleClickedTodoFolder}
 					className="flex text-btn justify-start items-center gap-1 w-full text-start"
@@ -130,7 +154,13 @@ export default function AllTodoFolders({
 							handleDeletingWarning();
 						}}
 					>
-						<Image className="w-auto h-[18px]" src={"/icons/trash.svg"} alt="trash" width={20} height={20} />
+						<Image
+							className="w-auto h-[18px]"
+							src={"/icons/trash.svg"}
+							alt="trash"
+							width={20}
+							height={20}
+						/>
 					</button>
 
 					{deletionWarning && (
@@ -147,14 +177,21 @@ export default function AllTodoFolders({
 	);
 }
 
-const TodolistFolderWarningModal = ({ handleDeletion, handleDeletionIndicator, handleDeletingWarning, todoFolder }) => {
+const TodolistFolderWarningModal = ({
+	handleDeletion,
+	handleDeletionIndicator,
+	handleDeletingWarning,
+	todoFolder,
+}) => {
 	return (
 		<>
 			<div className="z-50 text-black flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
 				<div className="todo-folders-deletion-warning todolist-sidebar w-fit h-fit p-5 rounded-md bg-white text-center flex flex-col gap-3">
 					<div className="flex flex-col justify-center items-center">
 						<h1 className="text-2xl font-semibold">Deleting Todo Folder:</h1>
-						<h1 className="text-lg font-light italic">{todoFolder.folderTitle}</h1>
+						<h1 className="text-lg font-light italic">
+							{todoFolder.folderTitle}
+						</h1>
 					</div>
 					<p>Are you sure you want to delete?</p>
 					<div className="flex justify-center items-center gap-4">

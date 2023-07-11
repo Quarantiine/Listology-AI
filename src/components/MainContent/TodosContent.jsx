@@ -1,12 +1,28 @@
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserCredentialCtx } from "../../pages";
+import { StateCtx } from "../Layout";
+import FirebaseApi from "../../pages/api/firebaseApi";
+import SubTodos from "../MainContent/SubTodos";
+import Link from "next/link";
+import shortenUrl from "shorten-url";
 
-export default function TodosContent({ todoLists, todolist }) {
+export default function TodosContent({
+	todoLists,
+	todolist,
+	folders,
+	todolistFolder,
+}) {
+	const { auth } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
+	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
 	const [todoText, setTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
 	const editTextActiveRef = useRef();
+	const [subTodoButtonAppear, setSubTodoButtonAppear] = useState(false);
+	const [closeSubTodos, setCloseSubTodos] = useState(false);
+	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
+	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
 		const closeTodoTextEdit = (e) => {
@@ -49,61 +65,195 @@ export default function TodosContent({ todoLists, todolist }) {
 
 	const handleDeleteTodo = () => {
 		todoLists.deletingTodolist(todolist.id);
+
+		todoLists.allSubTodos
+			.filter(
+				(value) =>
+					value.todoID === todolist.id && auth.currentUser.uid === value.userID
+			)
+			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 	};
 
+	const handleCreateSubTodo = () => {
+		todoLists.addSubTodo(
+			folders.allFolders
+				?.filter((value) => value.folderName === clickedFolder)
+				.slice(0, 1)
+				?.map((folder) => folder.folderName),
+			todolistFolder.id,
+			todolist.id
+		);
+	};
+
+	const handleCloseSubTodos = () => {
+		setCloseSubTodos(!closeSubTodos);
+	};
+
+	function extractLink() {
+		var pattern = /(https?:\/\/[^\s]+)/;
+		var matches = todolist.todo.match(pattern);
+		if (matches && matches.length > 0) {
+			return matches[0];
+		}
+		return null;
+	}
+
+	const handleLinkDropdown = () => {
+		if (!todolist.completed) setOpenLinkDropdown(!openLinkDropdown);
+	};
+
+	useEffect(() => {
+		const closeLinkDropdown = (e) => {
+			if (!e.target.closest(".link-dropdown")) {
+				setOpenLinkDropdown(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeLinkDropdown);
+		return () => document.removeEventListener("mousedown", closeLinkDropdown);
+	}, []);
+
 	return (
-		<>
+		<div className="flex flex-col w-full">
 			<div
-				className={`flex justify-start items-center gap-5 w-full rounded-lg px-2 py-1 ${
-					todolist.favorited ? (user.themeColor ? "bg-[#292929]" : "bg-[#eee]") : ""
+				onMouseOver={() => setSubTodoButtonAppear(true)}
+				onMouseLeave={() => setSubTodoButtonAppear(false)}
+				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 ${
+					todolist.favorited
+						? user.themeColor
+							? "bg-[#292929]"
+							: "bg-[#eee]"
+						: ""
 				}`}
 			>
-				<button className="min-w-[18px] max-w-[18px]" onClick={handleCompletedTodo}>
-					<Image
-						className="w-auto h-[20px]"
-						src={
-							todolist.completed
-								? "/icons/completed-todo.svg"
-								: user.themeColor
-								? "/icons/checkbox-empty-white.svg"
-								: "/icons/checkbox-empty-black.svg"
-						}
-						alt=""
-						width={25}
-						height={25}
-					/>
-				</button>
-
-				{editTextActive && !todolist.completed ? (
-					<div className="flex justify-start items-center gap-2 w-full">
-						<textarea
-							ref={editTextActiveRef}
-							onChange={(e) => setTodoText(e.target.value)}
-							onKeyDown={handleKeyedChangeEditText}
-							className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
-								user.themeColor ? "text-white bg-[#333]" : "text-black bg-gray-200"
-							}`}
-							// onChange={(e) => setEditFolderTitle(e.target.value)}
-							type="text"
-							placeholder={todolist.todo}
-						/>
-						<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-							<button onClick={handleChangeEditText} className="base-btn">
-								change
-							</button>
-							<button onClick={handleEditTextActive} className="base-btn !bg-red-500">
-								cancel
-							</button>
-						</div>
-					</div>
-				) : (
-					<p
-						onClick={handleEditTextActive}
-						className={`text-btn w-full ${todolist.completed ? "line-through select-all" : ""}`}
+				<div className="flex justify-center items-center gap-2">
+					<button
+						className="min-w-[18px] max-w-[18px]"
+						onClick={handleCompletedTodo}
 					>
-						{todolist.todo}
-					</p>
-				)}
+						<Image
+							className="w-auto h-[20px]"
+							src={
+								todolist.completed
+									? "/icons/completed-todo.svg"
+									: user.themeColor
+									? "/icons/checkbox-empty-white.svg"
+									: "/icons/checkbox-empty-black.svg"
+							}
+							alt=""
+							width={25}
+							height={25}
+						/>
+					</button>
+
+					<button
+						className={`pr-1 transition-all duration-300 ${
+							subTodoButtonAppear ? "opacity-100" : "opacity-0"
+						}`}
+						onClick={null}
+					>
+						<div className="w-auto h-auto" onClick={handleCreateSubTodo}>
+							{user.themeColor ? (
+								<Image
+									className="min-w-[20px] max-w-[20px] h-[20px]"
+									src={"/icons/add-todo-white.svg"}
+									alt=""
+									width={25}
+									height={25}
+								/>
+							) : (
+								<Image
+									className="min-w-[20px] max-w-[20px] h-[20px]"
+									src={"/icons/add-todo-black.svg"}
+									alt=""
+									width={25}
+									height={25}
+								/>
+							)}
+						</div>
+					</button>
+				</div>
+
+				<div className="w-full h-fit relative">
+					{editTextActive && !todolist.completed ? (
+						<div className="flex justify-start items-center gap-2 w-full">
+							<textarea
+								ref={editTextActiveRef}
+								onChange={(e) => setTodoText(e.target.value)}
+								onKeyDown={handleKeyedChangeEditText}
+								className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
+									user.themeColor
+										? "text-white bg-[#333]"
+										: "text-black bg-gray-200"
+								}`}
+								type="text"
+								placeholder={todolist.todo}
+							/>
+							<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
+								<button onClick={handleChangeEditText} className="base-btn">
+									change
+								</button>
+								<button
+									onClick={handleEditTextActive}
+									className="base-btn !bg-red-500"
+								>
+									cancel
+								</button>
+							</div>
+						</div>
+					) : linkPattern.test(todolist.todo) ? (
+						<>
+							<button
+								onClick={handleLinkDropdown}
+								title={"Go to link"}
+								className={`text-btn w-full text-start underline line-clamp-1 ${
+									todolist.completed ? "line-through select-all" : ""
+								} ${subTodoButtonAppear ? "translate-x-0" : "-translate-x-8"}`}
+							>
+								{todolist.todo.replace(extractLink(), "")}
+								{shortenUrl(extractLink(), 0)}
+							</button>
+							{openLinkDropdown && (
+								<div
+									className={`link-dropdown absolute top-8 -left-[72px] w-fit h-fit px-3 py-1 rounded-md border z-10 flex flex-col justify-center items-start gap-1 ${
+										user.themeColor ? "bg-[#333] border-[#444]" : "bg-[#eee]"
+									}`}
+								>
+									<Link
+										href={extractLink()}
+										target="_blank"
+										onClick={() => {
+											handleLinkDropdown();
+											setSubTodoButtonAppear(false);
+										}}
+										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+											todolist.completed ? "line-through select-all" : ""
+										}`}
+									>
+										<span>Link</span>
+									</Link>
+									<button
+										onClick={handleEditTextActive}
+										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+											todolist.completed ? "line-through select-all" : ""
+										}`}
+									>
+										<span>Edit</span>
+									</button>
+								</div>
+							)}
+						</>
+					) : (
+						<p
+							onClick={handleEditTextActive}
+							className={`text-btn w-full ${
+								todolist.completed ? "line-through select-all" : ""
+							} ${subTodoButtonAppear ? "translate-x-0" : "-translate-x-8"}`}
+						>
+							{todolist.todo}
+						</p>
+					)}
+				</div>
 				<div className="flex w-20 justify-end items-center gap-3 ml-auto">
 					<>
 						{todolist.favorited ? (
@@ -111,14 +261,21 @@ export default function TodosContent({ todoLists, todolist }) {
 								<Image
 									onClick={handleFavorited}
 									className="w-auto h-[20px] text-btn"
-									src={user.themeColor ? "/icons/favorite-white.svg" : "/icons/favorite-black.svg"}
+									src={
+										user.themeColor
+											? "/icons/favorite-white.svg"
+											: "/icons/favorite-black.svg"
+									}
 									alt="favorite"
-									width={20}
-									height={20}
+									width={25}
+									height={25}
 								/>
 							</button>
 						) : (
-							<button className="text-btn flex justify-center items-center" onClick={handleFavorited}>
+							<button
+								className="text-btn flex justify-center items-center"
+								onClick={handleFavorited}
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									height="23"
@@ -141,6 +298,66 @@ export default function TodosContent({ todoLists, todolist }) {
 					/>
 				</div>
 			</div>
-		</>
+
+			<div className="flex flex-col justify-start items-center w-full relative">
+				{todoLists?.allSubTodos
+					?.filter(
+						(value) =>
+							value.folderID === todolistFolder.id &&
+							value.userID === auth.currentUser.uid &&
+							value.todoID === todolist.id
+					)
+					.map((subTodo) => subTodo.todoID === todolist.id)
+					.includes(true) && (
+					<button
+						onClick={handleCloseSubTodos}
+						className={`w-full h-fit p-2 rounded-md flex justify-start items-center gap-2 text-sm border ${
+							user.themeColor
+								? "bg-[#333] border-[#555]"
+								: "bg-[#eee] border-[#ccc]"
+						}`}
+					>
+						<p>{closeSubTodos ? "Show more" : "Close"}</p>
+						<Image
+							className={`w-[15px] h-auto text-btn ${
+								closeSubTodos ? "" : "rotate-180"
+							}`}
+							src={
+								user.themeColor
+									? "/icons/arrow-white.svg"
+									: "/icons/arrow-black.svg"
+							}
+							alt="delete todos"
+							width={20}
+							height={20}
+						/>
+					</button>
+				)}
+				{todoLists?.allSubTodos
+					?.filter(
+						(value) =>
+							value.folderID === todolistFolder.id &&
+							value.userID === auth.currentUser.uid
+					)
+					.map((subTodo) => {
+						if (
+							subTodo.folderID === clickedTodoFolder &&
+							subTodo.todoID === todolist.id
+						) {
+							return (
+								<React.Fragment key={subTodo.id}>
+									<SubTodos
+										subTodo={subTodo}
+										user={user}
+										todolist={todolist}
+										todoLists={todoLists}
+										closeSubTodos={closeSubTodos}
+									/>
+								</React.Fragment>
+							);
+						}
+					})}
+			</div>
+		</div>
 	);
 }

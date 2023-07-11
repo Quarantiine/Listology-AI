@@ -13,7 +13,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Home | Listology</title>
+				<title>Listology</title>
 			</Head>
 			<>
 				{/* Loader */}

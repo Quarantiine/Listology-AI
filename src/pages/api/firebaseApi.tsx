@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
 	CollectionReference,
+	DocumentReference,
 	Firestore,
 	Query,
 	addDoc,
@@ -64,6 +65,16 @@ const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
 const colRefTodoLists: CollectionReference = collection(db, "todo-lists", "");
 const queTodoLists: Query = query(colRefTodoLists, orderBy("createdTime"));
 
+const colRefSubTodoLists: CollectionReference = collection(
+	db,
+	"sub-todo-lists",
+	""
+);
+const queSubTodoLists: Query = query(
+	colRefSubTodoLists,
+	orderBy("createdTime")
+);
+
 // ADD HERE -----
 
 // ==================
@@ -79,6 +90,7 @@ export default function FirebaseApi() {
 	const [allTodoLists, setAllTodoLists] = useState<any>();
 	const [allFolders, setAllFolders] = useState<any>();
 	const [allTodoFolders, setAllTodoFolders] = useState<any>();
+	const [allSubTodos, setAllSubTodos] = useState<any>();
 
 	// Registration System ======
 	useEffect(() => {
@@ -133,6 +145,21 @@ export default function FirebaseApi() {
 
 			ss.docs.map((doc) => {
 				todos.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+		});
+	}, []);
+
+	// Sub T0do List System ======
+	useEffect(() => {
+		onSnapshot(queSubTodoLists, (ss) => {
+			const subTodos: any = [];
+			setAllSubTodos(subTodos);
+
+			ss.docs.map((doc) => {
+				subTodos.unshift({
 					...doc.data(),
 					id: doc.id,
 				});
@@ -438,28 +465,79 @@ export default function FirebaseApi() {
 		};
 
 		updatingTodolist = async (id: string, todo: string) => {
-			const docRef = doc(colRefTodoLists, id);
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
 			await updateDoc(docRef, {
 				todo: todo,
 			});
 		};
 
 		updatingTodolistFavorite = async (id: string, favorited: string) => {
-			const docRef = doc(colRefTodoLists, id);
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
 			await updateDoc(docRef, {
 				favorited: favorited,
 			});
 		};
 
 		updatingTodolistCompleted = async (id: string, completed: string) => {
-			const docRef = doc(colRefTodoLists, id);
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
 			await updateDoc(docRef, {
 				completed: completed,
 			});
 		};
 
 		deletingTodolist = async (id: string) => {
-			const docRef = doc(colRefTodoLists, id);
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+			await deleteDoc(docRef);
+		};
+
+		addSubTodo = async (
+			mainFolder: string,
+			folderID: string,
+			todoID: string
+		) => {
+			try {
+				await addDoc(colRefSubTodoLists, {
+					todo: "Untitled Sub Todo",
+					mainFolder,
+					folderID: folderID,
+					todoID: todoID,
+					favorited: false,
+					completed: false,
+					userID: auth.currentUser.uid,
+					createdTime: serverTimestamp(),
+				});
+			} catch (err) {
+				console.log(`Sub Todo Error | ${err.message}`);
+			}
+		};
+
+		updatingSubTodoCompleted = async (id: string, completed: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				completed: completed,
+			});
+		};
+
+		updatingSubTodoEdit = async (id: string, todo: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				todo: todo,
+			});
+		};
+
+		updatingSubTodoFavorite = async (id: string, favorited: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				favorited: favorited,
+			});
+		};
+
+		deletingSubTodo = async (id: string) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
 			await deleteDoc(docRef);
 		};
 	}
@@ -469,6 +547,11 @@ export default function FirebaseApi() {
 	const updatingTodolistFavorite = TLS.updatingTodolistFavorite;
 	const updatingTodolistCompleted = TLS.updatingTodolistCompleted;
 	const deletingTodolist = TLS.deletingTodolist;
+	const addSubTodo = TLS.addSubTodo;
+	const updatingSubTodoCompleted = TLS.updatingSubTodoCompleted;
+	const updatingSubTodoEdit = TLS.updatingSubTodoEdit;
+	const updatingSubTodoFavorite = TLS.updatingSubTodoFavorite;
+	const deletingSubTodo = TLS.deletingSubTodo;
 
 	return {
 		auth,
@@ -509,6 +592,12 @@ export default function FirebaseApi() {
 			deletingTodolist,
 			updatingTodolistFavorite,
 			updatingTodolistCompleted,
+			allSubTodos,
+			addSubTodo,
+			updatingSubTodoCompleted,
+			updatingSubTodoEdit,
+			updatingSubTodoFavorite,
+			deletingSubTodo,
 		},
 	};
 }

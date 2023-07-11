@@ -43,20 +43,30 @@ export default function MainContent() {
 
 	return (
 		<>
-			<div className={`w-full h-full ${user.themeColor ? "text-white" : "text-black"}`}>
+			<div
+				className={`w-full h-full ${
+					user.themeColor ? "text-white" : "text-black"
+				}`}
+			>
 				<div className="main-content-overflow w-full h-full flex flex-col overflow-y-scroll justify-start items-center overflow-x-hidden">
 					<Banner />
 					<div className="flex flex-col justify-start items-center w-full p-10 gap-10">
 						<>
 							{todolistFolders.allTodoFolders
-								?.map((todolistFolder) => todolistFolder.userID === auth.currentUser.uid)
-								?.includes(true) && todolistFolders.allTodoFolders.length > 0 ? (
+								?.map(
+									(todolistFolder) =>
+										todolistFolder.userID === auth.currentUser.uid
+								)
+								?.includes(true) &&
+							todolistFolders.allTodoFolders.length > 0 ? (
 								<>
 									{clickedTodoFolder ? (
 										todolistFolders.allTodoFolders
 											?.filter(
 												(value) =>
-													clickedTodoFolder && value.id === clickedTodoFolder && value.userID === auth.currentUser.uid
+													clickedTodoFolder &&
+													value.id === clickedTodoFolder &&
+													value.userID === auth.currentUser.uid
 											)
 											?.map((todolistFolder) => {
 												return (
@@ -71,7 +81,11 @@ export default function MainContent() {
 									) : (
 										<>
 											<div className="w-full flex flex-col justify-start items-start gap-5">
-												<h1 className={`text-xl ${user.themeColor ? "text-[#555]" : "text-gray-400"}`}>
+												<h1
+													className={`text-xl ${
+														user.themeColor ? "text-[#555]" : "text-gray-400"
+													}`}
+												>
 													Click a Todo Folder
 												</h1>
 												<TodolistPlaceholder />
@@ -103,9 +117,16 @@ export default function MainContent() {
 									<div className="w-[90%] h-full relative flex flex-col gap-10 justify-start items-start">
 										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
 											<div className="flex flex-col justify-center items-center gap-2 text-center">
-												<h1 className="text-2xl font-semibold">Create a Folder!</h1>
-												<p className="">Ensure that the chosen appellation is to your liking.</p>
-												<button onClick={handleFolderCreation} className="base-btn">
+												<h1 className="text-2xl font-semibold">
+													Create a Folder!
+												</h1>
+												<p className="">
+													Ensure that the chosen appellation is to your liking.
+												</p>
+												<button
+													onClick={handleFolderCreation}
+													className="base-btn"
+												>
 													Create Folder
 												</button>
 											</div>
@@ -117,7 +138,11 @@ export default function MainContent() {
 						</>
 					</div>
 				</div>
-				{openFolderModal && createPortal(<FolderModal handleFolderCreation={handleFolderCreation} />, document.body)}
+				{openFolderModal &&
+					createPortal(
+						<FolderModal handleFolderCreation={handleFolderCreation} />,
+						document.body
+					)}
 			</div>
 		</>
 	);
