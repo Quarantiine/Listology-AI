@@ -160,7 +160,7 @@ export default function TodosContent({
 			<div
 				onMouseOver={() => setSubTodoButtonAppear(true)}
 				onMouseLeave={() => setSubTodoButtonAppear(false)}
-				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative overflow-hidden ${
+				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative ${
 					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
 				} ${
 					todolist.favorited

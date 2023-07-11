@@ -104,7 +104,7 @@ export default function SubTodos({
 	return (
 		<>
 			<div
-				className={`flex flex-col sm:flex-row justify-start items-center gap-5 rounded-lg w-[90%] lg:w-[95%] ml-auto overflow-hidden relative ${
+				className={`flex flex-col sm:flex-row justify-start items-center gap-5 rounded-lg w-[90%] lg:w-[95%] ml-auto relative ${
 					subTodo.favorited || todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
@@ -141,7 +141,7 @@ export default function SubTodos({
 
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
-				<div className="w-full h-auto flex justify-start items-center gap-3">
+				<div className="w-full h-auto flex justify-start items-center gap-3 overflow-hidden">
 					<button
 						className="min-w-[18px] max-w-[18px]"
 						onClick={handleCompletedTodo}
@@ -161,7 +161,7 @@ export default function SubTodos({
 						/>
 					</button>
 
-					{editTextActive && !subTodo.completed ? (
+					{editTextActive && !subTodo.completed && !todolist.completed ? (
 						<div className="flex justify-start items-center gap-2 w-full">
 							<textarea
 								ref={editTextActiveRef}
@@ -201,35 +201,38 @@ export default function SubTodos({
 								{subTodo.todo.replace(extractLink(), "")}
 								{shortenUrl(extractLink(), 0)}
 							</button>
+
 							{openLinkDropdown && (
-								<div
-									className={`link-dropdown absolute top-1/2 -translate-y-1/2 left-0 w-fit h-fit px-3 py-1 rounded-md border z-10 flex flex-col justify-center items-start gap-1 bg-[#0E51FF] text-white`}
-								>
-									<Link
-										href={extractLink()}
-										target="_blank"
-										onClick={() => {
-											handleLinkDropdown();
-										}}
-										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-											subTodo.completed || todolist.completed
-												? "line-through select-all"
-												: ""
-										}`}
+								<>
+									<div
+										className={`link-dropdown absolute top-0 left-0 w-fit h-fit px-3 py-1 rounded-md border z-50 flex flex-col justify-center items-start gap-1 bg-[#0E51FF] text-white`}
 									>
-										<span>Link</span>
-									</Link>
-									<button
-										onClick={handleEditTextActive}
-										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-											subTodo.completed || todolist.completed
-												? "line-through select-all"
-												: ""
-										}`}
-									>
-										<span>Edit</span>
-									</button>
-								</div>
+										<Link
+											href={extractLink()}
+											target="_blank"
+											onClick={() => {
+												handleLinkDropdown();
+											}}
+											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+												subTodo.completed || todolist.completed
+													? "line-through select-all"
+													: ""
+											}`}
+										>
+											<span>Link</span>
+										</Link>
+										<button
+											onClick={handleEditTextActive}
+											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+												subTodo.completed || todolist.completed
+													? "line-through select-all"
+													: ""
+											}`}
+										>
+											<span>Edit</span>
+										</button>
+									</div>
+								</>
 							)}
 						</>
 					) : (
