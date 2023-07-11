@@ -88,120 +88,124 @@ export default function SubTodos({
 	return (
 		<>
 			<div
-				className={`flex justify-start items-center gap-5 rounded-lg w-[95%] ml-auto overflow-hidden ${
-					subTodo.favorited
+				className={`flex flex-col sm:flex-row justify-start items-center gap-5 rounded-lg w-[90%] lg:w-[95%] ml-auto overflow-hidden relative ${
+					subTodo.favorited || todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
 							: "bg-[#eee]"
 						: ""
 				} ${closeSubTodos ? "h-0" : "px-2 py-1"}`}
 			>
-				<button
-					className="min-w-[18px] max-w-[18px]"
-					onClick={handleCompletedTodo}
-				>
-					<Image
-						className="w-auto h-[20px]"
-						src={
-							subTodo.completed || todolist.completed
-								? "/icons/completed-todo.svg"
-								: user.themeColor
-								? "/icons/checkbox-empty-white.svg"
-								: "/icons/checkbox-empty-black.svg"
-						}
-						alt=""
-						width={25}
-						height={25}
-					/>
-				</button>
+				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
-				{editTextActive && !subTodo.completed ? (
-					<div className="flex justify-start items-center gap-2 w-full">
-						<textarea
-							ref={editTextActiveRef}
-							onChange={(e) => setSubTodoText(e.target.value)}
-							onKeyDown={handleKeyedChangeEditText}
-							className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
-								user.themeColor
-									? "text-white bg-[#333]"
-									: "text-black bg-gray-200"
-							}`}
-							// onChange={(e) => setEditFolderTitle(e.target.value)}
-							type="text"
-							placeholder={subTodo.todo}
+				<div className="w-full h-auto flex justify-start items-center gap-3">
+					<button
+						className="min-w-[18px] max-w-[18px]"
+						onClick={handleCompletedTodo}
+					>
+						<Image
+							className="w-auto h-[20px]"
+							src={
+								subTodo.completed || todolist.completed
+									? "/icons/completed-todo.svg"
+									: user.themeColor
+									? "/icons/checkbox-empty-white.svg"
+									: "/icons/checkbox-empty-black.svg"
+							}
+							alt=""
+							width={25}
+							height={25}
 						/>
-						<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-							<button onClick={handleChangeEditText} className="base-btn">
-								change
-							</button>
-							<button
-								onClick={handleEditTextActive}
-								className="base-btn !bg-red-500"
-							>
-								cancel
-							</button>
+					</button>
+
+					{editTextActive && !subTodo.completed ? (
+						<div className="flex justify-start items-center gap-2 w-full">
+							<textarea
+								ref={editTextActiveRef}
+								onChange={(e) => setSubTodoText(e.target.value)}
+								onKeyDown={handleKeyedChangeEditText}
+								className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
+									user.themeColor
+										? "text-white bg-[#333]"
+										: "text-black bg-gray-200"
+								}`}
+								type="text"
+								placeholder={subTodo.todo}
+							/>
+							<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
+								<button onClick={handleChangeEditText} className="base-btn">
+									change
+								</button>
+								<button
+									onClick={handleEditTextActive}
+									className="base-btn !bg-red-500"
+								>
+									cancel
+								</button>
+							</div>
 						</div>
-					</div>
-				) : linkPattern.test(subTodo.todo) ? (
-					<>
-						<button
-							onClick={handleLinkDropdown}
-							title={"Go to link"}
-							className={`text-btn w-full text-start underline line-clamp-1 ${
+					) : linkPattern.test(subTodo.todo) ? (
+						<>
+							<button
+								onClick={handleLinkDropdown}
+								title={"Go to link"}
+								className={`text-btn w-full text-start underline line-clamp-1 ${
+									subTodo.completed || todolist.completed
+										? "line-through select-all"
+										: ""
+								}`}
+							>
+								{subTodo.todo.replace(extractLink(), "")}
+								{shortenUrl(extractLink(), 0)}
+							</button>
+							{openLinkDropdown && (
+								<div
+									className={`link-dropdown absolute top-1/2 -translate-y-1/2 left-0 w-fit h-fit px-3 py-1 rounded-md border z-10 flex flex-col justify-center items-start gap-1 bg-[#0E51FF] text-white`}
+								>
+									<Link
+										href={extractLink()}
+										target="_blank"
+										onClick={() => {
+											handleLinkDropdown();
+										}}
+										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+											subTodo.completed || todolist.completed
+												? "line-through select-all"
+												: ""
+										}`}
+									>
+										<span>Link</span>
+									</Link>
+									<button
+										onClick={handleEditTextActive}
+										className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+											subTodo.completed || todolist.completed
+												? "line-through select-all"
+												: ""
+										}`}
+									>
+										<span>Edit</span>
+									</button>
+								</div>
+							)}
+						</>
+					) : (
+						<p
+							onClick={handleEditTextActive}
+							className={`text-btn w-full ${
 								subTodo.completed || todolist.completed
 									? "line-through select-all"
 									: ""
 							}`}
 						>
-							{subTodo.todo.replace(extractLink(), "")}
-							{shortenUrl(extractLink(), 0)}
-						</button>
-						{openLinkDropdown && (
-							<div
-								className={`link-dropdown absolute top-1/2 -translate-y-1/2 left-0 w-fit h-fit px-3 py-1 rounded-md border z-10 flex flex-col justify-center items-start gap-1 bg-[#0E51FF] text-white`}
-							>
-								<Link
-									href={extractLink()}
-									target="_blank"
-									onClick={() => {
-										handleLinkDropdown();
-									}}
-									className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-										subTodo.completed || todolist.completed
-											? "line-through select-all"
-											: ""
-									}`}
-								>
-									<span>Link</span>
-								</Link>
-								<button
-									onClick={handleEditTextActive}
-									className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-										subTodo.completed || todolist.completed
-											? "line-through select-all"
-											: ""
-									}`}
-								>
-									<span>Edit</span>
-								</button>
-							</div>
-						)}
-					</>
-				) : (
-					<p
-						onClick={handleEditTextActive}
-						className={`text-btn w-full ${
-							subTodo.completed || todolist.completed
-								? "line-through select-all"
-								: ""
-						}`}
-					>
-						{subTodo.todo}
-					</p>
-				)}
+							{subTodo.todo}
+						</p>
+					)}
+				</div>
+
 				<div className="flex w-20 justify-end items-center gap-3 ml-auto">
 					<>
-						{subTodo.favorited ? (
+						{subTodo.favorited || todolist.favorited ? (
 							<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
 								<Image
 									onClick={handleFavorited}
