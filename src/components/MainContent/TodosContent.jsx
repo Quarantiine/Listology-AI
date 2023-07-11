@@ -25,7 +25,7 @@ export default function TodosContent({
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedTodo, setDeletedTodo] = useState("");
 	const deleteDelay = useRef();
-	const deleteDelayInterval = 6000;
+	const deleteDelayInterval = 5000;
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -135,7 +135,7 @@ export default function TodosContent({
 				createPortal(
 					<>
 						<div className="w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
-							<p></p>
+							<p>{}</p>
 							<p>
 								Undo Deletion of:{" "}
 								<span className="underline italic">{deletedTodo}</span>

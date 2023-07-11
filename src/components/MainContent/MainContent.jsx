@@ -36,10 +36,10 @@ export default function MainContent() {
 		setOpenFolderModal(!openFolderModal);
 	};
 
-	const handleTodolistFoldersCreation = () => {
-		setOpenTodolistSidebarModal(true);
-		setOpenTodolistSidebar(true);
-	};
+	// const handleTodolistFoldersCreation = () => {
+	// 	setOpenTodolistSidebarModal(true);
+	// 	setOpenTodolistSidebar(true);
+	// };
 
 	return (
 		<>

@@ -17,7 +17,7 @@ export default function SubTodos({
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedSubTodo, setDeletedSubTodo] = useState("");
 	const deleteDelay = useRef();
-	const deleteDelayInterval = 6000;
+	const deleteDelayInterval = 5000;
 	const editTextActiveRef = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
