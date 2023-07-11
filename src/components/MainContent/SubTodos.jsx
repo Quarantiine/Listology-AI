@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import shortenUrl from "shorten-url";
 
 export default function SubTodos({
@@ -9,10 +10,14 @@ export default function SubTodos({
 	user,
 	todoLists,
 	closeSubTodos,
+	deletedTodo,
 }) {
 	const [subTodoText, setSubTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
+	const [deletedSubTodo, setDeletedSubTodo] = useState("");
+	const deleteDelay = useRef();
+	const deleteDelayInterval = 6000;
 	const editTextActiveRef = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
@@ -57,7 +62,18 @@ export default function SubTodos({
 	};
 
 	const handleDeleteTodo = () => {
-		todoLists.deletingSubTodo(subTodo.id);
+		clearTimeout(deleteDelay.current);
+		setDeletedSubTodo(subTodo.todo);
+
+		deleteDelay.current = setTimeout(() => {
+			setDeletedSubTodo("");
+			todoLists.deletingSubTodo(subTodo.id);
+		}, deleteDelayInterval);
+	};
+
+	const handleCancelDeletion = () => {
+		setDeletedSubTodo("");
+		clearTimeout(deleteDelay.current);
 	};
 
 	function extractLink() {
@@ -94,8 +110,35 @@ export default function SubTodos({
 							? "bg-[#292929]"
 							: "bg-[#eee]"
 						: ""
-				} ${closeSubTodos ? "h-0" : "px-2 py-1"}`}
+				} ${closeSubTodos ? "h-0" : "px-2 py-1"} ${
+					deletedSubTodo === subTodo.todo ? "bg-[#ef2b2b51]" : ""
+				}`}
 			>
+				{deletedSubTodo === subTodo.todo &&
+					createPortal(
+						<>
+							<div className="w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
+								<p>
+									Undo Deletion of:{" "}
+									<span className="underline italic">{deletedSubTodo}</span>
+								</p>
+								<button
+									onClick={handleCancelDeletion}
+									className="flex justify-center items-center"
+								>
+									<Image
+										className="w-auto h-[25px]"
+										src={"/icons/undo.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								</button>
+							</div>
+						</>,
+						document.body
+					)}
+
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">

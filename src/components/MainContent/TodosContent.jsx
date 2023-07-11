@@ -6,6 +6,7 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import SubTodos from "../MainContent/SubTodos";
 import Link from "next/link";
 import shortenUrl from "shorten-url";
+import { createPortal } from "react-dom";
 
 export default function TodosContent({
 	todoLists,
@@ -22,6 +23,9 @@ export default function TodosContent({
 	const [subTodoButtonAppear, setSubTodoButtonAppear] = useState(false);
 	const [closeSubTodos, setCloseSubTodos] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
+	const [deletedTodo, setDeletedTodo] = useState("");
+	const deleteDelay = useRef();
+	const deleteDelayInterval = 6000;
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -64,14 +68,26 @@ export default function TodosContent({
 	};
 
 	const handleDeleteTodo = () => {
-		todoLists.deletingTodolist(todolist.id);
+		clearTimeout(deleteDelay.current);
+		setDeletedTodo(todolist.todo);
 
-		todoLists.allSubTodos
-			.filter(
-				(value) =>
-					value.todoID === todolist.id && auth.currentUser.uid === value.userID
-			)
-			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
+		deleteDelay.current = setTimeout(() => {
+			setDeletedTodo("");
+			todoLists.deletingTodolist(todolist.id);
+
+			todoLists.allSubTodos
+				.filter(
+					(value) =>
+						value.todoID === todolist.id &&
+						auth.currentUser.uid === value.userID
+				)
+				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
+		}, deleteDelayInterval);
+	};
+
+	const handleCancelDeletion = () => {
+		setDeletedTodo("");
+		clearTimeout(deleteDelay.current);
 	};
 
 	const handleCreateSubTodo = () => {
@@ -115,10 +131,38 @@ export default function TodosContent({
 
 	return (
 		<div className="flex flex-col w-full">
+			{deletedTodo === todolist.todo &&
+				createPortal(
+					<>
+						<div className="w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
+							<p></p>
+							<p>
+								Undo Deletion of:{" "}
+								<span className="underline italic">{deletedTodo}</span>
+							</p>
+							<button
+								onClick={handleCancelDeletion}
+								className="flex justify-center items-center"
+							>
+								<Image
+									className="w-auto h-[25px]"
+									src={"/icons/undo.svg"}
+									alt="undo"
+									width={30}
+									height={30}
+								/>
+							</button>
+						</div>
+					</>,
+					document.body
+				)}
+
 			<div
 				onMouseOver={() => setSubTodoButtonAppear(true)}
 				onMouseLeave={() => setSubTodoButtonAppear(false)}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative overflow-hidden ${
+					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
+				} ${
 					todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
@@ -371,6 +415,7 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
+										deletedTodo={deletedTodo}
 									/>
 								</React.Fragment>
 							);

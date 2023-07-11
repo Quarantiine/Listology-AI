@@ -13,14 +13,20 @@ export default function BannerImage({ user }) {
 				<TextContent user={user} />
 				<Image
 					className="object-cover object-center transition-all duration-500"
-					src={user.bannerImage ? user.bannerImage : "/images/default-banner-img.jpeg"}
+					src={
+						user.bannerImage
+							? user.bannerImage
+							: "/images/default-banner-img.jpeg"
+					}
 					alt="banner-image"
 					fill
 					priority="true"
 				/>
 				<div
 					className={`bg-gradient-to-l from-transparent ${
-						!user.themeColor ? "via-[rgba(255,255,255,0.5)] to-gray-100" : "via-[rgba(0,0,0,0.5)] to-[#111]"
+						!user.themeColor
+							? "via-[rgba(255,255,255,0.5)] to-gray-100"
+							: "via-[rgba(0,0,0,0.5)] to-[#111]"
 					} absolute top-0 left-0 transition-colors duration-300 w-full h-full`}
 				></div>
 				{<Fallback user={user} />}
@@ -44,9 +50,15 @@ const TextContent = ({ user }) => {
 							user.themeColor ? "text-white" : "text-[#333]"
 						} text-5xl sm:text-7xl font-medium`}
 					>
-						{user.username || "USERNAME"},
+						{user.username || "USERNAME"}
 					</h1>
-					<p className={`${user.themeColor ? "text-white" : "text-[#333]"} text-xl sm:text-3xl font-thin`}>Welcome</p>
+					<p
+						className={`${
+							user.themeColor ? "text-white" : "text-[#333]"
+						} text-xl sm:text-3xl font-thin`}
+					>
+						Welcome
+					</p>
 				</div>
 			</div>
 		</>
@@ -57,9 +69,9 @@ const Fallback = ({ user }) => {
 	return (
 		<>
 			<div
-				className={`transition-all duration-500 w-full ${user.bannerSize ? "min-h-[0px]" : "min-h-[230px]"} ${
-					user.themeColor ? "bg-[#333]" : "bg-gray-300"
-				}`}
+				className={`transition-all duration-500 w-full ${
+					user.bannerSize ? "min-h-[0px]" : "min-h-[230px]"
+				} ${user.themeColor ? "bg-[#333]" : "bg-gray-300"}`}
 			></div>
 		</>
 	);
