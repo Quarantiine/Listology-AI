@@ -117,7 +117,7 @@ export default function SubTodos({
 				{deletedSubTodo === subTodo.todo &&
 					createPortal(
 						<>
-							<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
+							<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 border border-red-300 text-white flex justify-center items-center text-center gap-4">
 								<p>
 									Undo Deletion of:{" "}
 									<span className="underline italic">{deletedSubTodo}</span>
