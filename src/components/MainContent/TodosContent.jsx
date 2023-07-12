@@ -134,7 +134,7 @@ export default function TodosContent({
 			{deletedTodo === todolist.todo &&
 				createPortal(
 					<>
-						<div className="w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
+						<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4 border border-red-300">
 							<p>{}</p>
 							<p>
 								Undo Deletion of:{" "}
@@ -159,7 +159,9 @@ export default function TodosContent({
 
 			<div
 				onMouseOver={() => setSubTodoButtonAppear(true)}
-				onMouseLeave={() => setSubTodoButtonAppear(false)}
+				onMouseLeave={() =>
+					openLinkDropdown ? null : setSubTodoButtonAppear(false)
+				}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative ${
 					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
 				} ${
@@ -212,7 +214,12 @@ export default function TodosContent({
 						}`}
 						onClick={null}
 					>
-						<div className="w-auto h-auto" onClick={handleCreateSubTodo}>
+						<div
+							className={`w-auto h-auto ${
+								deletedTodo ? "cursor-not-allowed opacity-50" : ""
+							}`}
+							onClick={deletedTodo ? null : handleCreateSubTodo}
+						>
 							{user.themeColor ? (
 								<Image
 									className="min-w-[20px] max-w-[20px] h-[20px]"
@@ -298,7 +305,7 @@ export default function TodosContent({
 									className={`text-btn w-full text-start underline line-clamp-1 ${
 										todolist.completed ? "line-through select-all" : ""
 									} ${
-										subTodoButtonAppear
+										subTodoButtonAppear || openLinkDropdown
 											? "translate-x-0"
 											: "translate-x-0 lg:-translate-x-8"
 									}`}
@@ -313,7 +320,7 @@ export default function TodosContent({
 								className={`text-btn w-full ${
 									todolist.completed ? "line-through select-all" : ""
 								} ${
-									subTodoButtonAppear
+									subTodoButtonAppear || openLinkDropdown
 										? "translate-x-0"
 										: "translate-x-0 lg:-translate-x-8"
 								}`}
@@ -381,7 +388,7 @@ export default function TodosContent({
 					.includes(true) && (
 					<button
 						onClick={handleCloseSubTodos}
-						className={`w-full h-fit p-2 rounded-md flex justify-start items-center gap-2 text-sm border ${
+						className={`w-full h-fit p-1 rounded-md flex justify-start items-center gap-2 text-sm border ${
 							user.themeColor
 								? "bg-[#333] border-[#555]"
 								: "bg-[#eee] border-[#ccc]"
