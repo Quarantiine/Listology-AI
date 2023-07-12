@@ -13,6 +13,7 @@ export default function TodosContent({
 	todolist,
 	folders,
 	todolistFolder,
+	subTodoSearchInput,
 }) {
 	const { auth } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
@@ -24,8 +25,10 @@ export default function TodosContent({
 	const [closeSubTodos, setCloseSubTodos] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedTodo, setDeletedTodo] = useState("");
+	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
+	const deletionSetInterval = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -67,11 +70,22 @@ export default function TodosContent({
 		todoLists.updatingTodolistFavorite(todolist.id, !todolist.favorited);
 	};
 
+	const handleDeletionInterval = () => {
+		clearInterval(deletionSetInterval.current);
+
+		deletionSetInterval.current = setInterval(() => {
+			setDeletionIntervals((deletionIntervals -= 1000));
+		}, 1000);
+	};
+
 	const handleDeleteTodo = () => {
-		clearTimeout(deleteDelay.current);
 		setDeletedTodo(todolist.todo);
+		clearTimeout(deleteDelay.current);
+
+		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
+			clearInterval(deletionSetInterval.current);
 			setDeletedTodo("");
 			todoLists.deletingTodolist(todolist.id);
 
@@ -87,6 +101,8 @@ export default function TodosContent({
 
 	const handleCancelDeletion = () => {
 		setDeletedTodo("");
+		setDeletionIntervals(5000);
+		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
 	};
 
@@ -135,7 +151,15 @@ export default function TodosContent({
 				createPortal(
 					<>
 						<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4 border border-red-300">
-							<p>{}</p>
+							<>
+								<p className="bg-red-500 border border-red-300 px-3 py-1 h-full sm:flex justify-center items-center text-center rounded-md absolute top-0 -left-10 hidden">
+									{deletionIntervals.toString().replace("000", "")}
+								</p>
+								<p className="bg-red-700 border border-red-300 px-3 py-1 h-full flex justify-center items-center text-center rounded-md sm:hidden">
+									{deletionIntervals.toString().replace("000", "")}
+								</p>
+							</>
+
 							<p>
 								Undo Deletion of:{" "}
 								<span className="underline italic">{deletedTodo}</span>
@@ -365,8 +389,12 @@ export default function TodosContent({
 							)}
 						</>
 						<Image
-							onClick={handleDeleteTodo}
-							className="w-auto h-[18px] text-btn"
+							onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
+							className={`w-auto h-[18px] ${
+								deletionIntervals !== 5000
+									? "cursor-not-allowed opacity-50"
+									: "text-btn"
+							}`}
 							src={"/icons/trash.svg"}
 							alt="delete todos"
 							width={20}
@@ -419,7 +447,12 @@ export default function TodosContent({
 					.map((subTodo) => {
 						if (
 							subTodo.folderID === clickedTodoFolder &&
-							subTodo.todoID === todolist.id
+							subTodo.todoID === todolist.id &&
+							subTodo.todo
+								.normalize("NFD")
+								.replace(/\p{Diacritic}/gu, "")
+								.toLowerCase()
+								.includes(subTodoSearchInput.toLowerCase())
 						) {
 							return (
 								<React.Fragment key={subTodo.id}>
@@ -429,7 +462,6 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
-										deletedTodo={deletedTodo}
 									/>
 								</React.Fragment>
 							);

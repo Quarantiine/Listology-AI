@@ -10,15 +10,16 @@ export default function SubTodos({
 	user,
 	todoLists,
 	closeSubTodos,
-	deletedTodo,
 }) {
 	const [subTodoText, setSubTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedSubTodo, setDeletedSubTodo] = useState("");
+	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const deleteDelay = useRef();
-	const deleteDelayInterval = 5000;
+	const deletionSetInterval = useRef();
 	const editTextActiveRef = useRef();
+	const deleteDelayInterval = 5000;
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -61,11 +62,22 @@ export default function SubTodos({
 		todoLists.updatingSubTodoFavorite(subTodo.id, !subTodo.favorited);
 	};
 
+	const handleDeletionInterval = () => {
+		clearInterval(deletionSetInterval.current);
+
+		deletionSetInterval.current = setInterval(() => {
+			setDeletionIntervals((deletionIntervals -= 1000));
+		}, 1000);
+	};
+
 	const handleDeleteTodo = () => {
-		clearTimeout(deleteDelay.current);
 		setDeletedSubTodo(subTodo.todo);
+		clearTimeout(deleteDelay.current);
+
+		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
+			clearInterval(deletionSetInterval.current);
 			setDeletedSubTodo("");
 			todoLists.deletingSubTodo(subTodo.id);
 		}, deleteDelayInterval);
@@ -73,6 +85,8 @@ export default function SubTodos({
 
 	const handleCancelDeletion = () => {
 		setDeletedSubTodo("");
+		setDeletionIntervals(5000);
+		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
 	};
 
@@ -104,13 +118,13 @@ export default function SubTodos({
 	return (
 		<>
 			<div
-				className={`flex flex-col sm:flex-row justify-start items-center gap-0 rounded-lg w-[90%] lg:w-[95%] ml-auto relative overflow-hidden ${
+				className={`flex flex-col sm:flex-row justify-start items-center gap-0 rounded-lg w-[90%] lg:w-[95%] ml-auto relative ${
 					subTodo.favorited || todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
 							: "bg-[#eee]"
 						: ""
-				} ${closeSubTodos ? "h-0" : "px-2 py-1"} ${
+				} ${closeSubTodos ? "h-0 overflow-hidden" : "px-2 py-1"} ${
 					deletedSubTodo === subTodo.todo ? "bg-[#ef2b2b51]" : ""
 				}`}
 			>
@@ -118,6 +132,15 @@ export default function SubTodos({
 					createPortal(
 						<>
 							<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 border border-red-300 text-white flex justify-center items-center text-center gap-4">
+								<>
+									<p className="bg-red-500 border border-red-300 px-3 py-1 h-full sm:flex justify-center items-center text-center rounded-md absolute top-0 -left-10 hidden">
+										{deletionIntervals.toString().replace("000", "")}
+									</p>
+									<p className="bg-red-700 border border-red-300 px-3 py-1 h-full flex justify-center items-center text-center rounded-md sm:hidden">
+										{deletionIntervals.toString().replace("000", "")}
+									</p>
+								</>
+
 								<p>
 									Undo Deletion of:{" "}
 									<span className="underline italic">{deletedSubTodo}</span>
@@ -284,8 +307,12 @@ export default function SubTodos({
 						)}
 					</>
 					<Image
-						onClick={handleDeleteTodo}
-						className="w-auto h-[18px] text-btn"
+						onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
+						className={`w-auto h-[18px] ${
+							deletionIntervals !== 5000
+								? "cursor-not-allowed opacity-50"
+								: "text-btn"
+						}`}
 						src={"/icons/trash.svg"}
 						alt="delete todos"
 						width={20}

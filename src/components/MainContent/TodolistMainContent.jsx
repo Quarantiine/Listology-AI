@@ -23,6 +23,8 @@ export default function TodolistMainContent({
 		useState(false);
 	const [windowWidthCheck, setWindowWidthCheck] = useState(false);
 	const [todoSearchInput, setTodoSearchInput] = useState("");
+	const [subSearchDropdown, setSubSearchDropdown] = useState(false);
+	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
 	const windowWidthCheckRef = useRef();
 
 	const handleWindowWidth = () => {
@@ -107,6 +109,10 @@ export default function TodolistMainContent({
 		);
 	};
 
+	const handleSubSearchBarDropdown = () => {
+		setSubSearchDropdown(!subSearchDropdown);
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
@@ -127,37 +133,72 @@ export default function TodolistMainContent({
 							/>
 						</div>
 					</button>
-					<div className="flex justify-start items-center gap-2">
-						{user.themeColor ? (
-							<Image
-								className="w-auto h-[20px]"
-								src={"/icons/search.svg"}
-								alt=""
-								width={20}
-								height={20}
-							/>
-						) : (
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 27 27"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
-									fill="black"
+					<div className="flex flex-col gap-2 justify-start items-end">
+						<div className="flex justify-start items-center gap-2">
+							{user.themeColor ? (
+								<Image
+									className="w-auto h-[16px]"
+									src={"/icons/search.svg"}
+									alt=""
+									width={20}
+									height={20}
 								/>
-							</svg>
-						)}
+							) : (
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 27 27"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+										fill="black"
+									/>
+								</svg>
+							)}
 
-						<input
-							type="text"
-							onChange={(e) => setTodoSearchInput(e.target.value)}
-							placeholder="Search Todos"
-							className={`px-2 py-1 rounded-md border outline-none text-sm ${
-								user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
-							}`}
-						/>
+							<div className="flex justify-center items-center gap-1 relative">
+								<input
+									type="text"
+									onChange={(e) => setTodoSearchInput(e.target.value)}
+									placeholder="Search Todos"
+									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm ${
+										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+									}`}
+								/>
+								<button
+									onClick={handleSubSearchBarDropdown}
+									className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
+								>
+									<Image
+										className={`w-auto h-[9px] ${
+											subSearchDropdown ? "rotate-180" : ""
+										}`}
+										src={
+											user.themeColor
+												? "/icons/arrow-white.svg"
+												: "/icons/arrow-black.svg"
+										}
+										alt=""
+										width={20}
+										height={20}
+									/>
+								</button>
+							</div>
+						</div>
+						{subSearchDropdown && (
+							<div className="flex justify-end items-center gap-2 w-full relative">
+								<input
+									type="text"
+									onChange={(e) => setSubTodoSearchInput(e.target.value)}
+									placeholder="Search Sub Todos"
+									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm ${
+										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+									}`}
+								/>
+								<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 bg-[#444] w-7 h-7 rounded-r-md"></div>
+							</div>
+						)}
 					</div>
 				</div>
 
@@ -304,32 +345,36 @@ export default function TodolistMainContent({
 				</div>
 
 				<div className={`flex flex-col justify-start items-start w-full gap-2`}>
-					{todoLists.allTodoLists
-						?.filter(
-							(value) =>
-								value.folderID === todolistFolder.id &&
-								value.userID === auth.currentUser.uid
-						)
-						?.map((todolist) => {
-							if (
-								todolist.folderID === clickedTodoFolder &&
-								todolist.todo
-									.normalize("NFD")
-									.replace(/\p{Diacritic}/gu, "")
-									.toLowerCase()
-									.includes(todoSearchInput.toLowerCase())
-							) {
-								return (
-									<TodosContent
-										key={todolist.id}
-										todoLists={todoLists}
-										todolist={todolist}
-										folders={folders}
-										todolistFolder={todolistFolder}
-									/>
-								);
-							}
-						})}
+					<>
+						{todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.folderID === todolistFolder.id &&
+									value.userID === auth.currentUser.uid
+							)
+							?.map((todolist) => {
+								if (
+									todolist.folderID === clickedTodoFolder &&
+									todolist.todo
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(todoSearchInput.toLowerCase())
+								) {
+									return (
+										<TodosContent
+											key={todolist.id}
+											todoLists={todoLists}
+											todolist={todolist}
+											folders={folders}
+											todolistFolder={todolistFolder}
+											subTodoSearchInput={subTodoSearchInput}
+										/>
+									);
+								}
+							})}
+					</>
+
 					{!todoLists.allTodoLists
 						?.filter((value) => value.userID === auth.currentUser.uid)
 						?.map((todolist) => todolist.folderID === clickedTodoFolder)
