@@ -134,7 +134,7 @@ export default function TodosContent({
 			{deletedTodo === todolist.todo &&
 				createPortal(
 					<>
-						<div className="w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
+						<div className="w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4">
 							<p>{}</p>
 							<p>
 								Undo Deletion of:{" "}
@@ -145,7 +145,7 @@ export default function TodosContent({
 								className="flex justify-center items-center"
 							>
 								<Image
-									className="w-auto h-[25px]"
+									className="w-auto min-h-[25px] min-w-[25px] max-h-[25px] max-w-[25px]"
 									src={"/icons/undo.svg"}
 									alt="undo"
 									width={30}
@@ -186,7 +186,7 @@ export default function TodosContent({
 					/>
 				)}
 
-				<div className="flex justify-center items-center gap-2">
+				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
 					<button
 						className="min-w-[18px] max-w-[18px]"
 						onClick={handleCompletedTodo}
@@ -207,8 +207,8 @@ export default function TodosContent({
 					</button>
 
 					<button
-						className={`pr-1 transition-all duration-300 ${
-							subTodoButtonAppear ? "opacity-100" : "opacity-0"
+						className={`lg:pr-1 transition-all duration-300 ${
+							subTodoButtonAppear ? "opacity-100" : "opacity-100 lg:opacity-0"
 						}`}
 						onClick={null}
 					>
@@ -235,7 +235,7 @@ export default function TodosContent({
 				</div>
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
-					<div className="w-full h-fit relative">
+					<div className="w-full h-fit relative flex justify-start items-center gap-3">
 						{editTextActive && !todolist.completed ? (
 							<div className="flex justify-start items-center gap-2 w-full">
 								<textarea
@@ -264,21 +264,9 @@ export default function TodosContent({
 							</div>
 						) : linkPattern.test(todolist.todo) ? (
 							<>
-								<button
-									onClick={handleLinkDropdown}
-									title={"Go to link"}
-									className={`text-btn w-full text-start underline line-clamp-1 ${
-										todolist.completed ? "line-through select-all" : ""
-									} ${
-										subTodoButtonAppear ? "translate-x-0" : "-translate-x-8"
-									}`}
-								>
-									{todolist.todo.replace(extractLink(), "")}
-									{shortenUrl(extractLink(), 0)}
-								</button>
 								{openLinkDropdown && (
 									<div
-										className={`link-dropdown absolute top-8 -left-[72px] w-fit h-fit px-3 py-1 rounded-md border z-10 flex flex-col justify-center items-start gap-1 bg-[#0E51FF] text-white`}
+										className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
 									>
 										<Link
 											href={extractLink()}
@@ -303,13 +291,32 @@ export default function TodosContent({
 										</button>
 									</div>
 								)}
+
+								<button
+									onClick={handleLinkDropdown}
+									title={"Go to link"}
+									className={`text-btn w-full text-start underline line-clamp-1 ${
+										todolist.completed ? "line-through select-all" : ""
+									} ${
+										subTodoButtonAppear
+											? "translate-x-0"
+											: "translate-x-0 lg:-translate-x-8"
+									}`}
+								>
+									{todolist.todo.replace(extractLink(), "")}
+									{shortenUrl(extractLink(), 0)}
+								</button>
 							</>
 						) : (
 							<p
 								onClick={handleEditTextActive}
 								className={`text-btn w-full ${
 									todolist.completed ? "line-through select-all" : ""
-								} ${subTodoButtonAppear ? "translate-x-0" : "-translate-x-8"}`}
+								} ${
+									subTodoButtonAppear
+										? "translate-x-0"
+										: "translate-x-0 lg:-translate-x-8"
+								}`}
 							>
 								{todolist.todo}
 							</p>
