@@ -254,7 +254,10 @@ export default function FirebaseApi() {
 		};
 
 		googleProvider = async () => {
-			const provider: AuthProvider = new GoogleAuthProvider();
+			const provider: GoogleAuthProvider = new GoogleAuthProvider();
+
+			provider.addScope("profile");
+			provider.addScope("email");
 
 			try {
 				await signInWithPopup(auth, provider).then(async (result) => {
@@ -419,6 +422,13 @@ export default function FirebaseApi() {
 			});
 		};
 
+		updatingFolderName = async (id: string, folderName: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				folderName: folderName,
+			});
+		};
+
 		updatingFolderEmoji = async (id: string, folderEmoji: string) => {
 			const docRef = doc(colRefTodoFolders, id);
 			await updateDoc(docRef, {
@@ -445,6 +455,7 @@ export default function FirebaseApi() {
 	const addingTodoFolder = TLFS.addingTodoFolder;
 	const deletingTodoFolder = TLFS.deletingTodoFolder;
 	const updatingCompletion = TLFS.updatingCompletion;
+	const updatingFolderName = TLFS.updatingFolderName;
 	const updatingFolderTitle = TLFS.updatingFolderTitle;
 	const updatingFolderEmoji = TLFS.updatingFolderEmoji;
 	const updatingFolderDescription = TLFS.updatingFolderDescription;
@@ -578,6 +589,7 @@ export default function FirebaseApi() {
 		},
 		todolistFolders: {
 			updatingFolderDescription,
+			updatingFolderName,
 			updatingFolderTitle,
 			updatingFolderEmoji,
 			updatingCompletion,

@@ -8,7 +8,7 @@ import { UserCredentialCtx } from "../../pages";
 
 const GalleryModal = ({ setOpenGalleryModal }) => {
 	const { setBannerImage } = useContext(StateCtx);
-	const { registration } = FirebaseApi();
+	const { auth, registration } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const [moreBtn, setMoreBtn] = useState(0);
 	const [pageNumber, setPageNumber] = useState(1);
@@ -17,7 +17,9 @@ const GalleryModal = ({ setOpenGalleryModal }) => {
 	const { data, isLoading, refetch } = useQuery(
 		"banner-pictures",
 		async () => {
-			return await axios.get(`https://picsum.photos/v2/list?page=${pageNumber}&limit=${30 + moreBtn}`);
+			return await axios.get(
+				`https://picsum.photos/v2/list?page=${pageNumber}&limit=${30 + moreBtn}`
+			);
 		},
 		{ refetchInterval: 100 }
 	);
@@ -76,11 +78,14 @@ const GalleryModal = ({ setOpenGalleryModal }) => {
 						})}
 						{moreBtn !== 70 && (
 							<div className="w-full flex justify-center items-center">
-								<button onClick={handleMoreBtn} className="base-btn w-full md:w-[50%] text-center">
+								<button
+									onClick={handleMoreBtn}
+									className="base-btn w-full md:w-[50%] text-center"
+								>
 									more
 								</button>
 							</div>
-						)}
+						)}{" "}
 					</div>
 				</div>
 				<div className="gallery-modal flex flex-col justify-center items-center gap-2 w-full h-fit mt-5">
@@ -104,7 +109,7 @@ const GalleryModal = ({ setOpenGalleryModal }) => {
 							>
 								next page
 							</button>
-						)}
+						)}{" "}
 					</div>
 				</div>
 			</div>
@@ -112,7 +117,14 @@ const GalleryModal = ({ setOpenGalleryModal }) => {
 	);
 };
 
-const AllImages = ({ image, index, setBannerImage, setOpenGalleryModal, user, registration }) => {
+const AllImages = ({
+	image,
+	index,
+	setBannerImage,
+	setOpenGalleryModal,
+	user,
+	registration,
+}) => {
 	const [loaded, setLoaded] = useState(false);
 	const clickedImageLoadingRef = useRef();
 	const { setClickedImageLoading } = useContext(StateCtx);
@@ -131,8 +143,12 @@ const AllImages = ({ image, index, setBannerImage, setOpenGalleryModal, user, re
 
 	return (
 		<>
-			<div className={`relative flex justify-center items-center w-[250px] h-fit`}>
-				{!loaded && <div className="absolute w-full h-full bg-gray-300 rounded-md animate-pulse"></div>}
+			<div
+				className={`relative flex justify-center items-center w-[250px] h-fit`}
+			>
+				{!loaded && (
+					<div className="absolute w-full h-full bg-gray-300 rounded-md animate-pulse"></div>
+				)}
 				<Image
 					onClick={handleImageBtn}
 					className="w-[270px] h-auto object-cover object-center rounded-md text-btn"

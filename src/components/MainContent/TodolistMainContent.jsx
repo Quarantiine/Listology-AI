@@ -14,7 +14,8 @@ export default function TodolistMainContent({
 	todolistFolders,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
-	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
+	const { clickedTodoFolder, clickedFolder, setClickedTodoFolder } =
+		useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
 	const [editFolderEmoji, setEditFolderEmoji] = useState(false);
@@ -25,6 +26,8 @@ export default function TodolistMainContent({
 	const [todoSearchInput, setTodoSearchInput] = useState("");
 	const [subSearchDropdown, setSubSearchDropdown] = useState(false);
 	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
+	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
+	const [completedTodos, setCompletedTodos] = useState(false);
 	const windowWidthCheckRef = useRef();
 
 	const handleWindowWidth = () => {
@@ -103,7 +106,11 @@ export default function TodolistMainContent({
 		todoLists.addingTodos(
 			todolistFolder.id,
 			folders.allFolders
-				?.filter((value) => value.folderName === clickedFolder)
+				?.filter(
+					(value) =>
+						value.folderName === clickedFolder &&
+						value.userID === auth.currentUser.uid
+				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName)
 		);
@@ -111,6 +118,33 @@ export default function TodolistMainContent({
 
 	const handleSubSearchBarDropdown = () => {
 		setSubSearchDropdown(!subSearchDropdown);
+	};
+
+	const handleTransferTodoFolderDropdown = (e) => {
+		e.preventDefault();
+		setOpenTransferDropdown(!openTransferDropdown);
+	};
+
+	useEffect(() => {
+		const closeTransferDropdown = (e) => {
+			if (!e.target.closest(".transfer-dropdown")) {
+				setOpenTransferDropdown(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTransferDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeTransferDropdown);
+	}, [openTransferDropdown]);
+
+	const handleTransferTodoFolder = (e, folderName) => {
+		e.preventDefault();
+		setClickedTodoFolder("");
+		todolistFolders.updatingFolderName(todolistFolder.id, folderName);
+	};
+
+	const handleCompletedTodosBtn = () => {
+		setCompletedTodos(!completedTodos);
 	};
 
 	return (
@@ -133,6 +167,7 @@ export default function TodolistMainContent({
 							/>
 						</div>
 					</button>
+
 					<div className="flex flex-col gap-2 justify-start items-end">
 						<div className="flex justify-start items-center gap-2">
 							{user.themeColor ? (
@@ -211,18 +246,57 @@ export default function TodolistMainContent({
 								}`}
 							>
 								{folders.allFolders
-									?.filter((value) => value.folderName === clickedFolder)
+									?.filter(
+										(value) =>
+											value.folderName === clickedFolder &&
+											value.userID === auth.currentUser.uid
+									)
 									.slice(0, 1)
 									?.map((folder) => (
-										<React.Fragment key={folder.id}>
-											<h3
-												className={`text-sm ${
-													user.themeColor ? "text-[#555]" : "text-gray-400"
-												}`}
+										<div className="relative text-black" key={folder.id}>
+											{openTransferDropdown && (
+												<div className="transfer-dropdown absolute top-6 left-0 min-w-[144px] h-fit px-3 py-2 bg-white rounded-md border z-10 text-sm flex flex-col justify-center items-start gap-1">
+													<h1 className="font-bold w-full">
+														Transfer Todo Folder to:
+													</h1>
+													{/* hello */}
+													{folders.allFolders
+														.filter(
+															(value) =>
+																value.folderName !== folder.folderName &&
+																value.userID === auth.currentUser.uid
+														)
+														.map((folders) => {
+															return (
+																<React.Fragment key={folders.id}>
+																	<button
+																		onClick={(e) => {
+																			handleTransferTodoFolder(
+																				e,
+																				e.target.textContent
+																			);
+																		}}
+																	>
+																		{folders.folderName}
+																	</button>
+																</React.Fragment>
+															);
+														})}
+												</div>
+											)}
+											<button
+												onClick={handleTransferTodoFolderDropdown}
+												className="transfer-dropdown flex justify-center items-center gap-2 relative"
 											>
-												{folder.folderName}
-											</h3>
-										</React.Fragment>
+												<h3
+													className={`text-sm ${
+														user.themeColor ? "text-[#555]" : "text-gray-400"
+													}`}
+												>
+													{folder.folderName}
+												</h3>
+											</button>
+										</div>
 									))}
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									{editFolderTitleMode ? (
@@ -343,6 +417,25 @@ export default function TodolistMainContent({
 						</div>
 					)}
 				</div>
+				<div className="flex justify-start items-center gap-3 w-full h-auto rounded-md ">
+					<button
+						onClick={handleCompletedTodosBtn}
+						className={`bg-[#0E51FF] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md w-fit ${
+							completedTodos ? "opacity-50" : "text-btn"
+						}`}
+					>
+						<p className="text-white">Completed Todos</p>
+						{completedTodos && (
+							<Image
+								className="min-w-[15px] min-h-[15px] rotate-[45deg]"
+								src={"/icons/plus-white.svg"}
+								alt="undo"
+								width={20}
+								height={20}
+							/>
+						)}
+					</button>
+				</div>
 
 				<div className={`flex flex-col justify-start items-start w-full gap-2`}>
 					<>
@@ -350,7 +443,8 @@ export default function TodolistMainContent({
 							?.filter(
 								(value) =>
 									value.folderID === todolistFolder.id &&
-									value.userID === auth.currentUser.uid
+									value.userID === auth.currentUser.uid &&
+									value.completed === completedTodos
 							)
 							?.map((todolist) => {
 								if (
@@ -377,14 +471,39 @@ export default function TodolistMainContent({
 
 					{!todoLists.allTodoLists
 						?.filter((value) => value.userID === auth.currentUser.uid)
-						?.map((todolist) => todolist.folderID === clickedTodoFolder)
-						.includes(true) && (
-						<div className="flex flex-col justify-start items-start gap-3 w-full">
-							<p className={user.themeColor ? "text-[#555]" : "text-gray-400"}>
-								No Added Todo List
-							</p>
-						</div>
-					)}
+						?.map(
+							(todolist) =>
+								todolist.folderID === clickedTodoFolder &&
+								todolist.completed === false
+						)
+						.includes(true) &&
+						!completedTodos && (
+							<div className="flex flex-col justify-start items-start gap-3 w-full">
+								<p
+									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+								>
+									No Added Todos
+								</p>
+							</div>
+						)}
+
+					{!todoLists.allTodoLists
+						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.map(
+							(todolist) =>
+								todolist.folderID === clickedTodoFolder &&
+								todolist.completed === true
+						)
+						.includes(true) &&
+						completedTodos && (
+							<div className="flex flex-col justify-start items-start gap-3 w-full">
+								<p
+									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+								>
+									No Completed Todos
+								</p>
+							</div>
+						)}
 				</div>
 			</div>
 		</>

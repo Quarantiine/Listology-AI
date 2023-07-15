@@ -1,3 +1,6 @@
 {
-	"cSpell.words": ["favorited"]
+	"cSpell.words": [
+		"favorited"
+	],
+	"reactSnippets.settings.prettierEnabled": true
 }

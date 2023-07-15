@@ -10,6 +10,7 @@ export default function SubTodos({
 	user,
 	todoLists,
 	closeSubTodos,
+	setCloseSubTodos,
 }) {
 	const [subTodoText, setSubTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
@@ -47,6 +48,7 @@ export default function SubTodos({
 
 	const handleChangeEditText = () => {
 		if (subTodoText) {
+			setSubTodoText("");
 			setEditTextActive(false);
 			todoLists.updatingSubTodoEdit(subTodo.id, subTodoText);
 		}
@@ -55,6 +57,7 @@ export default function SubTodos({
 	const handleKeyedChangeEditText = (e) => {
 		if (e.key === "Enter") {
 			handleChangeEditText();
+			setSubTodoText("");
 		}
 	};
 
@@ -128,40 +131,6 @@ export default function SubTodos({
 					deletedSubTodo === subTodo.todo ? "bg-[#ef2b2b51]" : ""
 				}`}
 			>
-				{deletedSubTodo === subTodo.todo &&
-					createPortal(
-						<>
-							<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 border border-red-300 text-white flex justify-center items-center text-center gap-4">
-								<>
-									<p className="bg-red-500 border border-red-300 px-3 py-1 h-full sm:flex justify-center items-center text-center rounded-md absolute top-0 -left-10 hidden">
-										{deletionIntervals.toString().replace("000", "")}
-									</p>
-									<p className="bg-red-700 border border-red-300 px-3 py-1 h-full flex justify-center items-center text-center rounded-md sm:hidden">
-										{deletionIntervals.toString().replace("000", "")}
-									</p>
-								</>
-
-								<p>
-									Undo Deletion of:{" "}
-									<span className="underline italic">{deletedSubTodo}</span>
-								</p>
-								<button
-									onClick={handleCancelDeletion}
-									className="flex justify-center items-center"
-								>
-									<Image
-										className="w-auto h-[25px]"
-										src={"/icons/undo.svg"}
-										alt="undo"
-										width={30}
-										height={30}
-									/>
-								</button>
-							</div>
-						</>,
-						document.body
-					)}
-
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">
@@ -217,13 +186,28 @@ export default function SubTodos({
 						</>
 					)}
 
-					{editTextActive && !subTodo.completed && !todolist.completed ? (
+					{!deletedSubTodo &&
+					editTextActive &&
+					!subTodo.completed &&
+					!todolist.completed ? (
 						<div className="flex justify-start items-center gap-2 w-full">
 							<textarea
 								ref={editTextActiveRef}
 								onChange={(e) => setSubTodoText(e.target.value)}
 								onKeyDown={handleKeyedChangeEditText}
-								className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
+								className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
+									user.themeColor
+										? "text-white bg-[#333]"
+										: "text-black bg-gray-200"
+								}`}
+								type="text"
+								placeholder={subTodo.todo}
+							/>
+							<input
+								ref={editTextActiveRef}
+								onChange={(e) => setSubTodoText(e.target.value)}
+								onKeyDown={handleKeyedChangeEditText}
+								className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
 									user.themeColor
 										? "text-white bg-[#333]"
 										: "text-black bg-gray-200"
@@ -273,8 +257,37 @@ export default function SubTodos({
 				</div>
 
 				<div className="flex w-[100px] justify-end items-center gap-3 ml-auto">
+					{deletedSubTodo === subTodo.todo && (
+						<>
+							<p className="text-lg">
+								{deletionIntervals.toString().replace("000", "")}
+							</p>
+							<button
+								onClick={handleCancelDeletion}
+								className="flex justify-center items-center"
+							>
+								{user.themeColor ? (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-white.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								) : (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-black.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								)}
+							</button>
+						</>
+					)}
 					<>
-						{subTodo.favorited || todolist.favorited ? (
+						{subTodo.favorited ? (
 							<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
 								<Image
 									onClick={handleFavorited}

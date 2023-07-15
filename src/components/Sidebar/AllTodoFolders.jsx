@@ -86,7 +86,11 @@ export default function AllTodoFolders({
 				className={`flex justify-between items-center gap-2 p-1 rounded-md w-full ${
 					clickedTodoFolder === todoFolder.id &&
 					folders.allFolders
-						?.filter((value) => value.folderName === clickedFolder)
+						?.filter(
+							(value) =>
+								value.folderName === clickedFolder &&
+								value.userID === auth.currentUser.uid
+						)
 						.slice(0, 1)
 						?.map((folder) => folder.folderName)
 						? user.themeColor
@@ -111,6 +115,7 @@ export default function AllTodoFolders({
 				>
 					{index + 1}
 				</p>
+
 				<button
 					onClick={handleClickedTodoFolder}
 					className="flex text-btn justify-start items-center gap-1 w-full text-start"
@@ -128,6 +133,7 @@ export default function AllTodoFolders({
 						)}
 					</h1>
 				</button>
+
 				<div className="flex justify-center items-center gap-2">
 					<button
 						onClick={() => {

@@ -18,13 +18,25 @@ export default function ThemeChanger() {
 					onClick={handleThemeChange}
 					className="flex justify-center items-center w-fit h-fit bg-[#fff] p-1 rounded-l-md text-btn"
 				>
-					<Image className="w-auto h-[18px]" src={"/icons/light-black.svg"} alt="" width={20} height={20} />
+					<Image
+						className="w-auto h-[18px]"
+						src={"/icons/light-black.svg"}
+						alt=""
+						width={20}
+						height={20}
+					/>
 				</div>
 				<div
 					onClick={handleThemeChange}
-					className="flex justify-center items-center w-fit h-fit bg-[#000] p-1 rounded-r-md text-btn"
+					className="flex justify-center items-center w-fit h-fit bg-[#222] p-1 rounded-r-md text-btn"
 				>
-					<Image className="w-auto h-[18px]" src={"/icons/dark-white.svg"} alt="" width={20} height={20} />
+					<Image
+						className="w-auto h-[18px]"
+						src={"/icons/dark-white.svg"}
+						alt=""
+						width={20}
+						height={20}
+					/>
 				</div>
 			</div>
 		</>

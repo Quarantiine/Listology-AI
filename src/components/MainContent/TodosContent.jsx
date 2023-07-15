@@ -22,7 +22,7 @@ export default function TodosContent({
 	const [editTextActive, setEditTextActive] = useState(false);
 	const editTextActiveRef = useRef();
 	const [subTodoButtonAppear, setSubTodoButtonAppear] = useState(false);
-	const [closeSubTodos, setCloseSubTodos] = useState(false);
+	const [closeSubTodos, setCloseSubTodos] = useState(true);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
@@ -55,6 +55,7 @@ export default function TodosContent({
 
 	const handleChangeEditText = () => {
 		if (todoText) {
+			setTodoText("");
 			setEditTextActive(false);
 			todoLists.updatingTodolist(todolist.id, todoText);
 		}
@@ -62,6 +63,7 @@ export default function TodosContent({
 
 	const handleKeyedChangeEditText = (e) => {
 		if (e.key === "Enter") {
+			setTodoText("");
 			handleChangeEditText();
 		}
 	};
@@ -107,9 +109,14 @@ export default function TodosContent({
 	};
 
 	const handleCreateSubTodo = () => {
+		setCloseSubTodos(false);
 		todoLists.addSubTodo(
 			folders.allFolders
-				?.filter((value) => value.folderName === clickedFolder)
+				?.filter(
+					(value) =>
+						value.folderName === clickedFolder &&
+						value.userID === auth.currentUser.uid
+				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName),
 			todolistFolder.id,
@@ -147,40 +154,6 @@ export default function TodosContent({
 
 	return (
 		<div className="flex flex-col w-full">
-			{deletedTodo === todolist.todo &&
-				createPortal(
-					<>
-						<div className="sm:max-w-[60%] w-[90%] sm:w-fit px-3 py-2 h-fit rounded-md absolute bottom-5 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-5 bg-red-500 text-white flex justify-center items-center text-center gap-4 border border-red-300">
-							<>
-								<p className="bg-red-500 border border-red-300 px-3 py-1 h-full sm:flex justify-center items-center text-center rounded-md absolute top-0 -left-10 hidden">
-									{deletionIntervals.toString().replace("000", "")}
-								</p>
-								<p className="bg-red-700 border border-red-300 px-3 py-1 h-full flex justify-center items-center text-center rounded-md sm:hidden">
-									{deletionIntervals.toString().replace("000", "")}
-								</p>
-							</>
-
-							<p>
-								Undo Deletion of:{" "}
-								<span className="underline italic">{deletedTodo}</span>
-							</p>
-							<button
-								onClick={handleCancelDeletion}
-								className="flex justify-center items-center"
-							>
-								<Image
-									className="w-auto min-h-[25px] min-w-[25px] max-h-[25px] max-w-[25px]"
-									src={"/icons/undo.svg"}
-									alt="undo"
-									width={30}
-									height={30}
-								/>
-							</button>
-						</div>
-					</>,
-					document.body
-				)}
-
 			<div
 				onMouseOver={() => setSubTodoButtonAppear(true)}
 				onMouseLeave={() =>
@@ -196,7 +169,7 @@ export default function TodosContent({
 						: ""
 				}`}
 			>
-				{todoLists?.allSubTodos
+				{/* {todoLists?.allSubTodos
 					?.filter(
 						(value) =>
 							value.folderID === todolistFolder.id &&
@@ -210,7 +183,13 @@ export default function TodosContent({
 							user.themeColor ? "bg-[#444]" : "bg-[#ccc]"
 						}`}
 					/>
-				)}
+				)} */}
+
+				<div
+					className={`absolute top-0 left-0 w-1 h-full ${
+						user.themeColor ? "bg-[#444]" : "bg-[#ccc]"
+					}`}
+				/>
 
 				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
 					<button
@@ -267,20 +246,34 @@ export default function TodosContent({
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
 					<div className="w-full h-fit relative flex justify-start items-center gap-3">
-						{editTextActive && !todolist.completed ? (
+						{!deletedTodo && editTextActive && !todolist.completed ? (
 							<div className="flex justify-start items-center gap-2 w-full">
-								<textarea
-									ref={editTextActiveRef}
-									onChange={(e) => setTodoText(e.target.value)}
-									onKeyDown={handleKeyedChangeEditText}
-									className={`input-todo-text border-none w-full rounded-md px-3 py-2 h-[40px] ${
-										user.themeColor
-											? "text-white bg-[#333]"
-											: "text-black bg-gray-200"
-									}`}
-									type="text"
-									placeholder={todolist.todo}
-								/>
+								<>
+									<textarea
+										ref={editTextActiveRef}
+										onChange={(e) => setTodoText(e.target.value)}
+										onKeyDown={handleKeyedChangeEditText}
+										className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
+											user.themeColor
+												? "text-white bg-[#333]"
+												: "text-black bg-gray-200"
+										}`}
+										type="text"
+										placeholder={todolist.todo}
+									/>
+									<input
+										ref={editTextActiveRef}
+										onChange={(e) => setTodoText(e.target.value)}
+										onKeyDown={handleKeyedChangeEditText}
+										className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
+											user.themeColor
+												? "text-white bg-[#333]"
+												: "text-black bg-gray-200"
+										}`}
+										type="text"
+										placeholder={todolist.todo}
+									/>
+								</>
 								<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
 									<button onClick={handleChangeEditText} className="base-btn">
 										change
@@ -355,6 +348,33 @@ export default function TodosContent({
 					</div>
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
+						{deletedTodo === todolist.todo && (
+							<>
+								<p>{deletionIntervals.toString().replace("000", "")}</p>
+								<button
+									onClick={handleCancelDeletion}
+									className="flex justify-center items-center rounded-full"
+								>
+									{user.themeColor ? (
+										<Image
+											className="min-w-[25px] min-h-[25px]"
+											src={"/icons/undo-white.svg"}
+											alt="undo"
+											width={30}
+											height={30}
+										/>
+									) : (
+										<Image
+											className="min-w-[25px] min-h-[25px]"
+											src={"/icons/undo-black.svg"}
+											alt="undo"
+											width={30}
+											height={30}
+										/>
+									)}
+								</button>
+							</>
+						)}
 						<>
 							{todolist.favorited ? (
 								<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
@@ -462,6 +482,7 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
+										setCloseSubTodos={setCloseSubTodos}
 									/>
 								</React.Fragment>
 							);
