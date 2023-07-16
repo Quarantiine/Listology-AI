@@ -47,3 +47,7 @@
 		display: none;
 	}
 }
+
+.handle-bar-overflow::-webkit-scrollbar {
+	width: 0px;
+}

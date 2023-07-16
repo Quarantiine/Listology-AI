@@ -7,12 +7,17 @@ import Misc from "./Misc";
 
 export default function Sidebar() {
 	const { user } = useContext(UserCredentialCtx);
-	const { closeSidebar, setCloseSidebar, openTodolistSidebar, handleCloseSidebar } = useContext(StateCtx);
+	const {
+		closeSidebar,
+		setCloseSidebar,
+		openTodolistSidebar,
+		handleCloseSidebar,
+	} = useContext(StateCtx);
 
 	useEffect(() => {
 		const handleCloseSidebar = (e) => {
 			if (!e.target.closest(".sidebar")) {
-				if (window.innerWidth < 768) {
+				if (window.innerWidth < 1024) {
 					setCloseSidebar(true);
 				}
 			}

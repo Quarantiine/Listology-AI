@@ -58,7 +58,7 @@ export default function Layout({ children }) {
 
 	useEffect(() => {
 		const mobileSidebar = () => {
-			if (window.innerWidth < 768) {
+			if (window.innerWidth < 1024) {
 				setCloseSidebar(true);
 			} else {
 				setCloseSidebar(false);

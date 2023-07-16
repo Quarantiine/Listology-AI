@@ -169,22 +169,6 @@ export default function TodosContent({
 						: ""
 				}`}
 			>
-				{/* {todoLists?.allSubTodos
-					?.filter(
-						(value) =>
-							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser.uid &&
-							value.todoID === todolist.id
-					)
-					.map((subTodo) => subTodo.todoID === todolist.id)
-					.includes(true) && (
-					<div
-						className={`absolute top-0 left-0 w-1 h-full ${
-							user.themeColor ? "bg-[#444]" : "bg-[#ccc]"
-						}`}
-					/>
-				)} */}
-
 				<div
 					className={`absolute top-0 left-0 w-1 h-full ${
 						user.themeColor ? "bg-[#444]" : "bg-[#ccc]"

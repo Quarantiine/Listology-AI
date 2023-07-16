@@ -28,6 +28,8 @@ export default function TodolistMainContent({
 	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
 	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
 	const [completedTodos, setCompletedTodos] = useState(false);
+	const [openTodoSearchInput, setOpenTodoSearchInput] = useState(false);
+	const [deleteCompletedTodo, setDeleteCompletedTodo] = useState(false);
 	const windowWidthCheckRef = useRef();
 
 	const handleWindowWidth = () => {
@@ -103,6 +105,7 @@ export default function TodolistMainContent({
 	};
 
 	const handleAddingTodos = () => {
+		setCompletedTodos(false);
 		todoLists.addingTodos(
 			todolistFolder.id,
 			folders.allFolders
@@ -147,95 +150,55 @@ export default function TodolistMainContent({
 		setCompletedTodos(!completedTodos);
 	};
 
+	const handleOpenTodoSearchInput = () => {
+		setOpenTodoSearchInput(!openTodoSearchInput);
+	};
+
+	const handleDeleteAll = () => {
+		todoLists.allTodoLists
+			.filter(
+				(value) =>
+					value.userID == auth.currentUser.uid &&
+					value.completed === true &&
+					value.folderID === clickedTodoFolder
+			)
+			.map((todos) => {
+				todoLists.allSubTodos
+					.filter(
+						(value) =>
+							value.todoID === todos.id &&
+							value.folderID === clickedTodoFolder &&
+							auth.currentUser.uid === value.userID
+					)
+					?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
+
+				return todoLists.deletingTodolist(todos.id);
+			});
+		setDeleteCompletedTodo(false);
+	};
+
+	useEffect(() => console.log());
+
+	const handleDeleteCompletedTodo = () => {
+		setDeleteCompletedTodo(!deleteCompletedTodo);
+	};
+
+	useEffect(() => {
+		const closeDeletedTodoModal = (e) => {
+			if (!e.target.closest(".delete-completed-todos")) {
+				setDeleteCompletedTodo(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeDeletedTodoModal);
+		return () =>
+			document.removeEventListener("mousedown", closeDeletedTodoModal);
+	}, [openTransferDropdown]);
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
 				{/* <Filters user={user} /> */}
-				<div className="flex flex-col sm:flex-row justify-start items-start gap-5">
-					<button
-						onClick={handleAddingTodos}
-						className="base-btn w-fit flex justify-start items-center gap-3"
-					>
-						<h1 className={`text-white`}>Add Todo</h1>
-						<div className="flex justify-center items-center relative">
-							<Image
-								className="w-auto h-[20px]"
-								src={"/icons/plus-white.svg"}
-								alt=""
-								width={20}
-								height={20}
-							/>
-						</div>
-					</button>
-
-					<div className="flex flex-col gap-2 justify-start items-end">
-						<div className="flex justify-start items-center gap-2">
-							{user.themeColor ? (
-								<Image
-									className="w-auto h-[16px]"
-									src={"/icons/search.svg"}
-									alt=""
-									width={20}
-									height={20}
-								/>
-							) : (
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 27 27"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
-										fill="black"
-									/>
-								</svg>
-							)}
-
-							<div className="flex justify-center items-center gap-1 relative">
-								<input
-									type="text"
-									onChange={(e) => setTodoSearchInput(e.target.value)}
-									placeholder="Search Todos"
-									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm ${
-										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
-									}`}
-								/>
-								<button
-									onClick={handleSubSearchBarDropdown}
-									className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
-								>
-									<Image
-										className={`w-auto h-[9px] ${
-											subSearchDropdown ? "rotate-180" : ""
-										}`}
-										src={
-											user.themeColor
-												? "/icons/arrow-white.svg"
-												: "/icons/arrow-black.svg"
-										}
-										alt=""
-										width={20}
-										height={20}
-									/>
-								</button>
-							</div>
-						</div>
-						{subSearchDropdown && (
-							<div className="flex justify-end items-center gap-2 w-full relative">
-								<input
-									type="text"
-									onChange={(e) => setSubTodoSearchInput(e.target.value)}
-									placeholder="Search Sub Todos"
-									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm ${
-										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
-									}`}
-								/>
-								<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 bg-[#444] w-7 h-7 rounded-r-md"></div>
-							</div>
-						)}
-					</div>
-				</div>
 
 				<div className="w-full h-auto flex flex-col gap-2 justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
@@ -417,11 +380,134 @@ export default function TodolistMainContent({
 						</div>
 					)}
 				</div>
-				<div className="flex justify-start items-center gap-3 w-full h-auto rounded-md ">
+
+				<div className="handle-bar-overflow flex flex-col md:flex-row justify-start items-center gap-5 md:gap-5">
+					<div className="flex flex-col gap-2 justify-center items-center w-full md:w-fit relative">
+						<div className="flex justify-start items-center gap-2 w-full md:w-fit">
+							{user.themeColor ? (
+								<button onClick={handleOpenTodoSearchInput}>
+									<Image
+										className="min-h-[16px] min-w-[16px] cursor-default md:cursor-pointer"
+										src={"/icons/search.svg"}
+										alt=""
+										width={20}
+										height={20}
+									/>
+								</button>
+							) : (
+								<button onClick={handleOpenTodoSearchInput}>
+									<svg
+										className="min-h-[16px] min-w-[16px] cursor-default md:cursor-pointer"
+										width="16"
+										height="16"
+										viewBox="0 0 27 27"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+											fill="black"
+										/>
+									</svg>
+								</button>
+							)}
+
+							{openTodoSearchInput && (
+								<div className="hidden md:flex justify-center items-center gap-1 relative h-fit w-full">
+									<input
+										type="text"
+										onChange={(e) => setTodoSearchInput(e.target.value)}
+										placeholder="Search Todos"
+										className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
+											user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+										}`}
+									/>
+									<button
+										onClick={handleSubSearchBarDropdown}
+										className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
+									>
+										<Image
+											className={`w-auto h-[9px] ${
+												subSearchDropdown ? "rotate-180" : ""
+											}`}
+											src={
+												user.themeColor
+													? "/icons/arrow-white.svg"
+													: "/icons/arrow-black.svg"
+											}
+											alt=""
+											width={20}
+											height={20}
+										/>
+									</button>
+								</div>
+							)}
+
+							<div
+								className={`flex md:hidden justify-center items-center gap-1 relative h-fit w-full`}
+							>
+								<input
+									type="text"
+									onChange={(e) => setTodoSearchInput(e.target.value)}
+									placeholder="Search Todos"
+									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
+										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+									}`}
+								/>
+								<button
+									onClick={handleSubSearchBarDropdown}
+									className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
+								>
+									<Image
+										className={`w-auto h-[9px] ${
+											subSearchDropdown ? "rotate-180" : ""
+										}`}
+										src={
+											user.themeColor
+												? "/icons/arrow-white.svg"
+												: "/icons/arrow-black.svg"
+										}
+										alt=""
+										width={20}
+										height={20}
+									/>
+								</button>
+							</div>
+						</div>
+						{subSearchDropdown && (
+							<div className="flex z-10 justify-end items-center gap-2 w-full absolute top-9 left-0">
+								<input
+									type="text"
+									onChange={(e) => setSubTodoSearchInput(e.target.value)}
+									placeholder="Search Sub Todos"
+									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
+										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+									}`}
+								/>
+								<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 bg-[#444] w-7 h-7 rounded-r-md"></div>
+							</div>
+						)}
+					</div>
+
+					<button
+						onClick={handleAddingTodos}
+						className="base-btn w-full md:w-auto md:min-w-[130px] flex justify-center items-center gap-3"
+					>
+						<h1 className={`text-white`}>Add Todo</h1>
+						<div className="flex justify-center items-center relative">
+							<Image
+								className="w-auto h-[20px]"
+								src={"/icons/plus-white.svg"}
+								alt=""
+								width={20}
+								height={20}
+							/>
+						</div>
+					</button>
+
 					<button
 						onClick={handleCompletedTodosBtn}
-						className={`bg-[#0E51FF] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md w-fit ${
-							completedTodos ? "opacity-50" : "text-btn"
+						className={`bg-[#0E51FF] w-full md:w-auto md:min-w-[180px] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md ${
+							completedTodos ? "opacity-50 border border-[#94b4ff]" : "text-btn"
 						}`}
 					>
 						<p className="text-white">Completed Todos</p>
@@ -436,6 +522,45 @@ export default function TodolistMainContent({
 						)}
 					</button>
 				</div>
+
+				{completedTodos && (
+					<>
+						<button
+							onClick={handleDeleteCompletedTodo}
+							className={`bg-red-500 w-full md:w-auto md:min-w-[180px] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md`}
+						>
+							<p className="text-white">Delete All</p>
+						</button>
+						{deleteCompletedTodo &&
+							createPortal(
+								<div className="bg-[rgba(0,0,0,0.7)] z-50 flex justify-center items-center w-full h-full top-0 left-0 absolute text-center px-10">
+									<div className="delete-completed-todos w-fit h-fit p-6 bg-white rounded-md flex flex-col justify-center items-center gap-3">
+										<div className="flex flex-col justify-center items-center gap-2">
+											<h1 className="text-2xl font-semibold">
+												Are you sure you want to delete?
+											</h1>
+											<p>Your completed todo category will be gone forever</p>
+										</div>
+										<div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full">
+											<button
+												onClick={handleDeleteAll}
+												className="px-2 py-1 rounded-md bg-red-500 w-full text-white"
+											>
+												Delete All
+											</button>
+											<button
+												onClick={handleDeleteCompletedTodo}
+												className="px-2 py-1 rounded-md bg-[#0E51FF] w-full text-white"
+											>
+												Cancel
+											</button>
+										</div>
+									</div>
+								</div>,
+								document.body
+							)}
+					</>
+				)}
 
 				<div className={`flex flex-col justify-start items-start w-full gap-2`}>
 					<>
