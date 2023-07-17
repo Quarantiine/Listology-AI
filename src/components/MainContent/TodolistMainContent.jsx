@@ -249,9 +249,9 @@ export default function TodolistMainContent({
 														})}
 												</div>
 											)}
-											<button
+											<div
 												onClick={handleTransferTodoFolderDropdown}
-												className="transfer-dropdown flex justify-center items-center gap-2 relative"
+												className="transfer-dropdown text-btn flex justify-center items-center gap-2 relative"
 											>
 												<h3
 													className={`text-sm ${
@@ -260,7 +260,7 @@ export default function TodolistMainContent({
 												>
 													{folder.folderName}
 												</h3>
-											</button>
+											</div>
 										</div>
 									))}
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
@@ -590,6 +590,7 @@ export default function TodolistMainContent({
 											folders={folders}
 											todolistFolder={todolistFolder}
 											subTodoSearchInput={subTodoSearchInput}
+											todoSearchInput={todoSearchInput}
 										/>
 									);
 								}

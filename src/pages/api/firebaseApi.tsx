@@ -551,6 +551,14 @@ export default function FirebaseApi() {
 
 			await deleteDoc(docRef);
 		};
+
+		updatingTodoDifficulty = async (id: string, difficulty: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				difficulty: difficulty || "",
+			});
+		};
 	}
 	const TLS = new TodoListSystem();
 	const addingTodos = TLS.addingTodos;
@@ -563,6 +571,7 @@ export default function FirebaseApi() {
 	const updatingSubTodoEdit = TLS.updatingSubTodoEdit;
 	const updatingSubTodoFavorite = TLS.updatingSubTodoFavorite;
 	const deletingSubTodo = TLS.deletingSubTodo;
+	const updatingTodoDifficulty = TLS.updatingTodoDifficulty;
 
 	return {
 		auth,
@@ -610,6 +619,7 @@ export default function FirebaseApi() {
 			updatingSubTodoEdit,
 			updatingSubTodoFavorite,
 			deletingSubTodo,
+			updatingTodoDifficulty,
 		},
 	};
 }

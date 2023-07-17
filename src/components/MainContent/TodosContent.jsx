@@ -1,5 +1,11 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+	useContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from "react";
 import { UserCredentialCtx } from "../../pages";
 import { StateCtx } from "../Layout";
 import FirebaseApi from "../../pages/api/firebaseApi";
@@ -7,16 +13,30 @@ import SubTodos from "../MainContent/SubTodos";
 import Link from "next/link";
 import shortenUrl from "shorten-url";
 
+const moreReducer = (state, { payload, type }) => {
+	switch (type) {
+		case "more-dropdown":
+			return {
+				...state,
+				[payload.key]: payload.value,
+			};
+		default:
+			console.log(`Unknown Value/Type`);
+	}
+};
+
 export default function TodosContent({
-	todoLists,
 	todolist,
 	folders,
 	todolistFolder,
 	subTodoSearchInput,
 }) {
-	const { auth } = FirebaseApi();
+	const { auth, todoLists } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
+	const [moreState, moreDispatch] = useReducer(moreReducer, {
+		todoDropdown: "",
+	});
 	const [todoText, setTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
 	const editTextActiveRef = useRef();
@@ -25,6 +45,7 @@ export default function TodosContent({
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
+	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
@@ -151,6 +172,79 @@ export default function TodosContent({
 		return () => document.removeEventListener("mousedown", closeLinkDropdown);
 	}, []);
 
+	const handleOpenMoreDropdown = () => {
+		setOpenMoreDropdown(!openMoreDropdown);
+
+		if (openMoreDropdown) {
+			moreDispatch({
+				type: "more-dropdown",
+				payload: {
+					key: "todoDropdown",
+					payload: false,
+				},
+			});
+		}
+	};
+
+	useEffect(() => {
+		const closeMoreDropdown = (e) => {
+			if (!e.target.closest(".more-dropdown")) {
+				setOpenMoreDropdown(false);
+				moreDispatch({
+					type: "more-dropdown",
+					payload: {
+						key: "todoDropdown",
+						payload: false,
+					},
+				});
+			}
+		};
+
+		document.addEventListener("mousedown", closeMoreDropdown);
+		return () => document.removeEventListener("mousedown", closeMoreDropdown);
+	}, []);
+
+	const handleMoreDispatch = (key, value) => {
+		moreDispatch({
+			type: "more-dropdown",
+			payload: {
+				key: key,
+				value: value,
+			},
+		});
+	};
+
+	const createdTimeText = () => {
+		const timeMonths = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
+		const timeMiliSec = todolist.createdTime?.seconds * 1000;
+		const date = new Date(timeMiliSec);
+		const month = date.getMonth();
+		const day = date.getUTCDate();
+
+		return `${timeMonths[month]}, ${day}`;
+	};
+	createdTimeText();
+
+	const handleSetDifficulty = (difficulty) => {
+		setSubTodoButtonAppear(false);
+		setOpenMoreDropdown(false);
+		todoLists.updatingTodoDifficulty(todolist.id, difficulty);
+	};
+
 	return (
 		<div className="flex flex-col w-full">
 			<div
@@ -170,7 +264,15 @@ export default function TodosContent({
 			>
 				<div
 					className={`absolute top-0 left-0 w-1 h-full ${
-						user.themeColor ? "bg-[#444]" : "bg-[#ccc]"
+						todolist && todolist.difficulty === "Hard"
+							? "bg-red-500"
+							: todolist.difficulty === "Intermediate"
+							? "bg-yellow-500"
+							: todolist.difficulty === "Easy"
+							? "bg-green-500"
+							: user.themeColor
+							? "bg-[#444]"
+							: "bg-[#ccc]"
 					}`}
 				/>
 
@@ -198,13 +300,12 @@ export default function TodosContent({
 						className={`lg:pr-1 transition-all duration-300 ${
 							subTodoButtonAppear ? "opacity-100" : "opacity-100 lg:opacity-0"
 						}`}
-						onClick={null}
+						onClick={deletedTodo ? null : handleCreateSubTodo}
 					>
 						<div
 							className={`w-auto h-auto ${
 								deletedTodo ? "cursor-not-allowed opacity-50" : ""
 							}`}
-							onClick={deletedTodo ? null : handleCreateSubTodo}
 						>
 							{user.themeColor ? (
 								<Image
@@ -358,6 +459,91 @@ export default function TodosContent({
 								</button>
 							</>
 						)}
+
+						{!editTextActive && deletionIntervals === 5000 && (
+							<div className="w-fit h-auto relative">
+								<button className="min-w-[25px] text-btn relative flex justify-center items-center">
+									<Image
+										onClick={handleOpenMoreDropdown}
+										className="w-auto h-[25px] text-btn"
+										src={
+											user.themeColor
+												? "/icons/more-white.svg"
+												: "/icons/more-black.svg"
+										}
+										alt="favorite"
+										width={30}
+										height={30}
+									/>
+								</button>
+
+								{openMoreDropdown && (
+									<div
+										onMouseLeave={() => setSubTodoButtonAppear(false)}
+										className="more-dropdown absolute w-[130px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 left-0 bg-white text-sm text-black border shadow-md z-10"
+									>
+										<button
+											onClick={(e) =>
+												handleMoreDispatch("todoDropdown", e.target.textContent)
+											}
+											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-t-md"
+										>
+											Todo Difficulty
+										</button>
+										<button
+											onClick={(e) =>
+												handleMoreDispatch("todoDropdown", e.target.textContent)
+											}
+											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+										>
+											Time Created
+										</button>
+
+										{moreState.todoDropdown && (
+											<div className="absolute top-16 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+												{moreState.todoDropdown === "Todo Difficulty" && (
+													<div className="flex flex-col justify-center items-center w-full">
+														<button
+															onClick={(e) =>
+																handleSetDifficulty(e.target.textContent)
+															}
+															className="px-2 py-1 hover:bg-green-500 hover:text-white w-full rounded-t-md"
+														>
+															Easy
+														</button>
+														<button
+															onClick={(e) =>
+																handleSetDifficulty(e.target.textContent)
+															}
+															className="px-2 py-1 hover:bg-yellow-500 hover:text-white w-full"
+														>
+															Intermediate
+														</button>
+														<button
+															onClick={(e) =>
+																handleSetDifficulty(e.target.textContent)
+															}
+															className="px-2 py-1 hover:bg-red-500 hover:text-white w-full rounded-b-md"
+														>
+															Hard
+														</button>
+													</div>
+												)}
+
+												{moreState.todoDropdown === "Time Created" && (
+													<div className="flex flex-col justify-center items-center gap-1 w-full text-center">
+														<p className="px-2 py-1 w-full rounded-t-md">
+															{createdTimeText()}
+														</p>
+													</div>
+												)}
+											</div>
+										)}
+									</div>
+								)}
+							</div>
+						)}
+
 						<>
 							{todolist.favorited ? (
 								<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
@@ -391,6 +577,7 @@ export default function TodosContent({
 								</button>
 							)}
 						</>
+
 						<Image
 							onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
 							className={`w-auto h-[18px] ${
@@ -465,7 +652,6 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
-										setCloseSubTodos={setCloseSubTodos}
 									/>
 								</React.Fragment>
 							);

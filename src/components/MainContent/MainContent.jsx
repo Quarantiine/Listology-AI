@@ -123,7 +123,7 @@ export default function MainContent() {
 														}`}
 														type="search"
 														name="search"
-														placeholder="Search by Folder Title"
+														placeholder="Search by todo folders, main folder titles"
 														ref={searchQueryRef}
 														onChange={(e) => setSearchQuery(e.target.value)}
 														value={searchQuery}
@@ -138,6 +138,11 @@ export default function MainContent() {
 														.map((todoFolder) => {
 															if (
 																todoFolder.folderTitle
+																	.normalize("NFD")
+																	.replace(/\p{Diacritic}/gu, "")
+																	.toLowerCase()
+																	.includes(searchQuery.toLowerCase()) ||
+																todoFolder.folderName
 																	.normalize("NFD")
 																	.replace(/\p{Diacritic}/gu, "")
 																	.toLowerCase()
@@ -225,8 +230,6 @@ const TodoFoldersDashboard = ({
 	auth,
 }) => {
 	const { todoLists } = FirebaseApi();
-
-	// useEffect(() => console.log());
 
 	return (
 		<>
