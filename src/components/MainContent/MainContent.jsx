@@ -293,15 +293,21 @@ const TodoFoldersDashboard = ({
 						</>
 					)}
 					<span>
-						{
-							todoLists.allTodoLists
-								?.filter(
-									(value) =>
-										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser.uid
-								)
-								?.map((todo) => todo).length
-						}
+						{todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.folderID === todoFolder.id &&
+									value.userID === auth.currentUser.uid
+							)
+							?.map((todo) => todo).length === 0
+							? "No Todos"
+							: todoLists.allTodoLists
+									?.filter(
+										(value) =>
+											value.folderID === todoFolder.id &&
+											value.userID === auth.currentUser.uid
+									)
+									?.map((todo) => todo).length}
 					</span>
 					{todoLists.allTodoLists
 						?.filter(
@@ -312,6 +318,14 @@ const TodoFoldersDashboard = ({
 						)
 						?.map((todo) => todo).length !== 0 ? (
 						<span>Todos Completed</span>
+					) : todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.folderID === todoFolder.id &&
+									value.userID === auth.currentUser.uid
+							)
+							?.map((todo) => todo).length === 0 ? (
+						""
 					) : todoLists.allTodoLists
 							?.filter(
 								(value) =>
