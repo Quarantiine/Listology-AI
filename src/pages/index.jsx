@@ -29,8 +29,9 @@ export default function Home() {
 				</div>
 			</>
 			{auth.currentUser &&
-				registration.allusers?.map((user) => {
-					if (auth.currentUser?.uid === user.userID) {
+				registration.allusers
+					.filter((value) => auth.currentUser?.uid === value.userID)
+					?.map((user) => {
 						return (
 							<React.Fragment key={user.id}>
 								<div
@@ -46,8 +47,7 @@ export default function Home() {
 								</UserCredentialCtx.Provider>
 							</React.Fragment>
 						);
-					}
-				})}
+					})}
 		</>
 	);
 }
