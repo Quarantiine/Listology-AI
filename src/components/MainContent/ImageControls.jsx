@@ -61,17 +61,27 @@ export default function ImageControls() {
 
 				<button
 					onClick={handleIncreaseBannerSize}
-					className={`flex justify-center items-center w-fit h-fit bg-[#fff] p-2 text-btn ${
+					className={`flex justify-center items-center w-fit h-fit  p-2 text-btn ${
 						user.bannerSize ? "rounded-md" : "rounded-l-md"
-					}`}
+					} ${user.themeColor ? "bg-[#fff]" : "bg-[#333]"}`}
 				>
-					<Image
-						className="w-auto h-[18px]"
-						src={"/icons/increase-size-black.svg"}
-						alt="increase-image"
-						width={20}
-						height={20}
-					/>
+					{user.themeColor ? (
+						<Image
+							className="w-auto h-[18px]"
+							src={"/icons/increase-size-black.svg"}
+							alt="increase-image"
+							width={20}
+							height={20}
+						/>
+					) : (
+						<Image
+							className="w-auto h-[18px]"
+							src={"/icons/increase-size-white.svg"}
+							alt="increase-image"
+							width={20}
+							height={20}
+						/>
+					)}
 				</button>
 
 				{!user.bannerSize && (
