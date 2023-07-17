@@ -30,7 +30,7 @@ export default function Home() {
 			</>
 			{auth.currentUser &&
 				registration.allusers
-					.filter((value) => auth.currentUser?.uid === value.userID)
+					?.filter((value) => auth.currentUser?.uid === value.userID)
 					?.map((user) => {
 						return (
 							<React.Fragment key={user.id}>
