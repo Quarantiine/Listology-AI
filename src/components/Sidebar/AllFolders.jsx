@@ -95,7 +95,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 									? "/icons/checkbox-empty-white.svg"
 									: "/icons/checkbox-empty-black.svg"
 							}
-							alt="selector"
+							alt="completed"
 							width={20}
 							height={20}
 						/>

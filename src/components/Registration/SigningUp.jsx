@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Providers from "./Providers";
 
-const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationChange }) => {
+const SigningUp = ({
+	handleInputChanging,
+	handleSubmitBtn,
+	handleRegistrationChange,
+}) => {
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
 	return (
@@ -34,7 +38,10 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 							/>
 						</div>
 
-						<button onClick={handleSubmitBtn} className="px-3 py-1 rounded-md base-bg text-white w-full">
+						<button
+							onClick={handleSubmitBtn}
+							className="px-3 py-1 rounded-md base-bg text-white w-full"
+						>
 							Sign Up
 						</button>
 					</div>
@@ -53,8 +60,12 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}
 								className="absolute top-9 right-3 cursor-pointer"
-								src={passwordVisible ? "/icons/visibility.svg" : "/icons/visibility_off.svg"}
-								alt=""
+								src={
+									passwordVisible
+										? "/icons/visibility.svg"
+										: "/icons/visibility_off.svg"
+								}
+								alt="visibility"
 								width={18}
 								height={18}
 							/>
@@ -75,8 +86,12 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}
 								className="absolute top-9 right-3 cursor-pointer"
-								src={passwordVisible ? "/icons/visibility.svg" : "/icons/visibility_off.svg"}
-								alt=""
+								src={
+									passwordVisible
+										? "/icons/visibility.svg"
+										: "/icons/visibility_off.svg"
+								}
+								alt="visibility"
 								width={18}
 								height={18}
 							/>
@@ -84,7 +99,10 @@ const SigningUp = ({ handleInputChanging, handleSubmitBtn, handleRegistrationCha
 					</div>
 				</div>
 				<Providers />
-				<p onClick={handleRegistrationChange} className="base-col cursor-pointer">
+				<p
+					onClick={handleRegistrationChange}
+					className="base-col cursor-pointer"
+				>
 					Already have an account?
 				</p>
 			</form>

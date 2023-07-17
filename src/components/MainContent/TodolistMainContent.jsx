@@ -152,6 +152,8 @@ export default function TodolistMainContent({
 
 	const handleOpenTodoSearchInput = () => {
 		setOpenTodoSearchInput(!openTodoSearchInput);
+
+		if (openTodoSearchInput) setSubSearchDropdown(false);
 	};
 
 	const handleDeleteAll = () => {
@@ -389,7 +391,7 @@ export default function TodolistMainContent({
 									<Image
 										className="min-h-[16px] min-w-[16px] cursor-default md:cursor-pointer"
 										src={"/icons/search.svg"}
-										alt=""
+										alt="search"
 										width={20}
 										height={20}
 									/>
@@ -434,7 +436,7 @@ export default function TodolistMainContent({
 													? "/icons/arrow-white.svg"
 													: "/icons/arrow-black.svg"
 											}
-											alt=""
+											alt="arrow"
 											width={20}
 											height={20}
 										/>
@@ -466,7 +468,7 @@ export default function TodolistMainContent({
 												? "/icons/arrow-white.svg"
 												: "/icons/arrow-black.svg"
 										}
-										alt=""
+										alt="arrow"
 										width={20}
 										height={20}
 									/>
@@ -497,7 +499,7 @@ export default function TodolistMainContent({
 							<Image
 								className="w-auto h-[20px]"
 								src={"/icons/plus-white.svg"}
-								alt=""
+								alt="add todo"
 								width={20}
 								height={20}
 							/>
@@ -515,7 +517,7 @@ export default function TodolistMainContent({
 							<Image
 								className="min-w-[15px] min-h-[15px] rotate-[45deg]"
 								src={"/icons/plus-white.svg"}
-								alt="undo"
+								alt="complete"
 								width={20}
 								height={20}
 							/>

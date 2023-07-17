@@ -7,10 +7,35 @@ import { StateCtx } from "../Layout";
 import AllFolders from "./AllFolders";
 
 export default function Folders({ handleCloseSidebar }) {
-	const { setOpenFolderModal, setClickedFolder } = useContext(StateCtx);
+	const {
+		setOpenFolderModal,
+		setClickedFolder,
+		setClickedTodoFolder,
+		setCloseSidebar,
+		setOpenTodolistSidebar,
+		searchQueryRef,
+	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
+
+	const handleClearTodoFolderClick = () => {
+		setClickedTodoFolder("");
+		setOpenTodolistSidebar(false);
+
+		const timeout = setTimeout(() => {
+			searchQueryRef.current.focus();
+		}, 10);
+
+		const mobileSidebar = () => {
+			if (window.innerWidth < 1024) {
+				setCloseSidebar(true);
+			} else {
+				setCloseSidebar(false);
+			}
+		};
+		mobileSidebar();
+	};
 
 	return (
 		<>
@@ -29,15 +54,15 @@ export default function Folders({ handleCloseSidebar }) {
 						<button className="text-btn flex justify-center items-center">
 							<Image
 								onClick={() => setOpenFolderModal(true)}
-								className="w-auto h-[20px]"
+								className="w-auto min-h-[20px] max-h-[20px]"
 								src={
 									user.themeColor
 										? "/icons/plus-white.svg"
 										: "/icons/plus-black.svg"
 								}
-								alt=""
-								width={20}
-								height={20}
+								alt="add"
+								width={25}
+								height={25}
 							/>
 						</button>
 						<button
@@ -66,7 +91,14 @@ export default function Folders({ handleCloseSidebar }) {
 					</div>
 				</div>
 
-				<div className="flex flex-col justify-center items-start gap-2">
+				<div className="flex flex-col justify-center items-start gap-5">
+					<button
+						onClick={handleClearTodoFolderClick}
+						className="px-2 py-1 rounded-md bg-[#0E51FF] text-white"
+					>
+						Dashboard
+					</button>
+
 					{folders.allFolders
 						?.filter((value) => value.userID === auth.currentUser.uid)
 						?.map((folder, index) => index + 1 > 5)

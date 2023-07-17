@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import FirebaseApi from "../pages/api/firebaseApi";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -21,6 +21,8 @@ export default function Layout({ children }) {
 	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
 	const [startX, setStartX] = useState(null);
 	const [endX, setEndX] = useState(null);
+
+	const searchQueryRef = useRef();
 
 	function handleTouchStart(e) {
 		setStartX(e.touches[0].clientX);
@@ -102,6 +104,7 @@ export default function Layout({ children }) {
 						handleCloseSidebar,
 						openTodolistSidebarModal,
 						setOpenTodolistSidebarModal,
+						searchQueryRef,
 					}}
 				>
 					<div

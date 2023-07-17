@@ -21,7 +21,8 @@ export default function ImageControls() {
 		};
 
 		document.addEventListener("mousedown", closeImageLoadingIndicator);
-		return () => document.removeEventListener("mousedown", closeImageLoadingIndicator);
+		return () =>
+			document.removeEventListener("mousedown", closeImageLoadingIndicator);
 	}, [setClickedImageLoading]);
 
 	useEffect(() => {
@@ -64,7 +65,13 @@ export default function ImageControls() {
 						user.bannerSize ? "rounded-md" : "rounded-l-md"
 					}`}
 				>
-					<Image className="w-auto h-[18px]" src={"/icons/increase-size-black.svg"} alt="" width={20} height={20} />
+					<Image
+						className="w-auto h-[18px]"
+						src={"/icons/increase-size-black.svg"}
+						alt="increase-image"
+						width={20}
+						height={20}
+					/>
 				</button>
 
 				{!user.bannerSize && (
@@ -72,7 +79,13 @@ export default function ImageControls() {
 						onClick={handleDropdown}
 						className="flex justify-center items-center w-fit h-fit bg-white py-2 px-1 rounded-r-md text-btn"
 					>
-						<Image className="w-auto h-[17px]" src={"/icons/picture-black.svg"} alt="" width={20} height={20} />
+						<Image
+							className="w-auto h-[17px]"
+							src={"/icons/picture-black.svg"}
+							alt="gallery"
+							width={20}
+							height={20}
+						/>
 					</button>
 				)}
 
@@ -94,7 +107,10 @@ export default function ImageControls() {
 
 				{openGalleryModal &&
 					createPortal(
-						<GalleryModal openGalleryModal={openGalleryModal} setOpenGalleryModal={setOpenGalleryModal} />,
+						<GalleryModal
+							openGalleryModal={openGalleryModal}
+							setOpenGalleryModal={setOpenGalleryModal}
+						/>,
 						document.body
 					)}
 			</div>

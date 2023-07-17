@@ -61,7 +61,7 @@ export default function Filters({ user }) {
 												? "/icons/completed-white.svg"
 												: "/icons/completed-black.svg"
 										}`}
-										alt="completed icon"
+										alt="completed"
 										width={18}
 										height={12}
 									/>
@@ -81,7 +81,7 @@ export default function Filters({ user }) {
 												? "/icons/labels-white.svg"
 												: "/icons/labels-black.svg"
 										}`}
-										alt="completed icon"
+										alt="completed"
 										width={17}
 										height={17}
 									/>
@@ -101,7 +101,7 @@ export default function Filters({ user }) {
 												? "/icons/active-white.svg"
 												: "/icons/active-black.svg"
 										}`}
-										alt="completed icon"
+										alt="completed"
 										width={15}
 										height={15}
 									/>
@@ -128,7 +128,7 @@ export default function Filters({ user }) {
 									: null && (
 											<Image
 												src={"/icons/unfavorite.svg"}
-												alt="completed icon"
+												alt="unfavorite"
 												width={18}
 												height={18}
 											/>

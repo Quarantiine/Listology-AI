@@ -6,7 +6,6 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import SubTodos from "../MainContent/SubTodos";
 import Link from "next/link";
 import shortenUrl from "shorten-url";
-import { createPortal } from "react-dom";
 
 export default function TodosContent({
 	todoLists,
@@ -189,7 +188,7 @@ export default function TodosContent({
 									? "/icons/checkbox-empty-white.svg"
 									: "/icons/checkbox-empty-black.svg"
 							}
-							alt=""
+							alt="completed"
 							width={25}
 							height={25}
 						/>
@@ -211,7 +210,7 @@ export default function TodosContent({
 								<Image
 									className="min-w-[20px] max-w-[20px] h-[20px]"
 									src={"/icons/add-todo-white.svg"}
-									alt=""
+									alt="add-sub-todo"
 									width={25}
 									height={25}
 								/>
@@ -219,7 +218,7 @@ export default function TodosContent({
 								<Image
 									className="min-w-[20px] max-w-[20px] h-[20px]"
 									src={"/icons/add-todo-black.svg"}
-									alt=""
+									alt="add-sub-todo"
 									width={25}
 									height={25}
 								/>
@@ -400,7 +399,7 @@ export default function TodosContent({
 									: "text-btn"
 							}`}
 							src={"/icons/trash.svg"}
-							alt="delete todos"
+							alt="trash"
 							width={20}
 							height={20}
 						/>
@@ -436,7 +435,7 @@ export default function TodosContent({
 									? "/icons/arrow-white.svg"
 									: "/icons/arrow-black.svg"
 							}
-							alt="delete todos"
+							alt="arrow"
 							width={20}
 							height={20}
 						/>

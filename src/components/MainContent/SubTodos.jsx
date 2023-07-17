@@ -147,7 +147,7 @@ export default function SubTodos({
 									? "/icons/checkbox-empty-white.svg"
 									: "/icons/checkbox-empty-black.svg"
 							}
-							alt=""
+							alt="checkbox"
 							width={25}
 							height={25}
 						/>
@@ -327,7 +327,7 @@ export default function SubTodos({
 								: "text-btn"
 						}`}
 						src={"/icons/trash.svg"}
-						alt="delete todos"
+						alt="trash"
 						width={20}
 						height={20}
 					/>

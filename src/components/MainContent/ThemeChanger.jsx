@@ -21,7 +21,7 @@ export default function ThemeChanger() {
 					<Image
 						className="w-auto h-[18px]"
 						src={"/icons/light-black.svg"}
-						alt=""
+						alt="light"
 						width={20}
 						height={20}
 					/>
@@ -33,7 +33,7 @@ export default function ThemeChanger() {
 					<Image
 						className="w-auto h-[18px]"
 						src={"/icons/dark-white.svg"}
-						alt=""
+						alt="dark"
 						width={20}
 						height={20}
 					/>

@@ -82,7 +82,7 @@ export default function TodolistSidebar() {
 	return (
 		<>
 			<div
-				className={`todolist-sidebar z-40 transition-colors duration-300 shadow-[10px_0px_20px_0px_rgba(0,0,0,0.3)] flex flex-col justify-start items-start p-7 absolute top-0 left-0 sm:left-[280px] min-w-[280px] max-w-[280px] h-full border-r-2 gap-5 ${
+				className={`todolist-sidebar z-40 transition-colors duration-300 shadow-[10px_0px_20px_0px_rgba(0,0,0,0.1)] flex flex-col justify-start items-start p-7 absolute top-0 left-0 sm:left-[280px] min-w-[280px] max-w-[280px] h-full border-r-2 gap-5 ${
 					user.themeColor ? "bg-[#222] text-white" : "bg-white text-black"
 				} ${user.themeColor ? "border-[#333]" : "border-gray-200"} `}
 			>
@@ -123,7 +123,7 @@ export default function TodolistSidebar() {
 											? "/icons/plus-white.svg"
 											: "/icons/plus-black.svg"
 									}
-									alt=""
+									alt="add"
 									width={20}
 									height={20}
 								/>
@@ -140,7 +140,7 @@ export default function TodolistSidebar() {
 											? "/icons/plus-white.svg"
 											: "/icons/plus-black.svg"
 									}
-									alt=""
+									alt="add"
 									width={20}
 									height={20}
 								/>
@@ -154,7 +154,7 @@ export default function TodolistSidebar() {
 							{!user.themeColor ? (
 								<Image
 									src={"/icons/menu-open.svg"}
-									alt="completed icon"
+									alt="menu"
 									width={25}
 									height={25}
 								/>
@@ -255,16 +255,38 @@ const TodoListFolderSearchBar = ({ user, searchQuery, setSearchQuery }) => {
 	return (
 		<>
 			<div className="w-full h-auto flex justify-start items-center gap-3 relative">
-				<Image
-					className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
-					src={"/icons/search.svg"}
-					alt="search"
-					width={20}
-					height={20}
-				/>
+				<>
+					{user.themeColor ? (
+						<svg
+							className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+							width="20"
+							height="20"
+							viewBox="0 0 27 27"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+								fill="white"
+							/>
+						</svg>
+					) : (
+						<svg
+							className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+							width="20"
+							height="20"
+							viewBox="0 0 27 27"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+								fill="black"
+							/>
+						</svg>
+					)}
+				</>
 				<input
-					className={`w-full text-white pl-10 pr-2 py-1 rounded-md outline-none ${
-						user.themeColor ? "bg-[#333]" : "bg-gray-500"
+					className={`w-full pl-10 pr-2 py-1 rounded-md outline-none ${
+						user.themeColor ? "bg-[#333] text-white" : "bg-[#eee] text-black"
 					}`}
 					type="search"
 					name="search"

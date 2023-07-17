@@ -21,12 +21,15 @@ const registrationReducer = (state, { type, payload }) => {
 
 export default function Registration() {
 	const { registration } = FirebaseApi();
-	const [registrationState, registrationDispatch] = useReducer(registrationReducer, {
-		text: "",
-		email: "",
-		password: "",
-		confirmPassword: "",
-	});
+	const [registrationState, registrationDispatch] = useReducer(
+		registrationReducer,
+		{
+			text: "",
+			email: "",
+			password: "",
+			confirmPassword: "",
+		}
+	);
 	const [switchRegistration, setSwitchRegistration] = useState(true);
 	const [errorMesg, setErrorMesg] = useState(false);
 	const errorMesgRef = useRef();
@@ -48,12 +51,20 @@ export default function Registration() {
 		if (
 			registrationState.text?.length > 2 &&
 			/^[a-zA-Z]+/.test(registrationState.text) &&
-			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(registrationState.email) &&
+			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+				registrationState.email
+			) &&
 			registrationState.password?.length > 5 &&
 			registrationState.password === registrationState.confirmPassword &&
-			!registration.allusers?.map((user) => user.email === registrationState.email).includes(true)
+			!registration.allusers
+				?.map((user) => user.email === registrationState.email)
+				.includes(true)
 		) {
-			registration.signingUp(registrationState.email, registrationState.password, registrationState.text);
+			registration.signingUp(
+				registrationState.email,
+				registrationState.password,
+				registrationState.text
+			);
 			setSuccessfulSignUp("Successful Sign Up");
 			successfulSignUpRef.current = setTimeout(() => {
 				setSuccessfulSignUp("");
@@ -106,7 +117,10 @@ export default function Registration() {
 								sizes="true"
 								priority="true"
 							/>
-							<p className="text-lg w-[90%]">An easy to use management and light weight tool for your daily life.</p>
+							<p className="text-lg w-[90%]">
+								An easy to use management and light weight tool for your daily
+								life.
+							</p>
 						</div>
 						{!switchRegistration ? (
 							<SigningUp

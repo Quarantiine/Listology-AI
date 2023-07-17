@@ -32,7 +32,9 @@ export default function SigningIn({ handleRegistrationChange }) {
 		setEmailExist(true);
 		clearTimeout(accountErrorRef.current);
 		if (
-			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.current.value) &&
+			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+				email.current.value
+			) &&
 			password.current.value?.length > 5
 		) {
 			registration.signingIn(email.current.value, password.current.value);
@@ -43,7 +45,9 @@ export default function SigningIn({ handleRegistrationChange }) {
 		e.preventDefault();
 		if (
 			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(modalEmail) &&
-			registration.allusers?.map((user) => user.email === modalEmail).includes(true)
+			registration.allusers
+				?.map((user) => user.email === modalEmail)
+				.includes(true)
 		) {
 			setResetPassword(false);
 			registration.forgotPassword(modalEmail);
@@ -101,21 +105,31 @@ export default function SigningIn({ handleRegistrationChange }) {
 									<Image
 										onClick={() => setPasswordVisible(!passwordVisible)}
 										className="absolute top-2 right-3 cursor-pointer"
-										src={passwordVisible ? "/icons/visibility.svg" : "/icons/visibility_off.svg"}
-										alt=""
+										src={
+											passwordVisible
+												? "/icons/visibility.svg"
+												: "/icons/visibility_off.svg"
+										}
+										alt="visibility"
 										width={18}
 										height={18}
 									/>
 								</div>
 							</div>
-							<button onClick={handleSigningIn} className="px-3 py-1 rounded-md base-bg text-white w-full md:w-[70%]">
+							<button
+								onClick={handleSigningIn}
+								className="px-3 py-1 rounded-md base-bg text-white w-full md:w-[70%]"
+							>
 								Sign In
 							</button>
 						</div>
 					</div>
 					<Providers />
 					<div className="flex flex-col justify-start items-start gap-2 mt-2">
-						<button onClick={handleRegistrationChange} className="base-col cursor-pointer">
+						<button
+							onClick={handleRegistrationChange}
+							className="base-col cursor-pointer"
+						>
 							{`Don't`} have an account?
 						</button>
 						<button
@@ -146,7 +160,13 @@ export default function SigningIn({ handleRegistrationChange }) {
 	);
 }
 
-const ForgotPasswordModal = ({ accountError, emailExist, handleForgotPassword, modalEmail, setModalEmail }) => {
+const ForgotPasswordModal = ({
+	accountError,
+	emailExist,
+	handleForgotPassword,
+	modalEmail,
+	setModalEmail,
+}) => {
 	return (
 		<>
 			<div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center px-5">
@@ -171,7 +191,10 @@ const ForgotPasswordModal = ({ accountError, emailExist, handleForgotPassword, m
 							name="email"
 						/>
 					</div>
-					<button onClick={handleForgotPassword} className="px-3 py-1 rounded-md base-bg text-white w-full">
+					<button
+						onClick={handleForgotPassword}
+						className="px-3 py-1 rounded-md base-bg text-white w-full"
+					>
 						Reset
 					</button>
 				</form>

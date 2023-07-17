@@ -14,8 +14,12 @@ export default function AllTodoFolders({
 	handleDeletionIndicator,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
-	const { clickedTodoFolder, clickedFolder, setOpenTodolistSidebar } =
-		useContext(StateCtx);
+	const {
+		clickedTodoFolder,
+		clickedFolder,
+		setOpenTodolistSidebar,
+		setCloseSidebar,
+	} = useContext(StateCtx);
 	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] =
 		useState(false);
 	const [deletionWarning, setDeletionWarning] = useState(false);
@@ -74,6 +78,15 @@ export default function AllTodoFolders({
 	const handleClickedTodoFolder = () => {
 		setClickedTodoFolder(todoFolder.id);
 		setOpenTodolistSidebar(false);
+
+		const mobileSidebar = () => {
+			if (window.innerWidth < 1024) {
+				setCloseSidebar(true);
+			} else {
+				setCloseSidebar(false);
+			}
+		};
+		mobileSidebar();
 	};
 
 	const handleDeletingWarning = () => {
@@ -108,6 +121,7 @@ export default function AllTodoFolders({
 						</>,
 						document.body
 					)}
+
 				<p
 					className={`text-sm ${
 						user.themeColor ? "text-[#888]" : "text-gray-400"
@@ -150,7 +164,7 @@ export default function AllTodoFolders({
 									? "/icons/checkbox-empty-white.svg"
 									: "/icons/checkbox-empty-black.svg"
 							}
-							alt="selector"
+							alt="completed"
 							width={20}
 							height={20}
 						/>

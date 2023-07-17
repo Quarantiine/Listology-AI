@@ -107,7 +107,13 @@ export default function FolderModal({ handleFolderCreation }) {
 							<p className="text-sm text-gray-400">Required</p>
 							<div className="w-fit h-fit relative flex justify-center items-center">
 								<div onClick={handleInfo} className="text-btn">
-									<Image className="w-auto h-[18px]" src={"/icons/info.svg"} alt="info" width={20} height={20} />
+									<Image
+										className="w-auto h-[18px]"
+										src={"/icons/info.svg"}
+										alt="info"
+										width={20}
+										height={20}
+									/>
 								</div>
 								{showInfo && (
 									<div className="info-pop-up absolute top-5 right-0 sm:left-0 bg-white w-36 h-fit p-2 rounded-md border shadow-md">
@@ -126,7 +132,11 @@ export default function FolderModal({ handleFolderCreation }) {
 							required
 						/>
 					</div>
-					<button onClick={handleCreateFolder} className="base-btn w-full" type="submit">
+					<button
+						onClick={handleCreateFolder}
+						className="base-btn w-full"
+						type="submit"
+					>
 						Create Folder
 					</button>
 				</form>
