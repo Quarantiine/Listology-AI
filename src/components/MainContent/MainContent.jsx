@@ -7,13 +7,19 @@ import FolderModal from "../Sidebar/FolderModal";
 import { StateCtx } from "../Layout";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import TodolistMainContent from "./TodolistMainContent";
+import TodoFoldersDashboard from "./TodoFoldersDashboard";
 
 export default function MainContent() {
-	const { setClickedTodoFolder, searchQueryRef } = useContext(StateCtx);
+	const {
+		setClickedTodoFolder,
+		searchQueryRef,
+		openFolderModal,
+		setOpenFolderModal,
+		clickedTodoFolder,
+		setClickedFolder,
+	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, todolistFolders } = FirebaseApi();
-	const { openFolderModal, setOpenFolderModal, clickedTodoFolder } =
-		useContext(StateCtx);
+	const { auth, todolistFolders, folders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
@@ -29,11 +35,6 @@ export default function MainContent() {
 
 	const handleFolderCreation = () => {
 		setOpenFolderModal(!openFolderModal);
-	};
-
-	const handleTodoFolderClick = (id) => {
-		setClickedTodoFolder(id);
-		setSearchQuery("");
 	};
 
 	return (
@@ -60,8 +61,8 @@ export default function MainContent() {
 											?.filter(
 												(value) =>
 													clickedTodoFolder &&
-													value.id === clickedTodoFolder &&
-													value.userID === auth.currentUser.uid
+													value.userID === auth.currentUser.uid &&
+													value.id === clickedTodoFolder
 											)
 											?.map((todolistFolder) => {
 												return (
@@ -76,14 +77,6 @@ export default function MainContent() {
 									) : (
 										<>
 											<div className="w-full flex flex-col justify-start items-start gap-5">
-												<h1
-													className={`text-xl ${
-														user.themeColor ? "text-[#555]" : "text-gray-400"
-													}`}
-												>
-													Click a Todo Folder
-												</h1>
-
 												<div className="flex justify-start items-center gap-3 w-full relative">
 													<>
 														{user.themeColor ? (
@@ -123,47 +116,52 @@ export default function MainContent() {
 														}`}
 														type="search"
 														name="search"
-														placeholder="Search by todo folders, main folder titles"
+														placeholder="Search by todo and main folders"
 														ref={searchQueryRef}
 														onChange={(e) => setSearchQuery(e.target.value)}
 														value={searchQuery}
 													/>
 												</div>
 
-												<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
-													{todolistFolders.allTodoFolders
-														.filter(
-															(value) => value.userID === auth.currentUser.uid
-														)
-														.map((todoFolder) => {
-															if (
-																todoFolder.folderTitle
-																	.normalize("NFD")
-																	.replace(/\p{Diacritic}/gu, "")
-																	.toLowerCase()
-																	.includes(searchQuery.toLowerCase()) ||
-																todoFolder.folderName
-																	.normalize("NFD")
-																	.replace(/\p{Diacritic}/gu, "")
-																	.toLowerCase()
-																	.includes(searchQuery.toLowerCase())
-															) {
-																return (
-																	<TodoFoldersDashboard
-																		key={todoFolder.id}
-																		todoFolder={todoFolder}
-																		user={user}
-																		handleTodoFolderClick={
-																			handleTodoFolderClick
-																		}
-																		auth={auth}
-																	/>
-																);
-															}
-														})}
+												<div className="flex flex-col justify-start items-start w-full gap-4">
+													<h1 className="text-2xl font-semibold">
+														Todo Folders
+													</h1>
+													<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
+														{todolistFolders.allTodoFolders
+															?.filter(
+																(value) => value.userID === auth.currentUser.uid
+															)
+															?.map((todoFolder) => {
+																if (
+																	todoFolder.folderTitle
+																		.normalize("NFD")
+																		.replace(/\p{Diacritic}/gu, "")
+																		.toLowerCase()
+																		.includes(searchQuery.toLowerCase()) ||
+																	todoFolder.folderName
+																		.normalize("NFD")
+																		.replace(/\p{Diacritic}/gu, "")
+																		.toLowerCase()
+																		.includes(searchQuery.toLowerCase())
+																) {
+																	return (
+																		<React.Fragment key={todoFolder.id}>
+																			<TodoFoldersDashboard
+																				todoFolder={todoFolder}
+																				user={user}
+																				setClickedTodoFolder={
+																					setClickedTodoFolder
+																				}
+																				setClickedFolder={setClickedFolder}
+																				auth={auth}
+																			/>
+																		</React.Fragment>
+																	);
+																}
+															})}
+													</div>
 												</div>
-
-												{/* <TodolistPlaceholder /> */}
 											</div>
 										</>
 									)}
@@ -223,126 +221,3 @@ export default function MainContent() {
 		</>
 	);
 }
-
-const TodoFoldersDashboard = ({
-	todoFolder,
-	user,
-	handleTodoFolderClick,
-	auth,
-}) => {
-	const { todoLists } = FirebaseApi();
-
-	return (
-		<>
-			<button
-				onClick={() => handleTodoFolderClick(todoFolder.id)}
-				className={`border text-btn w-full min-h-[170px] py-3 px-4 rounded-md flex flex-col justify-start items-start text-start gap-2 ${
-					user.themeColor
-						? "bg-[#333] border-[#555]"
-						: "bg-[#eee] border-[#ccc]"
-				}`}
-			>
-				<div className="w-full flex flex-col justify-center items-between">
-					<h1
-						className={`text-sm ${
-							user.themeColor ? "text-[#666]" : "text-[#aaa]"
-						}`}
-					>
-						Main Folder:{" "}
-						<span className="font-bold underline">{todoFolder.folderName}</span>
-					</h1>
-					<div className="flex justify-between items-center w-full">
-						<h2 className="text-2xl font-semibold line-clamp-1">
-							{todoFolder.folderTitle}
-						</h2>
-						{todoFolder.folderEmoji ? (
-							<p className="text-3xl">{todoFolder.folderEmoji}</p>
-						) : (
-							<div
-								className={`${
-									user.themeColor ? "bg-[#555]" : "bg-[#999]"
-								} w-7 h-7 rounded-full`}
-							/>
-						)}
-					</div>
-				</div>
-				<p className="line-clamp-2">{todoFolder.folderDescription}</p>
-				<p
-					className={`text-sm mt-auto flex justify-center items-center gap-1 ${
-						user.themeColor ? "text-[#666]" : "text-[#aaa]"
-					}`}
-				>
-					{todoLists.allTodoLists
-						?.filter(
-							(value) =>
-								value.folderID === todoFolder.id &&
-								value.userID === auth.currentUser.uid &&
-								value.completed === true
-						)
-						?.map((todo) => todo).length !== 0 && (
-						<>
-							<span>
-								{
-									todoLists.allTodoLists
-										?.filter(
-											(value) =>
-												value.folderID === todoFolder.id &&
-												value.userID === auth.currentUser.uid &&
-												value.completed === true
-										)
-										?.map((todo) => todo).length
-								}
-							</span>
-							<span>/</span>
-						</>
-					)}
-					<span>
-						{todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
-							)
-							?.map((todo) => todo).length === 0
-							? "No Todos"
-							: todoLists.allTodoLists
-									?.filter(
-										(value) =>
-											value.folderID === todoFolder.id &&
-											value.userID === auth.currentUser.uid
-									)
-									?.map((todo) => todo).length}
-					</span>
-					{todoLists.allTodoLists
-						?.filter(
-							(value) =>
-								value.folderID === todoFolder.id &&
-								value.userID === auth.currentUser.uid &&
-								value.completed === true
-						)
-						?.map((todo) => todo).length !== 0 ? (
-						<span>Todos Completed</span>
-					) : todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
-							)
-							?.map((todo) => todo).length === 0 ? (
-						""
-					) : todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
-							)
-							?.map((todo) => todo).length === 1 ? (
-						<span>Todo Not Completed</span>
-					) : (
-						<span>Todos Not Completed</span>
-					)}
-				</p>
-			</button>
-		</>
-	);
-};

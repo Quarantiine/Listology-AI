@@ -22,13 +22,15 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	};
 
 	const handleDeleteFolder = () => {
-		folders.deletingFolder(folder.id);
 		setClickedTodoFolder("");
+
+		folders.deletingFolder(folder.id);
+
 		todolistFolders.allTodoFolders
 			.filter(
 				(value) =>
-					value.folderName === clickedFolder &&
-					auth.currentUser.uid === value.userID
+					auth.currentUser.uid === value.userID &&
+					value.folderName === clickedFolder
 			)
 			?.map((todolistFolder) =>
 				todolistFolders.deletingTodoFolder(todolistFolder.id)
@@ -36,17 +38,17 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		todoLists.allTodoLists
 			.filter(
 				(value) =>
-					value.mainFolder[0] === folder.folderName &&
-					auth.currentUser.uid === value.userID
+					auth.currentUser.uid === value.userID &&
+					value.mainFolder[0] === folder.folderName
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 		todoLists.allSubTodos
 			.filter(
 				(value) =>
-					value.mainFolder[0] === folder.folderName &&
-					auth.currentUser.uid === value.userID
+					auth.currentUser.uid === value.userID &&
+					value.mainFolder[0] === folder.folderName
 			)
-			?.map((todoList) => todoLists.deletingSubTodo(todoList.id));
+			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
 
 		setOpenTodolistSidebar(false);
 	};

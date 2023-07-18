@@ -559,6 +559,22 @@ export default function FirebaseApi() {
 				difficulty: difficulty || "",
 			});
 		};
+
+		updatingTodoMainFolder = async (id: string, mainFolder: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				mainFolder: [[mainFolder]],
+			});
+		};
+
+		updatingSubTodoMainFolder = async (id: string, mainFolder: string) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				mainFolder: [[mainFolder]],
+			});
+		};
 	}
 	const TLS = new TodoListSystem();
 	const addingTodos = TLS.addingTodos;
@@ -572,6 +588,8 @@ export default function FirebaseApi() {
 	const updatingSubTodoFavorite = TLS.updatingSubTodoFavorite;
 	const deletingSubTodo = TLS.deletingSubTodo;
 	const updatingTodoDifficulty = TLS.updatingTodoDifficulty;
+	const updatingTodoMainFolder = TLS.updatingTodoMainFolder;
+	const updatingSubTodoMainFolder = TLS.updatingSubTodoMainFolder;
 
 	return {
 		auth,
@@ -620,6 +638,8 @@ export default function FirebaseApi() {
 			updatingSubTodoFavorite,
 			deletingSubTodo,
 			updatingTodoDifficulty,
+			updatingTodoMainFolder,
+			updatingSubTodoMainFolder,
 		},
 	};
 }

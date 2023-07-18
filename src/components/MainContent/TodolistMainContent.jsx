@@ -143,7 +143,28 @@ export default function TodolistMainContent({
 	const handleTransferTodoFolder = (e, folderName) => {
 		e.preventDefault();
 		setClickedTodoFolder("");
+
 		todolistFolders.updatingFolderName(todolistFolder.id, folderName);
+
+		todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID === auth.currentUser.uid &&
+					value.mainFolder[0] === clickedFolder &&
+					value.folderID === clickedTodoFolder
+			)
+			?.map((todo) => todoLists.updatingTodoMainFolder(todo.id, folderName));
+
+		todoLists.allSubTodos
+			?.filter(
+				(value) =>
+					value.userID === auth.currentUser.uid &&
+					value.mainFolder[0] === clickedFolder &&
+					value.folderID === clickedTodoFolder
+			)
+			?.map((subTodo) =>
+				todoLists.updatingSubTodoMainFolder(subTodo.id, folderName)
+			);
 	};
 
 	const handleCompletedTodosBtn = () => {
@@ -178,8 +199,6 @@ export default function TodolistMainContent({
 			});
 		setDeleteCompletedTodo(false);
 	};
-
-	useEffect(() => console.log());
 
 	const handleDeleteCompletedTodo = () => {
 		setDeleteCompletedTodo(!deleteCompletedTodo);
@@ -240,7 +259,7 @@ export default function TodolistMainContent({
 																			onClick={(e) => {
 																				handleTransferTodoFolder(
 																					e,
-																					e.target.textContent
+																					folders.folderName
 																				);
 																			}}
 																		>
@@ -253,7 +272,7 @@ export default function TodolistMainContent({
 												</div>
 											)}
 											<div
-												onClick={handleTransferTodoFolderDropdown}
+												onClick={null && handleTransferTodoFolderDropdown}
 												className="transfer-dropdown text-btn flex justify-center items-center gap-2 relative"
 											>
 												<h3
