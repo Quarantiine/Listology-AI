@@ -43,7 +43,7 @@ export default function MainContent() {
 					user.themeColor ? "text-white" : "text-black"
 				}`}
 			>
-				<div className="main-content-overflow w-full h-full flex flex-col overflow-y-scroll justify-start items-center overflow-x-hidden">
+				<div className="main-content-overflow w-full h-full flex flex-col overflow-y-scroll justify-start items-center overflow-x-hidden mr-auto">
 					<Banner />
 					<div className="flex flex-col justify-start items-center w-full p-10 gap-10">
 						<>
@@ -189,6 +189,7 @@ export default function MainContent() {
 										</div>
 										<TodolistPlaceholder />
 									</div> */}
+
 									<div className="w-[90%] h-full relative flex flex-col gap-10 justify-start items-start">
 										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
 											<div className="flex flex-col justify-center items-center gap-2 text-center">

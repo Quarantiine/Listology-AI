@@ -220,33 +220,36 @@ export default function TodolistMainContent({
 									?.map((folder) => (
 										<div className="relative text-black" key={folder.id}>
 											{openTransferDropdown && (
-												<div className="transfer-dropdown absolute top-6 left-0 min-w-[144px] h-fit px-3 py-2 bg-white rounded-md border z-10 text-sm flex flex-col justify-center items-start gap-1">
-													<h1 className="font-bold w-full">
+												<div className="transfer-dropdown absolute top-6 left-0 min-w-[144px] h-fit px-3 py-2 bg-white rounded-md border z-10 text-sm flex flex-col justify-center items-start gap-2">
+													<h1 className="font-bold max-w-[100%] w-44">
 														Transfer Todo Folder to:
 													</h1>
 													{/* hello */}
-													{folders.allFolders
-														.filter(
-															(value) =>
-																value.folderName !== folder.folderName &&
-																value.userID === auth.currentUser.uid
-														)
-														.map((folders) => {
-															return (
-																<React.Fragment key={folders.id}>
-																	<button
-																		onClick={(e) => {
-																			handleTransferTodoFolder(
-																				e,
-																				e.target.textContent
-																			);
-																		}}
-																	>
-																		{folders.folderName}
-																	</button>
-																</React.Fragment>
-															);
-														})}
+													<div className="flex flex-col justify-center items-start gap-0">
+														{folders.allFolders
+															.filter(
+																(value) =>
+																	value.folderName !== folder.folderName &&
+																	value.userID === auth.currentUser.uid
+															)
+															.map((folders) => {
+																return (
+																	<React.Fragment key={folders.id}>
+																		<button
+																			className="text-btn"
+																			onClick={(e) => {
+																				handleTransferTodoFolder(
+																					e,
+																					e.target.textContent
+																				);
+																			}}
+																		>
+																			{folders.folderName}
+																		</button>
+																	</React.Fragment>
+																);
+															})}
+													</div>
 												</div>
 											)}
 											<div

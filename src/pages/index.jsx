@@ -2,13 +2,17 @@ import Head from "next/head";
 import FirebaseApi from "./api/firebaseApi";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MainContent from "../components/MainContent/MainContent";
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import Image from "next/image";
+import Settings from "../components/Sidebar/Settings";
+import { StateCtx } from "../components/Layout";
+import ThemeChanger from "../components/MainContent/ThemeChanger";
 
 export const UserCredentialCtx = createContext();
 
 export default function Home() {
 	const { auth, registration } = FirebaseApi();
+	const { navState, navDispatch } = useContext(StateCtx);
 
 	return (
 		<>
@@ -41,8 +45,10 @@ export default function Home() {
 								/>
 								<UserCredentialCtx.Provider value={{ user }}>
 									<main className="absolute top-0 left-0 flex justify-center items-start w-full h-full">
-										<Sidebar />
-										<MainContent />
+										<ThemeChanger />
+										{<Sidebar navState={navState} navDispatch={navDispatch} />}
+										{navState.navigatorLink == "Dashboard" && <MainContent />}
+										{navState.navigatorLink == "Settings" && <Settings />}
 									</main>
 								</UserCredentialCtx.Provider>
 							</React.Fragment>

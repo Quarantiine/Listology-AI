@@ -1,5 +1,11 @@
 import { onAuthStateChanged } from "firebase/auth";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+	createContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from "react";
 import FirebaseApi from "../pages/api/firebaseApi";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,9 +13,25 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 export const StateCtx = createContext();
 
+const navigationBarReducer = (state, { payload, type }) => {
+	switch (type) {
+		case "sidebar-navigation-link":
+			return {
+				...state,
+				[payload.key]: payload.value,
+			};
+
+		default:
+			console.log(`Unknown Payload`);
+	}
+};
+
 export default function Layout({ children }) {
 	const { auth } = FirebaseApi();
 	const router = useRouter();
+	const [navState, navDispatch] = useReducer(navigationBarReducer, {
+		navigatorLink: "Dashboard",
+	});
 	const [closeSidebar, setCloseSidebar] = useState(false);
 	const [bannerImage, setBannerImage] = useState("");
 	const [clickedImageLoading, setClickedImageLoading] = useState(false);
@@ -21,7 +43,6 @@ export default function Layout({ children }) {
 	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
 	const [startX, setStartX] = useState(null);
 	const [endX, setEndX] = useState(null);
-
 	const searchQueryRef = useRef();
 
 	function handleTouchStart(e) {
@@ -105,6 +126,8 @@ export default function Layout({ children }) {
 						openTodolistSidebarModal,
 						setOpenTodolistSidebarModal,
 						searchQueryRef,
+						navState,
+						navDispatch,
 					}}
 				>
 					<div

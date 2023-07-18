@@ -2,9 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import shortenUrl from "shorten-url";
-import gsap from "gsap/dist/gsap";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
 
 export default function SubTodos({
 	subTodo,
@@ -119,18 +116,6 @@ export default function SubTodos({
 		return () => document.removeEventListener("mousedown", closeLinkDropdown);
 	}, []);
 
-	useEffect(() => {
-		const ctx = gsap.context(() => {
-			gsap.timeline().to(".sub-todo-ani", {
-				css: {
-					height: "100%",
-				},
-			});
-		});
-
-		return () => ctx.revert();
-	}, [closeSubTodos, handleDeleteTodo]);
-
 	return (
 		<>
 			<div
@@ -144,9 +129,7 @@ export default function SubTodos({
 					deletedSubTodo === subTodo.todo ? "bg-[#ef2b2b51]" : ""
 				}`}
 			>
-				<div
-					className={`sub-todo-ani transition-transform duration-0 absolute bottom-0 left-0 w-1 h-0 bg-[#0E51FF]`}
-				/>
+				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">
 					<button
