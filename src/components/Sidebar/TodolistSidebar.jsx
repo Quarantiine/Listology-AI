@@ -94,7 +94,7 @@ export default function TodolistSidebar() {
 								?.filter(
 									(value) =>
 										value.folderName === clickedFolder &&
-										value.userID === auth.currentUser.uid
+										value.userID === auth.currentUser?.uid
 								)
 								.slice(0, 1)
 								?.map((folder) => (
@@ -192,16 +192,16 @@ export default function TodolistSidebar() {
 					)}
 				<div className="todo-list-folders-overflow flex flex-col justify-start items-start gap-1 w-full overflow-y-scroll overflow-x-hidden">
 					{todolistFolders.allTodoFolders
-						?.map((value) => value.userID === auth.currentUser.uid)
+						?.map((value) => value.userID === auth.currentUser?.uid)
 						.includes(true)
 						? todolistFolders.allTodoFolders
 								.filter(
 									(value) =>
-										value.userID === auth.currentUser.uid &&
+										value.userID === auth.currentUser?.uid &&
 										value.folderName === clickedFolder
 								)
 								?.map((todoFolder, index) => {
-									if (todoFolder.userID === auth.currentUser.uid) {
+									if (todoFolder.userID === auth.currentUser?.uid) {
 										if (
 											todoFolder.folderTitle
 												.normalize("NFD")
@@ -233,7 +233,7 @@ export default function TodolistSidebar() {
 						: null}
 					{!todolistFolders.allTodoFolders
 						?.slice(0)
-						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.filter((value) => value.userID === auth.currentUser?.uid)
 						?.map(
 							(todolistFolder) => todolistFolder.folderName === clickedFolder
 						)

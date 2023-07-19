@@ -51,7 +51,7 @@ export default function MainContent() {
 							{todolistFolders.allTodoFolders
 								?.map(
 									(todolistFolder) =>
-										todolistFolder.userID === auth.currentUser.uid
+										todolistFolder.userID === auth.currentUser?.uid
 								)
 								?.includes(true) &&
 							todolistFolders.allTodoFolders.length > 0 ? (
@@ -61,7 +61,7 @@ export default function MainContent() {
 											?.filter(
 												(value) =>
 													clickedTodoFolder &&
-													value.userID === auth.currentUser.uid &&
+													value.userID === auth.currentUser?.uid &&
 													value.id === clickedTodoFolder
 											)
 											?.map((todolistFolder) => {
@@ -130,7 +130,8 @@ export default function MainContent() {
 													<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
 														{todolistFolders.allTodoFolders
 															?.filter(
-																(value) => value.userID === auth.currentUser.uid
+																(value) =>
+																	value.userID === auth.currentUser?.uid
 															)
 															?.map((todoFolder) => {
 																if (

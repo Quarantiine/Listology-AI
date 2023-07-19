@@ -186,7 +186,7 @@ export default function FirebaseApi() {
 				await addDoc(colRefRegistration, {
 					email: email,
 					username: username,
-					userID: auth.currentUser.uid,
+					userID: auth.currentUser?.uid,
 					themeColor: false,
 					bannerImage: "",
 					bannerSize: false,
@@ -363,7 +363,7 @@ export default function FirebaseApi() {
 		addingFolder = async (folderName: string) => {
 			await addDoc(colRefFolders, {
 				folderName: folderName,
-				userID: auth.currentUser.uid,
+				userID: auth.currentUser?.uid,
 				createdTime: serverTimestamp(),
 				completed: false,
 			});
@@ -403,7 +403,7 @@ export default function FirebaseApi() {
 					"Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
 				folderName: folderName,
 				completed: false,
-				userID: auth.currentUser.uid,
+				userID: auth.currentUser?.uid,
 				createdTime: serverTimestamp(),
 			});
 		};
@@ -470,7 +470,7 @@ export default function FirebaseApi() {
 				folderID: folderID,
 				favorited: false,
 				completed: false,
-				userID: auth.currentUser.uid,
+				userID: auth.currentUser?.uid,
 				createdTime: serverTimestamp(),
 			});
 		};
@@ -514,7 +514,7 @@ export default function FirebaseApi() {
 					todoID: todoID,
 					favorited: false,
 					completed: false,
-					userID: auth.currentUser.uid,
+					userID: auth.currentUser?.uid,
 					createdTime: serverTimestamp(),
 				});
 			} catch (err) {
@@ -564,7 +564,7 @@ export default function FirebaseApi() {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 
 			await updateDoc(docRef, {
-				mainFolder: [[mainFolder]],
+				mainFolder,
 			});
 		};
 
@@ -572,7 +572,7 @@ export default function FirebaseApi() {
 			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
 
 			await updateDoc(docRef, {
-				mainFolder: [[mainFolder]],
+				mainFolder,
 			});
 		};
 	}
@@ -608,12 +608,14 @@ export default function FirebaseApi() {
 			facebookProvider,
 			twitterProvider,
 		},
+
 		folders: {
 			allFolders,
 			addingFolder,
 			updatingCompletionFolder,
 			deletingFolder,
 		},
+
 		todolistFolders: {
 			updatingFolderDescription,
 			updatingFolderName,
@@ -624,6 +626,7 @@ export default function FirebaseApi() {
 			addingTodoFolder,
 			allTodoFolders,
 		},
+
 		todoLists: {
 			allTodoLists,
 			addingTodos,

@@ -71,7 +71,7 @@ export default function FolderModal({ handleFolderCreation }) {
 		if (
 			inputState.folderName &&
 			!folders.allFolders
-				.filter((value) => auth.currentUser.uid === value.userID)
+				.filter((value) => auth.currentUser?.uid === value.userID)
 				?.map((folder) => folder.folderName === inputState.folderName)
 				.includes(true)
 		) {

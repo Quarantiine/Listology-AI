@@ -115,7 +115,7 @@ export default function TodosContent({
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						auth.currentUser.uid === value.userID
+						auth.currentUser?.uid === value.userID
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -135,24 +135,13 @@ export default function TodosContent({
 			folders.allFolders
 				?.filter(
 					(value) =>
-						value.userID === auth.currentUser.uid &&
+						value.userID === auth.currentUser?.uid &&
 						value.folderName === clickedFolder
 				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName),
 			todolistFolder.id,
 			todolist.id
-		);
-
-		console.log(
-			folders.allFolders
-				?.filter(
-					(value) =>
-						value.userID === auth.currentUser.uid &&
-						value.folderName === clickedFolder
-				)
-				.slice(0, 1)
-				?.map((folder) => folder.folderName)
 		);
 	};
 
@@ -611,7 +600,7 @@ export default function TodosContent({
 					?.filter(
 						(value) =>
 							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser.uid &&
+							value.userID === auth.currentUser?.uid &&
 							value.todoID === todolist.id
 					)
 					.map((subTodo) => subTodo.todoID === todolist.id)
@@ -644,7 +633,7 @@ export default function TodosContent({
 					?.filter(
 						(value) =>
 							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser.uid
+							value.userID === auth.currentUser?.uid
 					)
 					.map((subTodo) => {
 						if (

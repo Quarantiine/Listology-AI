@@ -14,8 +14,16 @@ export default function TodolistMainContent({
 	todolistFolders,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
-	const { clickedTodoFolder, clickedFolder, setClickedTodoFolder } =
-		useContext(StateCtx);
+	const {
+		clickedTodoFolder,
+		clickedFolder,
+		setClickedFolder,
+		setClickedTodoFolder,
+		setCloseSidebar,
+		setOpenTodolistSidebar,
+		searchQueryRef,
+		closeSidebar,
+	} = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
 	const [editFolderEmoji, setEditFolderEmoji] = useState(false);
@@ -112,7 +120,7 @@ export default function TodolistMainContent({
 				?.filter(
 					(value) =>
 						value.folderName === clickedFolder &&
-						value.userID === auth.currentUser.uid
+						value.userID === auth.currentUser?.uid
 				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName)
@@ -149,21 +157,21 @@ export default function TodolistMainContent({
 		todoLists.allTodoLists
 			?.filter(
 				(value) =>
-					value.userID === auth.currentUser.uid &&
+					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
 					value.folderID === clickedTodoFolder
 			)
-			?.map((todo) => todoLists.updatingTodoMainFolder(todo.id, folderName));
+			?.map((todo) => todoLists.updatingTodoMainFolder(todo.id, [folderName]));
 
 		todoLists.allSubTodos
 			?.filter(
 				(value) =>
-					value.userID === auth.currentUser.uid &&
+					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
 					value.folderID === clickedTodoFolder
 			)
 			?.map((subTodo) =>
-				todoLists.updatingSubTodoMainFolder(subTodo.id, folderName)
+				todoLists.updatingSubTodoMainFolder(subTodo.id, [folderName])
 			);
 	};
 
@@ -181,7 +189,7 @@ export default function TodolistMainContent({
 		todoLists.allTodoLists
 			.filter(
 				(value) =>
-					value.userID == auth.currentUser.uid &&
+					value.userID == auth.currentUser?.uid &&
 					value.completed === true &&
 					value.folderID === clickedTodoFolder
 			)
@@ -191,7 +199,7 @@ export default function TodolistMainContent({
 						(value) =>
 							value.todoID === todos.id &&
 							value.folderID === clickedTodoFolder &&
-							auth.currentUser.uid === value.userID
+							auth.currentUser?.uid === value.userID
 					)
 					?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
@@ -216,10 +224,72 @@ export default function TodolistMainContent({
 			document.removeEventListener("mousedown", closeDeletedTodoModal);
 	}, [openTransferDropdown]);
 
+	const handleClearTodoFolderClick = () => {
+		setClickedTodoFolder("");
+		setClickedFolder("");
+		setOpenTodolistSidebar(false);
+		setCloseSidebar(closeSidebar);
+
+		setTimeout(() => {
+			searchQueryRef.current?.focus();
+		}, 10);
+
+		// const mobileSidebar = () => {
+		// 	if (window.innerWidth < 1024) {
+		// 		setCloseSidebar(true);
+		// 	} else {
+		// 		setCloseSidebar(false);
+		// 	}
+		// };
+		// mobileSidebar();
+	};
+
+	const totalTodos = () => {
+		return todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID === auth.currentUser?.uid &&
+					value.folderID === clickedTodoFolder
+			)
+			?.map((todo) => todo).length;
+	};
+
+	const totalSubTodos = () => {
+		return todoLists.allSubTodos
+			?.filter(
+				(value) =>
+					value.userID === auth.currentUser?.uid &&
+					value.folderID === clickedTodoFolder
+			)
+			.map((subTodo) => subTodo).length;
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
-				{/* <Filters user={user} /> */}
+				<Filters user={user} />
+
+				<button
+					onClick={(e) => {
+						handleClearTodoFolderClick();
+					}}
+					className={`w-fit flex justify-start items-center gap-2 text-sm ${
+						user.themeColor ? "text-white" : "text-black"
+					}`}
+				>
+					<Image
+						className="min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer rotate-90"
+						src={
+							user.themeColor
+								? "/icons/arrow-white.svg"
+								: "/icons/arrow-black.svg"
+						}
+						alt="search"
+						width={20}
+						height={20}
+					/>
+					<span>Back to Dashboard</span>
+				</button>
 
 				<div className="w-full h-auto flex flex-col gap-2 justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
@@ -233,7 +303,7 @@ export default function TodolistMainContent({
 									?.filter(
 										(value) =>
 											value.folderName === clickedFolder &&
-											value.userID === auth.currentUser.uid
+											value.userID === auth.currentUser?.uid
 									)
 									.slice(0, 1)
 									?.map((folder) => (
@@ -249,7 +319,7 @@ export default function TodolistMainContent({
 															.filter(
 																(value) =>
 																	value.folderName !== folder.folderName &&
-																	value.userID === auth.currentUser.uid
+																	value.userID === auth.currentUser?.uid
 															)
 															.map((folders) => {
 																return (
@@ -268,11 +338,23 @@ export default function TodolistMainContent({
 																	</React.Fragment>
 																);
 															})}
+
+														{folders.allFolders
+															.filter(
+																(value) =>
+																	value.userID === auth.currentUser?.uid &&
+																	value.folderName !== folder.folderName
+															)
+															.map((folders) => folders).length < 1 && (
+															<p className="text-[#bbb]">
+																No Folders to Transfer
+															</p>
+														)}
 													</div>
 												</div>
 											)}
 											<div
-												onClick={null && handleTransferTodoFolderDropdown}
+												onClick={handleTransferTodoFolderDropdown}
 												className="transfer-dropdown text-btn flex justify-center items-center gap-2 relative"
 											>
 												<h3
@@ -507,7 +589,11 @@ export default function TodolistMainContent({
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 									}`}
 								/>
-								<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 bg-[#444] w-7 h-7 rounded-r-md"></div>
+								<div
+									className={`flex justify-center items-center absolute top-1/2 -translate-y-1/2 w-7 h-7 rounded-r-md ${
+										user.themeColor ? "bg-[#444]" : "bg-[#ddd]"
+									}`}
+								></div>
 							</div>
 						)}
 					</div>
@@ -545,6 +631,21 @@ export default function TodolistMainContent({
 							/>
 						)}
 					</button>
+
+					<div
+						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
+							openTodoSearchInput ? "hidden" : ""
+						}`}
+					>
+						<h1 className="text-2xl font-semibold line-clamp-1">
+							<span>
+								{totalTodos()} {totalTodos() === 1 ? "Todo" : "Todos"}
+							</span>
+						</h1>
+						<h3 className="text-[12px] font-light line-clamp-1">
+							{totalSubTodos()} Sub Todos
+						</h3>
+					</div>
 				</div>
 
 				{completedTodos && (
@@ -592,7 +693,7 @@ export default function TodolistMainContent({
 							?.filter(
 								(value) =>
 									value.folderID === todolistFolder.id &&
-									value.userID === auth.currentUser.uid &&
+									value.userID === auth.currentUser?.uid &&
 									value.completed === completedTodos
 							)
 							?.map((todolist) => {
@@ -620,7 +721,7 @@ export default function TodolistMainContent({
 					</>
 
 					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.filter((value) => value.userID === auth.currentUser?.uid)
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
@@ -632,13 +733,13 @@ export default function TodolistMainContent({
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
 								>
-									No Added Todos
+									No Todos
 								</p>
 							</div>
 						)}
 
 					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser.uid)
+						?.filter((value) => value.userID === auth.currentUser?.uid)
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&

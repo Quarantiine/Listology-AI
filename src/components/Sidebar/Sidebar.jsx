@@ -13,6 +13,7 @@ export default function Sidebar({ navState, navDispatch }) {
 		setCloseSidebar,
 		openTodolistSidebar,
 		handleCloseSidebar,
+		setOpenTodolistSidebar,
 	} = useContext(StateCtx);
 
 	useEffect(() => {
@@ -29,6 +30,8 @@ export default function Sidebar({ navState, navDispatch }) {
 	}, [setCloseSidebar]);
 
 	const handleNavigator = (key, value) => {
+		setOpenTodolistSidebar(false);
+
 		navDispatch({
 			type: "sidebar-navigation-link",
 			payload: {

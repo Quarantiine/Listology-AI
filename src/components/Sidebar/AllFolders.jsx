@@ -29,7 +29,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		todolistFolders.allTodoFolders
 			.filter(
 				(value) =>
-					auth.currentUser.uid === value.userID &&
+					auth.currentUser?.uid === value.userID &&
 					value.folderName === clickedFolder
 			)
 			?.map((todolistFolder) =>
@@ -38,14 +38,14 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 		todoLists.allTodoLists
 			.filter(
 				(value) =>
-					auth.currentUser.uid === value.userID &&
+					auth.currentUser?.uid === value.userID &&
 					value.mainFolder[0] === folder.folderName
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 		todoLists.allSubTodos
 			.filter(
 				(value) =>
-					auth.currentUser.uid === value.userID &&
+					auth.currentUser?.uid === value.userID &&
 					value.mainFolder[0] === folder.folderName
 			)
 			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));

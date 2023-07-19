@@ -59,7 +59,7 @@ export default function AllTodoFolders({
 			.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser.uid === value.userID
+					auth.currentUser?.uid === value.userID
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
@@ -67,7 +67,7 @@ export default function AllTodoFolders({
 			.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser.uid === value.userID
+					auth.currentUser?.uid === value.userID
 			)
 			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
@@ -102,7 +102,7 @@ export default function AllTodoFolders({
 						?.filter(
 							(value) =>
 								value.folderName === clickedFolder &&
-								value.userID === auth.currentUser.uid
+								value.userID === auth.currentUser?.uid
 						)
 						.slice(0, 1)
 						?.map((folder) => folder.folderName)

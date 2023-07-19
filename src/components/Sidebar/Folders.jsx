@@ -7,37 +7,11 @@ import { StateCtx } from "../Layout";
 import AllFolders from "./AllFolders";
 
 export default function Folders({ handleCloseSidebar }) {
-	const {
-		setOpenFolderModal,
-		setClickedFolder,
-		setClickedTodoFolder,
-		setCloseSidebar,
-		setOpenTodolistSidebar,
-		searchQueryRef,
-		navState,
-	} = useContext(StateCtx);
+	const { setOpenFolderModal, setClickedFolder, navState } =
+		useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
-
-	const handleClearTodoFolderClick = () => {
-		setClickedTodoFolder("");
-		setClickedFolder("");
-		setOpenTodolistSidebar(false);
-
-		setTimeout(() => {
-			searchQueryRef.current?.focus();
-		}, 10);
-
-		const mobileSidebar = () => {
-			if (window.innerWidth < 1024) {
-				setCloseSidebar(true);
-			} else {
-				setCloseSidebar(false);
-			}
-		};
-		mobileSidebar();
-	};
 
 	return (
 		<>
@@ -96,17 +70,8 @@ export default function Folders({ handleCloseSidebar }) {
 						</div>
 
 						<div className="flex flex-col justify-center items-start gap-5">
-							<button
-								onClick={(e) => {
-									handleClearTodoFolderClick();
-								}}
-								className="px-2 py-1 rounded-md bg-[#0E51FF] text-white w-full"
-							>
-								Dashboard
-							</button>
-
 							{folders.allFolders
-								?.filter((value) => value.userID === auth.currentUser.uid)
+								?.filter((value) => value.userID === auth.currentUser?.uid)
 								?.map((folder, index) => index + 1 > 5)
 								.includes(true) && (
 								<div className="w-full h-auto flex justify-start items-center gap-3 relative">
@@ -154,10 +119,10 @@ export default function Folders({ handleCloseSidebar }) {
 
 							<div className="flex flex-col justify-center items-start">
 								{folders.allFolders
-									?.map((folder) => folder.userID === auth.currentUser.uid)
+									?.map((folder) => folder.userID === auth.currentUser?.uid)
 									.includes(true) ? (
 									folders.allFolders?.map((folder) => {
-										if (folder.userID === auth.currentUser.uid) {
+										if (folder.userID === auth.currentUser?.uid) {
 											if (
 												folder.folderName
 													.normalize("NFD")

@@ -61,7 +61,7 @@ export default function TodoFoldersDashboard({
 						?.filter(
 							(value) =>
 								value.folderID === todoFolder.id &&
-								value.userID === auth.currentUser.uid &&
+								value.userID === auth.currentUser?.uid &&
 								value.completed === true
 						)
 						?.map((todo) => todo).length !== 0 && (
@@ -72,7 +72,7 @@ export default function TodoFoldersDashboard({
 										?.filter(
 											(value) =>
 												value.folderID === todoFolder.id &&
-												value.userID === auth.currentUser.uid &&
+												value.userID === auth.currentUser?.uid &&
 												value.completed === true
 										)
 										?.map((todo) => todo).length
@@ -86,7 +86,7 @@ export default function TodoFoldersDashboard({
 							?.filter(
 								(value) =>
 									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
+									value.userID === auth.currentUser?.uid
 							)
 							?.map((todo) => todo).length === 0
 							? "No Todos"
@@ -94,7 +94,7 @@ export default function TodoFoldersDashboard({
 									?.filter(
 										(value) =>
 											value.folderID === todoFolder.id &&
-											value.userID === auth.currentUser.uid
+											value.userID === auth.currentUser?.uid
 									)
 									?.map((todo) => todo).length}
 					</span>
@@ -102,7 +102,7 @@ export default function TodoFoldersDashboard({
 						?.filter(
 							(value) =>
 								value.folderID === todoFolder.id &&
-								value.userID === auth.currentUser.uid &&
+								value.userID === auth.currentUser?.uid &&
 								value.completed === true
 						)
 						?.map((todo) => todo).length !== 0 ? (
@@ -111,7 +111,7 @@ export default function TodoFoldersDashboard({
 							?.filter(
 								(value) =>
 									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
+									value.userID === auth.currentUser?.uid
 							)
 							?.map((todo) => todo).length === 0 ? (
 						""
@@ -119,7 +119,7 @@ export default function TodoFoldersDashboard({
 							?.filter(
 								(value) =>
 									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser.uid
+									value.userID === auth.currentUser?.uid
 							)
 							?.map((todo) => todo).length === 1 ? (
 						<span>Todo Not Completed</span>

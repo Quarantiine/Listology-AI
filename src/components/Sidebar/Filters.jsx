@@ -14,13 +14,13 @@ export default function Filters({ user }) {
 				onClick={() => {
 					!closeFilterSidebar && handleFilterSidebar();
 				}}
-				className={`z-40 fixed top-32 md:top-1/2 -translate-y-1/2 overflow-hidden ${
+				className={`z-40 fixed top-1/2 -translate-y-1/2 overflow-hidden rounded-l-lg right-[5px] px-5 pt-3 transition-all duration-500 ${null} ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
-				} right-[5px] px-5 pt-3 transition-all duration-500 ${
+				} ${
 					closeFilterSidebar
-						? "w-[120px] h-[160px]"
-						: "w-fit h-[60px] p-2 flex justify-center items-center cursor-pointer"
-				} rounded-l-lg ${user.themeColor ? "text-white" : "text-black"}`}
+						? "w-[120px] h-[100px]"
+						: "w-[40px] h-[40px] p-2 flex justify-center items-center cursor-pointer"
+				} ${user.themeColor ? "text-white" : "text-black"}`}
 			>
 				{closeFilterSidebar ? (
 					<>
@@ -47,27 +47,7 @@ export default function Filters({ user }) {
 								/>
 							</button>
 						</div>
-						<div className="flex flex-col gap-1 justify-start items-start">
-							<button
-								className={`flex justify-start items-center gap-1 w-fit ${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
-								} ${"cursor-not-allowed hover:opacity-80"}`}
-							>
-								{null && (
-									<Image
-										className="w-auto h-[15px]"
-										src={`${
-											user.themeColor
-												? "/icons/completed-white.svg"
-												: "/icons/completed-black.svg"
-										}`}
-										alt="completed"
-										width={18}
-										height={12}
-									/>
-								)}
-								<p>Completed</p>
-							</button>
+						<div className="flex flex-col justify-start items-start">
 							<button
 								className={`flex justify-start items-center gap-1 w-fit ${
 									user.themeColor ? "text-[#555]" : "text-gray-400"
@@ -86,27 +66,7 @@ export default function Filters({ user }) {
 										height={17}
 									/>
 								)}
-								<p>Labels</p>
-							</button>
-							<button
-								className={`flex justify-start items-center gap-1 w-fit ${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
-								} ${"cursor-not-allowed hover:opacity-80"}`}
-							>
-								{null && (
-									<Image
-										className="w-auto h-[16px]"
-										src={`${
-											user.themeColor
-												? "/icons/active-white.svg"
-												: "/icons/active-black.svg"
-										}`}
-										alt="completed"
-										width={15}
-										height={15}
-									/>
-								)}
-								<p>Actives</p>
+								<p>Difficulty</p>
 							</button>
 							<button
 								className={`flex justify-start items-center gap-1 w-fit ${
@@ -139,18 +99,18 @@ export default function Filters({ user }) {
 					</>
 				) : (
 					<button
-						className={`w-fit relative bottom-[3px] flex justify-center items-center`}
+						className={`w-fit h-fit absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex justify-center items-center`}
 					>
 						<Image
-							className={`w-auto h-[10px] rotate-90`}
+							className={`w-auto min-h-[20px] max-h-[20px] rotate-90`}
 							src={
 								user.themeColor
 									? "/icons/arrow-white.svg"
 									: "/icons/arrow-black.svg"
 							}
 							alt="arrow"
-							width={20}
-							height={20}
+							width={30}
+							height={30}
 						/>
 					</button>
 				)}
