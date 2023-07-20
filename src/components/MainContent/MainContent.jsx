@@ -46,7 +46,18 @@ export default function MainContent() {
 			>
 				<div className="main-content-overflow w-full h-full flex flex-col overflow-y-scroll justify-start items-center overflow-x-hidden mr-auto">
 					<Banner />
-					<div className="flex flex-col justify-start items-center w-full p-10 gap-10">
+					<div
+						className={`flex flex-col justify-start items-center w-full ${
+							todolistFolders.allTodoFolders
+								?.map(
+									(todolistFolder) =>
+										todolistFolder.userID === auth.currentUser?.uid
+								)
+								?.includes(true) && todolistFolders.allTodoFolders.length > 0
+								? "h-auto"
+								: "h-full"
+						} p-12 gap-10`}
+					>
 						<>
 							{todolistFolders.allTodoFolders
 								?.map(
@@ -169,44 +180,41 @@ export default function MainContent() {
 								</>
 							) : (
 								<>
-									{/* <div className="w-[90%] h-full relative flex flex-col gap-10 justify-center items-center">
-										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
-											<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
-												<h1 className="text-2xl font-semibold">Need a Short Tutorial?</h1>
-												<p className="">This will expedite your productivity significantly</p>
-												<button onClick={null} className="base-btn">
-													Start Tutorial
-												</button>
-											</div>
-											<div className="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-2 text-center lg:text-start">
-												<h1 className="text-2xl font-semibold">Create a Folder!</h1>
-												<p className="">Ensure that the chosen appellation is to your liking.</p>
-												<button onClick={handleFolderCreation} className="base-btn">
-													Create Folder
-												</button>
-											</div>
-										</div>
-										<TodolistPlaceholder />
-									</div> */}
-
-									<div className="w-[90%] h-full relative flex flex-col gap-10 justify-start items-start">
-										<div className="flex flex-col lg:flex-row justify-around w-full h-auto items-center lg:items-center gap-12 lg:gap-10">
-											<div className="flex flex-col justify-center items-center gap-2 text-center">
-												<h1 className="text-2xl font-semibold">
-													Create a Folder!
-												</h1>
-												<p className="">
-													Ensure that the chosen appellation is to your liking.
-												</p>
-												<button
-													onClick={handleFolderCreation}
-													className="base-btn"
+									<div className="w-[90%] h-full relative flex flex-col gap-10 justify-start items-start text-center">
+										<div className="flex flex-col justify-center w-full h-full items-center gap-12 lg:gap-10 relative">
+											<div className="flex flex-col justify-center items-center gap-3 w-full h-auto">
+												<svg
+													width="50"
+													height="50"
+													viewBox="0 0 30 30"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
 												>
-													Create Folder
-												</button>
+													<path
+														d="M0 29.0769H6.11918L24.1667 10.9815L18.0475 4.84613L0 22.9415V29.0769ZM3.26356 24.2994L18.0475 9.47631L19.5487 10.9815L4.7648 25.8047H3.26356V24.2994Z"
+														fill={user.themeColor ? "#555" : "#aaa"}
+													/>
+													<path
+														d="M24.6667 0.482758C24.0247 -0.160919 22.9877 -0.160919 22.3457 0.482758L19.3334 3.50309L25.5062 9.6923L28.5186 6.67197C29.1605 6.02829 29.1605 4.9885 28.5186 4.34482L24.6667 0.482758Z"
+														fill={user.themeColor ? "#555" : "#aaa"}
+													/>
+												</svg>
+
+												<div
+													className={`flex flex-col justify-center items-center gap-5 ${
+														user.themeColor ? "text-[#555]" : "text-[#aaa]"
+													}`}
+												>
+													<p>You Have no Todo Folders</p>
+													<button
+														onClick={handleFolderCreation}
+														className="base-btn"
+													>
+														Create Folder
+													</button>
+												</div>
 											</div>
 										</div>
-										<TodolistPlaceholder />
 									</div>
 								</>
 							)}
