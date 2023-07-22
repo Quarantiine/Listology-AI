@@ -1,11 +1,50 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { StateCtx } from "../Layout";
 
 export default function Filters({ user }) {
-	const [closeFilterSidebar, setCloseFilterSidebar] = useState();
+	const {
+		filterState,
+		filterDispatch,
+		difficulty,
+		closeFilterSidebar,
+		setCloseFilterSidebar,
+	} = useContext(StateCtx);
 
 	const handleFilterSidebar = () => {
 		setCloseFilterSidebar(!closeFilterSidebar);
+	};
+
+	useEffect(() => {
+		const closeFilterSidebar = (e) => {
+			if (!e.target.closest(".filter-system")) {
+				setCloseFilterSidebar(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeFilterSidebar);
+		return () => document.removeEventListener("mousedown", closeFilterSidebar);
+	}, []);
+
+	const handleFilterDispatch = (key, value) => {
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: key,
+				value: value,
+			},
+		});
+	};
+
+	const handleFilterDispatch2 = (key, value, value2) => {
+		filterDispatch({
+			type: "filter-category-2",
+			payload: {
+				key: key,
+				value: value,
+				value2: value2,
+			},
+		});
 	};
 
 	return (
@@ -14,7 +53,7 @@ export default function Filters({ user }) {
 				onClick={() => {
 					!closeFilterSidebar && handleFilterSidebar();
 				}}
-				className={`z-40 fixed top-1/2 -translate-y-1/2 overflow-hidden rounded-l-lg right-[5px] px-5 pt-3 transition-all duration-500 ${null} ${
+				className={`filter-system z-40 fixed top-1/2 -translate-y-1/2 rounded-l-lg right-[5px] px-5 pt-3 ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
 				} ${
 					closeFilterSidebar
@@ -26,10 +65,15 @@ export default function Filters({ user }) {
 					<>
 						<div className="flex justify-between items-center gap-1">
 							<button
-								onClick={null}
-								className={`w-fit ${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
-								} ${"cursor-not-allowed hover:opacity-80"}`}
+								onClick={(e) => {
+									handleFilterDispatch(
+										"filterCategories",
+										e.target.textContent
+									);
+								}}
+								className={`w-fit text-btn ${
+									user.themeColor ? "text-white" : "text-black"
+								}`}
 							>
 								All
 							</button>
@@ -49,29 +93,15 @@ export default function Filters({ user }) {
 						</div>
 						<div className="flex flex-col justify-start items-start">
 							<button
-								className={`flex justify-start items-center gap-1 w-fit ${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
-								} ${"cursor-not-allowed hover:opacity-80"}`}
-							>
-								{null && (
-									<Image
-										className="w-auto h-[14px]"
-										src={`${
-											user.themeColor
-												? "/icons/labels-white.svg"
-												: "/icons/labels-black.svg"
-										}`}
-										alt="completed"
-										width={17}
-										height={17}
-									/>
-								)}
-								<p>Difficulty</p>
-							</button>
-							<button
-								className={`flex justify-start items-center gap-1 w-fit ${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
-								} ${"cursor-not-allowed hover:opacity-80"}`}
+								onClick={(e) => {
+									handleFilterDispatch(
+										"filterCategories",
+										e.target.textContent
+									);
+								}}
+								className={`flex justify-start items-center gap-1 w-fit text-btn ${
+									user.themeColor ? "text-white" : "text-black"
+								}`}
 							>
 								{user.themeColor
 									? null && (
@@ -95,6 +125,33 @@ export default function Filters({ user }) {
 									  )}
 								<p>Favorites</p>
 							</button>
+							<button
+								onClick={(e) => {
+									handleFilterDispatch2(
+										"filterCategories",
+										e.target.textContent,
+										difficulty
+									);
+								}}
+								className={`flex justify-start items-center gap-1 w-fit text-btn ${
+									user.themeColor ? "text-white" : "text-black"
+								}`}
+							>
+								{null && (
+									<Image
+										className="w-auto h-[14px]"
+										src={`${
+											user.themeColor
+												? "/icons/labels-white.svg"
+												: "/icons/labels-black.svg"
+										}`}
+										alt="completed"
+										width={17}
+										height={17}
+									/>
+								)}
+								<p>Difficulty</p>
+							</button>
 						</div>
 					</>
 				) : (
@@ -114,6 +171,58 @@ export default function Filters({ user }) {
 						/>
 					</button>
 				)}
+
+				{closeFilterSidebar &&
+					filterState.filterCategories.value === "Difficulty" && (
+						<div
+							className={`absolute top-28 right-0 w-[120px] h-[100px] rounded-l-md flex justify-start items-start px-4 py-2 ${
+								user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
+							}`}
+						>
+							{true && (
+								<div className="flex flex-col justify-start items-start gap-1">
+									<button
+										onClick={(e) => {
+											handleFilterDispatch2(
+												"filterCategories",
+												"Difficulty",
+												e.target.textContent
+											);
+										}}
+										className="text-btn line-clamp-1"
+									>
+										Easy
+									</button>
+
+									<button
+										onClick={(e) => {
+											handleFilterDispatch2(
+												"filterCategories",
+												"Difficulty",
+												e.target.textContent
+											);
+										}}
+										className="text-btn line-clamp-1"
+									>
+										Intermediate
+									</button>
+
+									<button
+										onClick={(e) => {
+											handleFilterDispatch2(
+												"filterCategories",
+												"Difficulty",
+												e.target.textContent
+											);
+										}}
+										className="text-btn line-clamp-1"
+									>
+										Hard
+									</button>
+								</div>
+							)}
+						</div>
+					)}
 			</div>
 		</>
 	);

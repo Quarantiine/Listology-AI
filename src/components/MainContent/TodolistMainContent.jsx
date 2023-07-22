@@ -23,6 +23,7 @@ export default function TodolistMainContent({
 		setOpenTodolistSidebar,
 		searchQueryRef,
 		closeSidebar,
+		filterState,
 	} = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
@@ -262,6 +263,12 @@ export default function TodolistMainContent({
 					value.folderID === clickedTodoFolder
 			)
 			.map((subTodo) => subTodo).length;
+	};
+
+	const todoSearchInputWidthCheck = () => {
+		if (window.innerWidth > 768) {
+			return openTodoSearchInput;
+		}
 	};
 
 	return (
@@ -634,7 +641,7 @@ export default function TodolistMainContent({
 
 					<div
 						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
-							openTodoSearchInput ? "hidden" : ""
+							todoSearchInputWidthCheck() ? "hidden" : ""
 						}`}
 					>
 						<h1 className="text-2xl font-semibold line-clamp-1">
@@ -705,17 +712,65 @@ export default function TodolistMainContent({
 										.toLowerCase()
 										.includes(todoSearchInput.toLowerCase())
 								) {
-									return (
-										<TodosContent
-											key={todolist.id}
-											todoLists={todoLists}
-											todolist={todolist}
-											folders={folders}
-											todolistFolder={todolistFolder}
-											subTodoSearchInput={subTodoSearchInput}
-											todoSearchInput={todoSearchInput}
-										/>
-									);
+									if (filterState.filterCategories === "All") {
+										return (
+											<TodosContent
+												key={todolist.id}
+												todoLists={todoLists}
+												todolist={todolist}
+												folders={folders}
+												todolistFolder={todolistFolder}
+												subTodoSearchInput={subTodoSearchInput}
+												todoSearchInput={todoSearchInput}
+											/>
+										);
+									}
+
+									if (
+										filterState.filterCategories === "Favorites" &&
+										todolist.favorited === true
+									) {
+										return (
+											<TodosContent
+												key={todolist.id}
+												todoLists={todoLists}
+												todolist={todolist}
+												folders={folders}
+												todolistFolder={todolistFolder}
+												subTodoSearchInput={subTodoSearchInput}
+												todoSearchInput={todoSearchInput}
+											/>
+										);
+									}
+
+									if (
+										filterState.filterCategories.value === "Difficulty" &&
+										filterState.filterCategories.value2 === todolist.difficulty
+									) {
+										return (
+											<TodosContent
+												key={todolist.id}
+												todoLists={todoLists}
+												todolist={todolist}
+												folders={folders}
+												todolistFolder={todolistFolder}
+												subTodoSearchInput={subTodoSearchInput}
+												todoSearchInput={todoSearchInput}
+											/>
+										);
+									} else if (filterState.filterCategories.value2 === "") {
+										return (
+											<TodosContent
+												key={todolist.id}
+												todoLists={todoLists}
+												todolist={todolist}
+												folders={folders}
+												todolistFolder={todolistFolder}
+												subTodoSearchInput={subTodoSearchInput}
+												todoSearchInput={todoSearchInput}
+											/>
+										);
+									}
 								}
 							})}
 					</>

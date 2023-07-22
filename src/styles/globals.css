@@ -51,3 +51,7 @@
 .handle-bar-overflow::-webkit-scrollbar {
 	width: 0px;
 }
+
+.filter-second-overflow::-webkit-scrollbar {
+	width: 0px;
+}

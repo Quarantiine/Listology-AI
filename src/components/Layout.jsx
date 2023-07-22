@@ -26,11 +26,33 @@ const navigationBarReducer = (state, { payload, type }) => {
 	}
 };
 
+const filterReducer = (state, { payload, type }) => {
+	switch (type) {
+		case "filter-category":
+			return {
+				...state,
+				[payload.key]: payload.value,
+			};
+
+		case "filter-category-2":
+			return {
+				...state,
+				[payload.key]: payload,
+			};
+
+		default:
+			console.log(`Unknown Type`);
+	}
+};
+
 export default function Layout({ children }) {
 	const { auth } = FirebaseApi();
 	const router = useRouter();
 	const [navState, navDispatch] = useReducer(navigationBarReducer, {
 		navigatorLink: "Dashboard",
+	});
+	const [filterState, filterDispatch] = useReducer(filterReducer, {
+		filterCategories: "All",
 	});
 	const [closeSidebar, setCloseSidebar] = useState(false);
 	const [bannerImage, setBannerImage] = useState("");
@@ -43,6 +65,8 @@ export default function Layout({ children }) {
 	const [clickedTodoFolder, setClickedTodoFolder] = useState("");
 	const [startX, setStartX] = useState(null);
 	const [endX, setEndX] = useState(null);
+	const [difficulty, setDifficulty] = useState("");
+	const [closeFilterSidebar, setCloseFilterSidebar] = useState();
 	const searchQueryRef = useRef();
 
 	function handleTouchStart(e) {
@@ -128,6 +152,12 @@ export default function Layout({ children }) {
 						searchQueryRef,
 						navState,
 						navDispatch,
+						filterState,
+						filterDispatch,
+						difficulty,
+						setDifficulty,
+						closeFilterSidebar,
+						setCloseFilterSidebar,
 					}}
 				>
 					<div
