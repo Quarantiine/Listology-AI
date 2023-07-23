@@ -320,8 +320,10 @@ export default function TodolistMainContent({
 													<h1 className="font-bold max-w-[100%] w-44">
 														Transfer Todo Folder to:
 													</h1>
-													{/* hello */}
 													<div className="flex flex-col justify-center items-start gap-0">
+														<p className="text-sm text-[#aaa] font-semibold">
+															Main Folders
+														</p>
 														{folders.allFolders
 															.filter(
 																(value) =>
