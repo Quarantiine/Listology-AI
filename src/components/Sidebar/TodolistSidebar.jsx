@@ -198,7 +198,8 @@ export default function TodolistSidebar() {
 								.filter(
 									(value) =>
 										value.userID === auth.currentUser?.uid &&
-										value.folderName === clickedFolder
+										value.folderName === clickedFolder &&
+										!value.pin
 								)
 								?.map((todoFolder, index) => {
 									if (todoFolder.userID === auth.currentUser?.uid) {
