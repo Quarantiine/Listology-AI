@@ -138,7 +138,7 @@ export default function MainContent() {
 													<h1 className="text-2xl font-semibold">
 														Todo Folders
 													</h1>
-													<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
+													<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
 														{todolistFolders.allTodoFolders
 															?.filter(
 																(value) =>

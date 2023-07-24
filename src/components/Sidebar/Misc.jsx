@@ -88,13 +88,6 @@ export default function Misc({ user, handleNavigator }) {
 					<p className={`${user.themeColor ? "text-white" : "text-black"}`}>
 						{user.username}
 					</p>
-					<p
-						className={`text-sm ${
-							user.themeColor ? "text-[#555]" : "text-gray-400"
-						}`}
-					>
-						{user.email}
-					</p>
 				</div>
 			</div>
 		</>

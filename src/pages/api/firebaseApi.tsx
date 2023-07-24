@@ -450,6 +450,20 @@ export default function FirebaseApi() {
 			const docRef = doc(colRefTodoFolders, id);
 			await deleteDoc(docRef);
 		};
+
+		updatingPin = async (id: string, pin: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				pin: pin,
+			});
+		};
+
+		removePin = async (id: string) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				pin: "",
+			});
+		};
 	}
 	const TLFS = new TodolistFolderSystem();
 	const addingTodoFolder = TLFS.addingTodoFolder;
@@ -459,6 +473,8 @@ export default function FirebaseApi() {
 	const updatingFolderTitle = TLFS.updatingFolderTitle;
 	const updatingFolderEmoji = TLFS.updatingFolderEmoji;
 	const updatingFolderDescription = TLFS.updatingFolderDescription;
+	const updatingPin = TLFS.updatingPin;
+	const removePin = TLFS.removePin;
 
 	class TodoListSystem {
 		constructor() {}
@@ -625,6 +641,8 @@ export default function FirebaseApi() {
 			deletingTodoFolder,
 			addingTodoFolder,
 			allTodoFolders,
+			updatingPin,
+			removePin,
 		},
 
 		todoLists: {

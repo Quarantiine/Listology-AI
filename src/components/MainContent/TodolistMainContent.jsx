@@ -24,6 +24,7 @@ export default function TodolistMainContent({
 		searchQueryRef,
 		closeSidebar,
 		filterState,
+		filterDispatch,
 	} = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
@@ -151,6 +152,7 @@ export default function TodolistMainContent({
 
 	const handleTransferTodoFolder = (e, folderName) => {
 		e.preventDefault();
+		setClickedFolder("");
 		setClickedTodoFolder("");
 
 		todolistFolders.updatingFolderName(todolistFolder.id, folderName);
@@ -234,25 +236,27 @@ export default function TodolistMainContent({
 		setTimeout(() => {
 			searchQueryRef.current?.focus();
 		}, 10);
-
-		// const mobileSidebar = () => {
-		// 	if (window.innerWidth < 1024) {
-		// 		setCloseSidebar(true);
-		// 	} else {
-		// 		setCloseSidebar(false);
-		// 	}
-		// };
-		// mobileSidebar();
 	};
 
 	const totalTodos = () => {
-		return todoLists.allTodoLists
-			?.filter(
-				(value) =>
-					value.userID === auth.currentUser?.uid &&
-					value.folderID === clickedTodoFolder
-			)
-			?.map((todo) => todo).length;
+		return `${
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.userID === auth.currentUser?.uid &&
+						value.folderID === clickedTodoFolder &&
+						value.completed === true
+				)
+				?.map((todo) => todo).length
+		}/${
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.userID === auth.currentUser?.uid &&
+						value.folderID === clickedTodoFolder
+				)
+				?.map((todo) => todo).length
+		}`;
 	};
 
 	const totalSubTodos = () => {
@@ -269,6 +273,17 @@ export default function TodolistMainContent({
 		if (window.innerWidth > 768) {
 			return openTodoSearchInput;
 		}
+	};
+
+	const handleClearFilter = () => {
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: "filterCategories",
+				value: "All",
+				value2: "",
+			},
+		});
 	};
 
 	return (
@@ -334,7 +349,7 @@ export default function TodolistMainContent({
 																return (
 																	<React.Fragment key={folders.id}>
 																		<button
-																			className="text-btn"
+																			className="text-btn text-start flex justify-start items-start"
 																			onClick={(e) => {
 																				handleTransferTodoFolder(
 																					e,
@@ -342,7 +357,12 @@ export default function TodolistMainContent({
 																				);
 																			}}
 																		>
-																			{folders.folderName}
+																			<p
+																				className="line-clamp-1"
+																				title={folders.folderName}
+																			>
+																				{folders.folderName}
+																			</p>
 																		</button>
 																	</React.Fragment>
 																);
@@ -698,6 +718,53 @@ export default function TodolistMainContent({
 
 				<div className={`flex flex-col justify-start items-start w-full gap-2`}>
 					<>
+						{filterState.filterCategories.value ? (
+							<div className="flex justify-start items-start gap-2">
+								<div className="flex justify-start items-center gap-1">
+									<p
+										className={`text-lg font-semibold ${
+											user.themeColor ? "text-[#555]" : "text-gray-400"
+										}`}
+									>
+										{filterState.filterCategories.value}:
+									</p>
+									<p
+										className={`text-lg font-semibold ${
+											user.themeColor ? "text-[#555]" : "text-gray-400"
+										}`}
+									>
+										{filterState.filterCategories.value2}
+									</p>
+								</div>
+								{filterState.filterCategories !== "All" && (
+									<button
+										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
+										onClick={handleClearFilter}
+									>
+										Clear
+									</button>
+								)}
+							</div>
+						) : (
+							<div className="w-fit flex justify-start items-start gap-2">
+								<p
+									className={`text-xl font-semibold ${
+										user.themeColor ? "text-[#555]" : "text-gray-400"
+									}`}
+								>
+									{filterState.filterCategories}
+								</p>
+
+								{filterState.filterCategories !== "All" && (
+									<button
+										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
+										onClick={handleClearFilter}
+									>
+										Clear
+									</button>
+								)}
+							</div>
+						)}
 						{todoLists.allTodoLists
 							?.filter(
 								(value) =>
@@ -775,8 +842,10 @@ export default function TodolistMainContent({
 									}
 								}
 							})}
+						{}
 					</>
 
+					{/* Difficulty Main */}
 					{!todoLists.allTodoLists
 						?.filter((value) => value.userID === auth.currentUser?.uid)
 						?.map(
@@ -785,7 +854,9 @@ export default function TodolistMainContent({
 								todolist.completed === false
 						)
 						.includes(true) &&
-						!completedTodos && (
+						!completedTodos &&
+						filterState.filterCategories.value === "Difficulty" &&
+						filterState.filterCategories.value2 === "" && (
 							<div className="flex flex-col justify-start items-start gap-3 w-full">
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
@@ -795,6 +866,116 @@ export default function TodolistMainContent({
 							</div>
 						)}
 
+					{/* Favorites */}
+					{!todoLists.allTodoLists
+						?.filter((value) => value.userID === auth.currentUser?.uid)
+						?.map(
+							(todolist) =>
+								todolist.folderID === clickedTodoFolder &&
+								todolist.favorited === true &&
+								todolist.completed === false
+						)
+						.includes(true) &&
+						filterState.filterCategories === "Favorites" && (
+							<div className="flex flex-col justify-start items-start gap-3 w-full">
+								<p
+									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+								>
+									No Favorited Todos
+								</p>
+							</div>
+						)}
+
+					<>
+						{/* Difficulties */}
+						{!todoLists.allTodoLists
+							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.map(
+								(todolist) =>
+									todolist.folderID === clickedTodoFolder &&
+									todolist.difficulty === "Easy" &&
+									todolist.completed === false
+							)
+							.includes(true) &&
+							filterState.filterCategories.value === "Difficulty" &&
+							filterState.filterCategories.value2 === "Easy" && (
+								<div className="flex flex-col justify-start items-start gap-3 w-full">
+									<p
+										className={
+											user.themeColor ? "text-[#555]" : "text-gray-400"
+										}
+									>
+										No Easy Todos
+									</p>
+								</div>
+							)}
+
+						{!todoLists.allTodoLists
+							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.map(
+								(todolist) =>
+									todolist.folderID === clickedTodoFolder &&
+									todolist.difficulty === "Intermediate" &&
+									todolist.completed === false
+							)
+							.includes(true) &&
+							filterState.filterCategories.value === "Difficulty" &&
+							filterState.filterCategories.value2 === "Intermediate" && (
+								<div className="flex flex-col justify-start items-start gap-3 w-full">
+									<p
+										className={
+											user.themeColor ? "text-[#555]" : "text-gray-400"
+										}
+									>
+										No Intermediate Todos
+									</p>
+								</div>
+							)}
+
+						{!todoLists.allTodoLists
+							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.map(
+								(todolist) =>
+									todolist.folderID === clickedTodoFolder &&
+									todolist.difficulty === "Hard" &&
+									todolist.completed === false
+							)
+							.includes(true) &&
+							filterState.filterCategories.value === "Difficulty" &&
+							filterState.filterCategories.value2 === "Hard" && (
+								<div className="flex flex-col justify-start items-start gap-3 w-full">
+									<p
+										className={
+											user.themeColor ? "text-[#555]" : "text-gray-400"
+										}
+									>
+										No Hard Todos
+									</p>
+								</div>
+							)}
+					</>
+
+					{/* No Todos */}
+					{!todoLists.allTodoLists
+						?.filter((value) => value.userID === auth.currentUser?.uid)
+						?.map(
+							(todolist) =>
+								todolist.folderID === clickedTodoFolder &&
+								todolist.completed === false
+						)
+						.includes(true) &&
+						!completedTodos &&
+						filterState.filterCategories === "All" && (
+							<div className="flex flex-col justify-start items-start gap-3 w-full">
+								<p
+									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+								>
+									No Todos
+								</p>
+							</div>
+						)}
+
+					{/* No Completed Todos */}
 					{!todoLists.allTodoLists
 						?.filter((value) => value.userID === auth.currentUser?.uid)
 						?.map(

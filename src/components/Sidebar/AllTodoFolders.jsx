@@ -19,6 +19,7 @@ export default function AllTodoFolders({
 		clickedFolder,
 		setOpenTodolistSidebar,
 		setCloseSidebar,
+		filterDispatch,
 	} = useContext(StateCtx);
 	const [todoFolderCompleteIndicator, setTodoFolderCompleteIndicator] =
 		useState(false);
@@ -78,6 +79,15 @@ export default function AllTodoFolders({
 	const handleClickedTodoFolder = () => {
 		setClickedTodoFolder(todoFolder.id);
 		setOpenTodolistSidebar(false);
+
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: "filterCategories",
+				value: "All",
+				value2: "",
+			},
+		});
 
 		const mobileSidebar = () => {
 			if (window.innerWidth < 1024) {
