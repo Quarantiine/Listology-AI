@@ -453,7 +453,7 @@ const UnlockingTodoFolderPin = ({
 							className="p-1 rounded-md w-full text-white bg-[#0E51FF]"
 							onClick={handleUnlockingPin}
 						>
-							Add
+							Access
 						</button>
 						<button
 							className="p-1 rounded-md w-full text-white bg-red-500"
