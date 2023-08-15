@@ -55,7 +55,7 @@ const TextContent = ({ user }) => {
 						>
 							Welcome
 						</p>
-						{/* <div className="flex justify-center items-center rounded-full overflow-hidden">
+						<div className="flex justify-center items-center rounded-full overflow-hidden">
 							{user.photoURL && (
 								<Image
 									className="min-w-[25px] min-h-[25px]"
@@ -65,7 +65,7 @@ const TextContent = ({ user }) => {
 									height={30}
 								/>
 							)}
-						</div> */}
+						</div>
 					</div>
 					<h1
 						className={`line-clamp-1 ${
