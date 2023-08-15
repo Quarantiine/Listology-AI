@@ -278,6 +278,7 @@ export default function FirebaseApi() {
 							themeColor: false,
 							bannerImage: "",
 							bannerSize: false,
+							photoURL: user.photoURL,
 						});
 					}
 				});

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import ImageControls from "./ImageControls";
 
 export default function BannerImage({ user }) {
@@ -41,6 +41,8 @@ export default function BannerImage({ user }) {
 }
 
 const TextContent = ({ user }) => {
+	useEffect(() => console.log(user.photoURL));
+
 	return (
 		<>
 			<div className="absolute flex justify-center items-center z-10 w-full h-full">
@@ -53,19 +55,16 @@ const TextContent = ({ user }) => {
 						>
 							Welcome
 						</p>
-						<div className="flex justify-center items-center">
-							{/* {x ? (
+						<div className="flex justify-center items-center rounded-full overflow-hidden">
+							{user.photoURL && (
 								<Image
 									className="min-w-[25px] min-h-[25px]"
-									src={}
+									src={user.photoURL}
 									alt="undo"
 									width={30}
 									height={30}
 								/>
-							) : (
-								<div className="bg-white rounded-full w-8 h-8" />
-								)} */}
-							<div className="bg-white rounded-full w-8 h-8" />
+							)}
 						</div>
 					</div>
 					<h1
