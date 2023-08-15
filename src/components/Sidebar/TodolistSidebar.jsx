@@ -198,8 +198,7 @@ export default function TodolistSidebar() {
 								.filter(
 									(value) =>
 										value.userID === auth.currentUser?.uid &&
-										value.folderName === clickedFolder &&
-										!value.pin
+										value.folderName === clickedFolder
 								)
 								?.map((todoFolder, index) => {
 									if (todoFolder.userID === auth.currentUser?.uid) {
@@ -226,6 +225,7 @@ export default function TodolistSidebar() {
 													}
 													todoFolderDeletionRef={todoFolderDeletionRef}
 													handleDeletionIndicator={handleDeletionIndicator}
+													pin={todoFolder.pin}
 												/>
 											);
 										}

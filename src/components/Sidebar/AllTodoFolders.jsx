@@ -12,6 +12,7 @@ export default function AllTodoFolders({
 	setClickedTodoFolder,
 	todoFolderDeletionRef,
 	handleDeletionIndicator,
+	pin,
 }) {
 	const { auth, todoLists, folders } = FirebaseApi();
 	const {
@@ -141,9 +142,20 @@ export default function AllTodoFolders({
 				</p>
 
 				<button
-					onClick={handleClickedTodoFolder}
-					className="flex text-btn justify-start items-center gap-1 w-full text-start"
+					onClick={!pin ? handleClickedTodoFolder : null}
+					className={`flex justify-start items-center gap-1 w-full text-start ${
+						pin ? "cursor-not-allowed" : ""
+					}`}
 				>
+					{pin && (
+						<Image
+							className="w-auto min-h-[15px] max-h-[15px]"
+							src={"/icons/lock-white.svg"}
+							alt="trash"
+							width={25}
+							height={25}
+						/>
+					)}
 					<h1 className="line-clamp-1 w-32" title={todoFolder.folderTitle}>
 						{todoFolder.folderTitle}
 					</h1>

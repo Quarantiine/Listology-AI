@@ -53,7 +53,7 @@ export default function Filters({ user }) {
 				onClick={() => {
 					!closeFilterSidebar && handleFilterSidebar();
 				}}
-				className={`filter-system z-40 fixed top-1/2 -translate-y-1/2 rounded-l-lg right-[5px] px-5 pt-3 ${
+				className={`filter-system z-40 fixed top-1/2 -translate-y-1/2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
 				} ${
 					closeFilterSidebar
@@ -71,8 +71,18 @@ export default function Filters({ user }) {
 										e.target.textContent
 									);
 								}}
-								className={`w-fit text-btn ${
-									user.themeColor ? "text-white" : "text-black"
+								className={`w-fit text-btn px-1 rounded-md ${
+									user.themeColor
+										? `${
+												filterState.filterCategories === "All"
+													? "bg-[#444]"
+													: ""
+										  } text-white`
+										: `${
+												filterState.filterCategories === "All"
+													? "bg-[#ddd]"
+													: ""
+										  } text-black`
 								}`}
 							>
 								All
@@ -99,8 +109,18 @@ export default function Filters({ user }) {
 										e.target.textContent
 									);
 								}}
-								className={`flex justify-start items-center gap-1 w-fit text-btn ${
-									user.themeColor ? "text-white" : "text-black"
+								className={`flex justify-start items-center gap-1 w-fit text-btn px-1 rounded-md ${
+									user.themeColor
+										? `${
+												filterState.filterCategories === "Favorites"
+													? "bg-[#444]"
+													: ""
+										  } text-white`
+										: `${
+												filterState.filterCategories === "Favorites"
+													? "bg-[#ddd]"
+													: ""
+										  } text-black`
 								}`}
 							>
 								{user.themeColor
@@ -133,8 +153,18 @@ export default function Filters({ user }) {
 										difficulty
 									);
 								}}
-								className={`flex justify-start items-center gap-1 w-fit text-btn ${
-									user.themeColor ? "text-white" : "text-black"
+								className={`flex justify-start items-center gap-1 w-fit text-btn px-1 rounded-md ${
+									user.themeColor
+										? `${
+												filterState.filterCategories.value === "Difficulty"
+													? "bg-[#444]"
+													: ""
+										  } text-white`
+										: `${
+												filterState.filterCategories.value === "Difficulty"
+													? "bg-[#ddd]"
+													: ""
+										  } text-black`
 								}`}
 							>
 								{null && (
@@ -189,7 +219,15 @@ export default function Filters({ user }) {
 												e.target.textContent
 											);
 										}}
-										className="text-btn line-clamp-1"
+										className={`text-btn line-clamp-1 px-1 rounded-md ${
+											user.themeColor
+												? filterState.filterCategories.value2 === "Easy"
+													? "bg-[#444]"
+													: ""
+												: filterState.filterCategories.value2 === "Easy"
+												? "bg-[#ddd]"
+												: ""
+										}`}
 									>
 										Easy
 									</button>
@@ -202,7 +240,15 @@ export default function Filters({ user }) {
 												e.target.textContent
 											);
 										}}
-										className="text-btn line-clamp-1"
+										className={`text-btn line-clamp-1 px-1 rounded-md ${
+											user.themeColor
+												? filterState.filterCategories.value2 === "Intermediate"
+													? "bg-[#444]"
+													: ""
+												: filterState.filterCategories.value2 === "Intermediate"
+												? "bg-[#ddd]"
+												: ""
+										}`}
 									>
 										Intermediate
 									</button>
@@ -215,7 +261,15 @@ export default function Filters({ user }) {
 												e.target.textContent
 											);
 										}}
-										className="text-btn line-clamp-1"
+										className={`text-btn line-clamp-1 px-1 rounded-md ${
+											user.themeColor
+												? filterState.filterCategories.value2 === "Hard"
+													? "bg-[#444]"
+													: ""
+												: filterState.filterCategories.value2 === "Hard"
+												? "bg-[#ddd]"
+												: ""
+										}`}
 									>
 										Hard
 									</button>
