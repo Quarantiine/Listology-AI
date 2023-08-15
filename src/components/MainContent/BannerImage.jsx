@@ -45,19 +45,35 @@ const TextContent = ({ user }) => {
 		<>
 			<div className="absolute flex justify-center items-center z-10 w-full h-full">
 				<div className="w-full md:w-[80%] h-full flex flex-col justify-center items-center md:items-start gap-2">
-					<p
-						className={`${
-							user.themeColor ? "text-white" : "text-[#333]"
-						} text-xl sm:text-3xl font-thin`}
-					>
-						Welcome
-					</p>
+					<div className="flex justify-center items-center gap-3">
+						<p
+							className={`${
+								user.themeColor ? "text-white" : "text-[#333]"
+							} text-xl sm:text-3xl font-thin`}
+						>
+							Welcome
+						</p>
+						<div className="flex justify-center items-center">
+							{/* {x ? (
+								<Image
+									className="min-w-[25px] min-h-[25px]"
+									src={}
+									alt="undo"
+									width={30}
+									height={30}
+								/>
+							) : (
+								<div className="bg-white rounded-full w-8 h-8" />
+								)} */}
+							<div className="bg-white rounded-full w-8 h-8" />
+						</div>
+					</div>
 					<h1
 						className={`line-clamp-1 ${
 							user.themeColor ? "text-white" : "text-[#333]"
 						} text-5xl sm:text-7xl font-medium`}
 					>
-						{user.username || "USERNAME"}
+						{user.username || "Username"}
 					</h1>
 				</div>
 			</div>
