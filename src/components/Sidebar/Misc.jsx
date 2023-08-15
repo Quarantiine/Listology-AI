@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
+import Image from "next/image";
 
 export default function Misc({ user, handleNavigator }) {
 	const { registration } = FirebaseApi();
@@ -85,9 +86,20 @@ export default function Misc({ user, handleNavigator }) {
 					<button onClick={handleSigningOut} className="base-btn mb-3">
 						Logout
 					</button>
-					<p className={`${user.themeColor ? "text-white" : "text-black"}`}>
-						{user.username}
-					</p>
+					<div className="flex justify-between items-center gap-2">
+						<p className={`${user.themeColor ? "text-white" : "text-black"}`}>
+							{user.username}
+						</p>
+						{user.photoURL && (
+							<Image
+								className="min-w-[25px] max-w-[25px]  min-h-[25px] max-h-[25px]  rounded-full"
+								src={user.photoURL}
+								alt="undo"
+								width={30}
+								height={30}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 		</>
