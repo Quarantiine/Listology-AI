@@ -2,7 +2,7 @@ import Head from "next/head";
 import FirebaseApi from "./api/firebaseApi";
 import Sidebar from "../components/Sidebar/Sidebar";
 import MainContent from "../components/MainContent/MainContent";
-import React, { createContext, useContext } from "react";
+import React, { createContext, use, useContext, useEffect } from "react";
 import Image from "next/image";
 import Settings from "../components/Sidebar/Settings";
 import { StateCtx } from "../components/Layout";
@@ -54,6 +54,8 @@ export default function Home() {
 				</div>
 			</>
 			{auth.currentUser &&
+				registration.allusers &&
+				registration.allusers[0] &&
 				registration.allusers
 					?.filter((value) => auth.currentUser?.uid === value.userID)
 					?.map((user) => {
