@@ -1,8 +1,9 @@
 import Image from "next/image";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import GalleryModal from "../MainContent/GalleryModal";
 import { createPortal } from "react-dom";
 import { StateCtx } from "../Layout";
+import FirebaseApi from "../../pages/api/firebaseApi";
 
 export default function PersonalInfoSection({ user }) {
 	const { openGalleryModal, setOpenGalleryModal, clickedImageLoading } =
@@ -146,16 +147,31 @@ export default function PersonalInfoSection({ user }) {
 }
 
 const ChangingInfoSection = ({ user }) => {
-	const [changeUsername, setChangeUsername] = useState(false);
-	const [changeEmail, setChangeEmail] = useState(false);
-	const [changePassword, setChangePassword] = useState(false);
-
+	const { registration } = FirebaseApi();
 	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [changeUsername, setChangeUsername] = useState(false);
 
-	const handleChangeEmail = (setChangeInput, changeInput) => {
+	const handleChangeInputs = (setChangeInput, changeInput) => {
 		setChangeInput(!changeInput);
+	};
+
+	const handleOnChangUsername = (e) => {
+		setUsername(e.target.value);
+	};
+
+	const handleUsernameChange = () => {
+		const usernameCheck = () => {
+			if (username) {
+				return true;
+			}
+			return false;
+		};
+
+		if (usernameCheck()) {
+			registration.updatingUsername(username, user.id);
+			setChangeUsername(false);
+			setUsername("");
+		}
 	};
 
 	return (
@@ -165,6 +181,10 @@ const ChangingInfoSection = ({ user }) => {
 					<h1 className="text-lg font-semibold">Username</h1>
 					{changeUsername ? (
 						<input
+							onChange={handleOnChangUsername}
+							onKeyDown={(e) =>
+								e.key == "Enter" ? handleUsernameChange() : null
+							}
 							className={`rounded-md px-2 py-1 w-full ${
 								user.themeColor
 									? "bg-[#444] border border-[#666]"
@@ -183,8 +203,8 @@ const ChangingInfoSection = ({ user }) => {
 					<button
 						onClick={() =>
 							changeUsername
-								? null
-								: handleChangeEmail(setChangeUsername, changeUsername)
+								? handleUsernameChange()
+								: handleChangeInputs(setChangeUsername, changeUsername)
 						}
 						className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white w-full sm:w-fit`}
 					>
@@ -193,49 +213,8 @@ const ChangingInfoSection = ({ user }) => {
 					{changeUsername && (
 						<button
 							onClick={() =>
-								handleChangeEmail(setChangeUsername, changeUsername)
+								handleChangeInputs(setChangeUsername, changeUsername)
 							}
-							className={`text-sm text-btn bg-red-500 px-2 py-1 rounded-md text-white w-full sm:w-fit`}
-						>
-							Cancel
-						</button>
-					)}
-				</div>
-			</div>
-
-			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end w-full gap-3">
-				<div className="flex flex-col justify-center items-start w-full">
-					<h1 className="text-lg font-semibold">Email</h1>
-					{changeEmail ? (
-						<input
-							className={`rounded-md px-2 py-1 w-full ${
-								user.themeColor
-									? "bg-[#444] border border-[#666]"
-									: "bg-[#eee] border"
-							}`}
-							type="email"
-							name="email"
-							placeholder={user.email}
-						/>
-					) : (
-						<p>{user.email}</p>
-					)}
-				</div>
-
-				<div className="flex flex-col w-full sm:w-fit h-auto sm:flex-row justify-center items-center gap-2">
-					<button
-						onClick={() =>
-							changeEmail
-								? null
-								: handleChangeEmail(setChangeEmail, changeEmail)
-						}
-						className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white w-full sm:w-fit`}
-					>
-						Change
-					</button>
-					{changeEmail && (
-						<button
-							onClick={() => handleChangeEmail(setChangeEmail, changeEmail)}
 							className={`text-sm text-btn bg-red-500 px-2 py-1 rounded-md text-white w-full sm:w-fit`}
 						>
 							Cancel
@@ -246,15 +225,28 @@ const ChangingInfoSection = ({ user }) => {
 
 			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end gap-3 w-full">
 				<div className="flex flex-col justify-center items-start">
-					<h1 className="text-lg font-semibold">Password</h1>
-					<p>*********</p>
+					<h1 className="text-lg font-semibold">Email</h1>
+					<p>{user.email}</p>
 				</div>
-				<button
+				{/* <button
 					onClick={null}
 					className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white`}
 				>
 					Change
-				</button>
+				</button> */}
+			</div>
+
+			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end gap-3 w-full">
+				<div className="flex flex-col justify-center items-start">
+					<h1 className="text-lg font-semibold">Password</h1>
+					<p>*********</p>
+				</div>
+				{/* <button
+					onClick={null}
+					className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white`}
+				>
+					Change
+				</button> */}
 			</div>
 		</>
 	);

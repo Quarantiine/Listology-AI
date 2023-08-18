@@ -30,6 +30,7 @@ import {
 	FacebookAuthProvider,
 	AuthProvider,
 	TwitterAuthProvider,
+	updateEmail,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -220,6 +221,14 @@ export default function FirebaseApi() {
 			});
 		};
 
+		updatingUsername = async (username: string, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				username: username,
+			});
+		};
+
 		signingIn = async (email: string, password: string) => {
 			try {
 				await signInWithEmailAndPassword(auth, email, password);
@@ -351,6 +360,7 @@ export default function FirebaseApi() {
 	const updatingThemeColor = RS.updatingThemeColor;
 	const updatingBannerImage = RS.updatingBannerImage;
 	const updatingBannerSize = RS.updatingBannerSize;
+	const updatingUsername = RS.updatingUsername;
 	const signingIn = RS.signingIn;
 	const signingOut = RS.signingOut;
 	const forgotPassword = RS.forgotPassword;
@@ -618,6 +628,7 @@ export default function FirebaseApi() {
 			updatingThemeColor,
 			updatingBannerImage,
 			updatingBannerSize,
+			updatingUsername,
 			signingIn,
 			signingOut,
 			forgotPassword,

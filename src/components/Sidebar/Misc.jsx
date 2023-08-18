@@ -13,10 +13,6 @@ export default function Misc({ user, handleNavigator }) {
 		navDispatch,
 	} = useContext(StateCtx);
 
-	useEffect(() => {
-		console.log(navState);
-	});
-
 	const handleSigningOut = (e) => {
 		e.preventDefault();
 		setOpenTodolistSidebar(false);
@@ -101,7 +97,11 @@ export default function Misc({ user, handleNavigator }) {
 						Logout
 					</button>
 					<div className="flex justify-between items-center gap-2">
-						<p className={`${user.themeColor ? "text-white" : "text-black"}`}>
+						<p
+							className={`line-clamp-1 ${
+								user.themeColor ? "text-white" : "text-black"
+							}`}
+						>
 							{user.username}
 						</p>
 						{user.photoURL && (
