@@ -150,7 +150,11 @@ export default function AllTodoFolders({
 					{pin && (
 						<Image
 							className="w-auto min-h-[15px] max-h-[15px]"
-							src={"/icons/lock-white.svg"}
+							src={
+								user.themeColor
+									? "/icons/lock-white.svg"
+									: "/icons/lock-black.svg"
+							}
 							alt="trash"
 							width={25}
 							height={25}

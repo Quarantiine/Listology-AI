@@ -2,6 +2,7 @@ import React, { useContext, useReducer } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import PersonalInfoSection from "./PersonalInfoSection";
+import ActivitySection from "./ActivitySection";
 
 const navigatorReducer = (state, { type, payload }) => {
 	switch (type) {
@@ -61,7 +62,7 @@ export default function Settings() {
 							>
 								Personal Info
 							</button>
-							<button
+							{/* <button
 								onClick={(e) => handleNavigation(e.target.textContent)}
 								className={`transition-all px-2 py-1 ${
 									navigatorState.navigate === "Activity"
@@ -70,7 +71,7 @@ export default function Settings() {
 								}`}
 							>
 								Activity
-							</button>
+							</button> */}
 						</div>
 
 						<div className="w-full h-full">
@@ -92,20 +93,3 @@ export default function Settings() {
 		</>
 	);
 }
-
-const ActivitySection = () => {
-	return (
-		<>
-			<div>
-				{" "}
-				Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem
-				ratione neque error aut necessitatibus reprehenderit id facilis
-				consequuntur porro magnam nisi, quam repellendus nesciunt laborum vel
-				commodi. Quidem, soluta perferendis. Lorem ipsum dolor sit amet
-				consectetur adipisicing elit. Ratione nemo illo officiis fugiat illum,
-				aliquid dolorum autem nulla, officia esse numquam dolore sint voluptate,
-				explicabo maiores adipisci! Provident, unde obcaecati.
-			</div>
-		</>
-	);
-};
