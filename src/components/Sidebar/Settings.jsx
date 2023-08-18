@@ -46,7 +46,7 @@ export default function Settings() {
 					<h1 className="text-2xl font-semibold">Settings</h1>
 					<div className="flex flex-col sm:flex-row justify-between items-start gap-10 pb-16">
 						<div
-							className={` sm:min-w-[160px] sm:h-[400px] sm:max-h-[400px] rounded-md sticky -top-10 flex flex-row sm:flex-col justify-center items-center sm:justify-start sm:items-start px-4 py-3 gap-2 sm:gap-1 z-50 ${
+							className={` sm:min-w-[160px] sm:h-[400px] sm:max-h-[400px] rounded-md sticky -top-10 flex flex-row sm:flex-col justify-center items-center sm:justify-start sm:items-start px-4 py-3 gap-2 sm:gap-1 z-40 ${
 								user.themeColor
 									? "bg-[#333] border border-[#555]"
 									: "bg-[#eee] border"
