@@ -9,9 +9,13 @@ import { UserCredentialCtx } from "../../pages";
 export default function ImageControls() {
 	const { user } = useContext(UserCredentialCtx);
 	const { registration } = FirebaseApi();
-	const { clickedImageLoading, setClickedImageLoading } = useContext(StateCtx);
+	const {
+		clickedImageLoading,
+		setClickedImageLoading,
+		openGalleryModal,
+		setOpenGalleryModal,
+	} = useContext(StateCtx);
 	const [openDropdown, setOpenDropdown] = useState(false);
-	const [openGalleryModal, setOpenGalleryModal] = useState(false);
 
 	useEffect(() => {
 		const closeImageLoadingIndicator = (e) => {

@@ -67,6 +67,7 @@ export default function Layout({ children }) {
 	const [endX, setEndX] = useState(null);
 	const [difficulty, setDifficulty] = useState("");
 	const [closeFilterSidebar, setCloseFilterSidebar] = useState();
+	const [openGalleryModal, setOpenGalleryModal] = useState(false);
 	const searchQueryRef = useRef();
 
 	function handleTouchStart(e) {
@@ -158,6 +159,8 @@ export default function Layout({ children }) {
 						setDifficulty,
 						closeFilterSidebar,
 						setCloseFilterSidebar,
+						openGalleryModal,
+						setOpenGalleryModal,
 					}}
 				>
 					<div

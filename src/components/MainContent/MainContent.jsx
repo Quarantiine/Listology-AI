@@ -210,7 +210,7 @@ export default function MainContent() {
 														onClick={handleFolderCreation}
 														className="base-btn"
 													>
-														Create Folder
+														Create Main Folder
 													</button>
 												</div>
 											</div>

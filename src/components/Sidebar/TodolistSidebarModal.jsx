@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
+import React, {
+	useContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import FirebaseApi from "../../pages/api/firebaseApi";
@@ -119,11 +125,20 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 									<p className="text-4xl">{emoji.native}</p>
 								</div>
 							) : (
-								<div onClick={handleEmojiModal} className="w-10 text-btn h-10 rounded-full bg-gray-400" />
+								<div
+									onClick={handleEmojiModal}
+									className="w-10 text-btn h-10 rounded-full bg-gray-400"
+								/>
 							)}
 							{openEmojiModal && (
-								<div className={`emoji-modal z-10 w-40 fixed left-1/2 -translate-x-1/2 sm:absolute top-12 sm:right-0`}>
-									<Picker dynamicWidth={false} data={data} onEmojiSelect={setEmoji} />
+								<div
+									className={`emoji-modal z-10 w-40 fixed left-1/2 -translate-x-1/2 sm:absolute top-12 sm:right-0`}
+								>
+									<Picker
+										dynamicWidth={false}
+										data={data}
+										onEmojiSelect={setEmoji}
+									/>
 								</div>
 							)}
 						</div>
@@ -157,7 +172,11 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 							value={inputState.folderDescription}
 						></textarea>
 					</div>
-					<button onClick={handleCreateFolder} className="base-btn w-full" type="submit">
+					<button
+						onClick={handleCreateFolder}
+						className="base-btn w-full"
+						type="submit"
+					>
 						Create Todo Folder
 					</button>
 				</form>

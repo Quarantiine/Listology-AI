@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
 import Image from "next/image";
@@ -10,13 +10,27 @@ export default function Misc({ user, handleNavigator }) {
 		setClickedFolder,
 		setClickedTodoFolder,
 		navState,
+		navDispatch,
 	} = useContext(StateCtx);
+
+	useEffect(() => {
+		console.log(navState);
+	});
 
 	const handleSigningOut = (e) => {
 		e.preventDefault();
 		setOpenTodolistSidebar(false);
 		setClickedFolder("");
 		setClickedTodoFolder("");
+
+		navDispatch({
+			type: "sidebar-navigation-link",
+			payload: {
+				key: "navigatorLink",
+				value: "Dashboard",
+			},
+		});
+
 		registration.signingOut();
 	};
 

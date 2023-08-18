@@ -138,7 +138,7 @@ const AllImages = ({
 		setClickedImageLoading(true);
 		clickedImageLoadingRef.current = setTimeout(() => {
 			setClickedImageLoading(false);
-		}, 10000);
+		}, 5000);
 	};
 
 	return (
