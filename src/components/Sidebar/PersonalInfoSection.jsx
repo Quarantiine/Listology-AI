@@ -30,7 +30,7 @@ export default function PersonalInfoSection({ user }) {
 
 			{fullSize &&
 				createPortal(
-					<div className="w-full h-full absolute top-0 left-0 bg-[rgba(0,0,0,0.7)] z-50 flex justify-center items-center">
+					<div className="w-full h-full absolute top-0 left-0 bg-[rgba(0,0,0,0.7)] z-[101] flex justify-center items-center">
 						<div className="w-[90%] h-[90%] bg-white rounded-md relative">
 							<Image
 								onClick={handleFullSize}
