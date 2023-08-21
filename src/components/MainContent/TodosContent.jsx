@@ -246,6 +246,11 @@ export default function TodosContent({
 		todoLists.updatingTodoDifficulty(todolist.id, difficulty);
 	};
 
+	const copyTodoText = () => {
+		navigator.clipboard.writeText(todolist.todo);
+		setOpenMoreDropdown(!openMoreDropdown);
+	};
+
 	return (
 		<div className="flex flex-col w-full">
 			<div
@@ -495,13 +500,22 @@ export default function TodosContent({
 											onClick={(e) =>
 												handleMoreDispatch("todoDropdown", e.target.textContent)
 											}
-											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full"
 										>
 											Time Created
 										</button>
+										<button
+											onClick={() => {
+												handleMoreDispatch("todoDropdown", "");
+												copyTodoText();
+											}}
+											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+										>
+											Copy Text
+										</button>
 
 										{moreState.todoDropdown && (
-											<div className="absolute top-16 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div className="absolute top-24 left-0 w-full h-fit bg-white border rounded-md shadow-md">
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button
