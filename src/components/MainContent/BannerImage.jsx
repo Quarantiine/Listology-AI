@@ -41,7 +41,7 @@ export default function BannerImage({ user }) {
 }
 
 const TextContent = ({ user }) => {
-	useEffect(() => console.log(user.photoURL));
+	// useEffect(() => console.log(user.photoURL));
 
 	return (
 		<>

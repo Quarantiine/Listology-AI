@@ -109,6 +109,13 @@ export default function TodoFoldersDashboard({
 		setBeforeRemoving(!beforeRemoving);
 	};
 
+	const handleHideTodoFolder = () => {
+		todolistFolders.hideFolder(
+			todoFolder.id,
+			todoFolder.folderHidden ? !todoFolder.folderHidden : true
+		);
+	};
+
 	return (
 		<div className="flex justify-center items-center w-full h-fit relative">
 			{removedPinMesg &&
@@ -283,16 +290,28 @@ export default function TodoFoldersDashboard({
 						height={30}
 					/>
 					{openMoreModal && (
-						<div className="more-modal absolute top-7 left-0 px-2 py-1 w-24 h-fit rounded-md border bg-white text-black text-sm z-10 flex flex-col gap-1">
+						<div className="more-modal absolute top-7 left-0 w-20 h-fit rounded-md overflow-hidden border bg-white text-black text-sm z-10 flex flex-col gap-1 text-start">
 							{todoFolder.pin ? (
-								<div onClick={handleBeforeRemovingPin} className="text-btn">
+								<p
+									onClick={handleBeforeRemovingPin}
+									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+								>
 									Remove Pin
-								</div>
+								</p>
 							) : (
-								<div onClick={handleAddPinModal} className="text-btn">
+								<p
+									onClick={handleAddPinModal}
+									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+								>
 									Add a pin
-								</div>
+								</p>
 							)}
+							<p
+								onClick={handleHideTodoFolder}
+								className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+							>
+								{todoFolder.folderHidden ? "Show" : "Hide"}
+							</p>
 						</div>
 					)}
 				</button>
@@ -627,7 +646,6 @@ const TodoListAddingPinMode = ({
 		clearTimeout(pinAddedIndicator.current);
 
 		if (pin.length == 4 && !checkPin) {
-			// TODO: Add Pin Function
 			todolistFolders.updatingPin(todoFolder.id, pin);
 
 			setPinAddedMesg("Pin Added Successfully to: ");

@@ -475,6 +475,13 @@ export default function FirebaseApi() {
 				pin: "",
 			});
 		};
+
+		hideFolder = async (id: string, folderHidden: boolean) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				folderHidden: folderHidden,
+			});
+		};
 	}
 	const TLFS = new TodolistFolderSystem();
 	const addingTodoFolder = TLFS.addingTodoFolder;
@@ -486,6 +493,7 @@ export default function FirebaseApi() {
 	const updatingFolderDescription = TLFS.updatingFolderDescription;
 	const updatingPin = TLFS.updatingPin;
 	const removePin = TLFS.removePin;
+	const hideFolder = TLFS.hideFolder;
 
 	class TodoListSystem {
 		constructor() {}
@@ -655,6 +663,7 @@ export default function FirebaseApi() {
 			allTodoFolders,
 			updatingPin,
 			removePin,
+			hideFolder,
 		},
 
 		todoLists: {

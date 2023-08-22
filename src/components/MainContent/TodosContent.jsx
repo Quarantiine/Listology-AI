@@ -216,6 +216,7 @@ export default function TodosContent({
 	};
 
 	const createdTimeText = () => {
+		// TODO: Add time here
 		const timeMonths = [
 			"January",
 			"February",
@@ -538,10 +539,18 @@ export default function TodosContent({
 															onClick={(e) =>
 																handleSetDifficulty(e.target.textContent)
 															}
-															className="px-2 py-1 hover:bg-red-500 hover:text-white w-full rounded-b-md"
+															className="px-2 py-1 hover:bg-red-500 hover:text-white w-full"
 														>
 															Hard
 														</button>
+														{
+															<button
+																onClick={(e) => handleSetDifficulty("")}
+																className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+															>
+																Remove
+															</button>
+														}
 													</div>
 												)}
 
