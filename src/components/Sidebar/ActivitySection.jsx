@@ -6,10 +6,6 @@ export default function ActivitySection() {
 	const { auth, todoLists, todolistFolders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 
-	useEffect(() => {
-		console.log(allSubTodos);
-	});
-
 	const activityCategories = [
 		{ title: "Total Todos Completed", value: 234 },
 		{ title: "Total Todos Created", value: 234 },

@@ -20,6 +20,7 @@ export default function MainContent() {
 		setOpenFolderModal,
 		clickedTodoFolder,
 		setClickedFolder,
+		clickedFolder,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, todolistFolders, folders } = FirebaseApi();
@@ -306,6 +307,22 @@ export default function MainContent() {
 															)}
 														</div>
 													</div>
+
+													{todolistFolders.allTodoFolders
+														?.filter(
+															(value) => value.userID === auth.currentUser.uid
+														)
+														?.map((todoFolder) => !todoFolder.folderHidden)
+														.includes(true) ? null : (
+														<p
+															className={`mr-auto ${
+																user.themeColor ? "text-[#555]" : "text-[#ccc]"
+															}`}
+														>
+															You have hidden Todo Folders
+														</p>
+													)}
+
 													<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
 														{todolistFolders.allTodoFolders
 															?.filter(
@@ -386,19 +403,6 @@ export default function MainContent() {
 										</div>
 									</div>
 								</>
-							)}
-
-							{todolistFolders.allTodoFolders
-								?.filter((value) => value.userID === auth.currentUser.uid)
-								?.map((todoFolder) => !todoFolder.folderHidden)
-								.includes(true) ? null : (
-								<p
-									className={`mr-auto ${
-										user.themeColor ? "text-[#555]" : "text-[#ccc]"
-									}`}
-								>
-									All Todo Folders Are Hidden
-								</p>
 							)}
 						</>
 					</div>
