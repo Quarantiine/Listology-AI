@@ -291,7 +291,7 @@ export default function TodoFoldersDashboard({
 						height={30}
 					/>
 					{openMoreModal && (
-						<div className="more-modal absolute top-7 left-0 w-20 h-fit rounded-md overflow-hidden border bg-white text-black text-sm z-10 flex flex-col gap-1 text-start">
+						<div className="more-modal absolute top-7 left-0 w-24 h-fit rounded-md overflow-hidden border bg-white text-black text-sm z-10 flex flex-col gap-1 text-start">
 							{todoFolder.pin ? (
 								<p
 									onClick={handleBeforeRemovingPin}
