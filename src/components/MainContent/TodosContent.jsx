@@ -252,6 +252,14 @@ export default function TodosContent({
 		setOpenMoreDropdown(!openMoreDropdown);
 	};
 
+	const handleIgnoreTodo = () => {
+		todoLists.updatingIgnoreTodo(
+			todolist.id,
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true
+		);
+		setOpenMoreDropdown(!openMoreDropdown);
+	};
+
 	return (
 		<div className="flex flex-col w-full">
 			<div
@@ -262,46 +270,54 @@ export default function TodosContent({
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative ${
 					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
 				} ${
-					todolist.favorited
+					todolist.ignoreTodo
+						? "bg-[#0e52ff1f]"
+						: todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
 							: "bg-[#eee]"
 						: ""
 				}`}
 			>
-				<div
-					className={`absolute top-0 left-0 w-1 h-full ${
-						todolist && todolist.difficulty === "Hard"
-							? "bg-red-500"
-							: todolist.difficulty === "Intermediate"
-							? "bg-yellow-500"
-							: todolist.difficulty === "Easy"
-							? "bg-green-500"
-							: user.themeColor
-							? "bg-[#444]"
-							: "bg-[#ccc]"
-					}`}
-				/>
+				{todolist.ignoreTodo ? (
+					<div className={`absolute top-0 left-0 w-1 h-full base-bg`} />
+				) : (
+					<div
+						className={`absolute top-0 left-0 w-1 h-full ${
+							todolist && todolist.difficulty === "Hard"
+								? "bg-red-500"
+								: todolist.difficulty === "Intermediate"
+								? "bg-yellow-500"
+								: todolist.difficulty === "Easy"
+								? "bg-green-500"
+								: user.themeColor
+								? "bg-[#444]"
+								: "bg-[#ccc]"
+						}`}
+					/>
+				)}
 
 				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
-					<button
-						className="min-w-[18px] max-w-[18px]"
-						onClick={handleCompletedTodo}
-					>
-						<Image
-							className="w-auto h-[20px]"
-							src={
-								todolist.completed
-									? "/icons/completed-todo.svg"
-									: user.themeColor
-									? "/icons/checkbox-empty-white.svg"
-									: "/icons/checkbox-empty-black.svg"
-							}
-							alt="completed"
-							width={25}
-							height={25}
-						/>
-					</button>
+					{!todolist.ignoreTodo && (
+						<button
+							className="min-w-[18px] max-w-[18px]"
+							onClick={handleCompletedTodo}
+						>
+							<Image
+								className="w-auto h-[20px]"
+								src={
+									todolist.completed
+										? "/icons/completed-todo.svg"
+										: user.themeColor
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
+								}
+								alt="completed"
+								width={25}
+								height={25}
+							/>
+						</button>
+					)}
 
 					<button
 						className={`lg:pr-1 transition-all duration-300 ${
@@ -490,13 +506,33 @@ export default function TodosContent({
 										className="more-dropdown absolute w-[130px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 left-0 bg-white text-sm text-black border shadow-md z-10"
 									>
 										<button
-											onClick={(e) =>
-												handleMoreDispatch("todoDropdown", e.target.textContent)
-											}
+											onClick={() => {
+												handleMoreDispatch("todoDropdown", "");
+												copyTodoText();
+											}}
 											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-t-md"
+										>
+											Copy Text
+										</button>
+
+										<button
+											onClick={(e) =>
+												todolist.ignoreTodo
+													? null
+													: handleMoreDispatch(
+															"todoDropdown",
+															e.target.textContent
+													  )
+											}
+											className={`px-2 py-1  w-full ${
+												todolist.ignoreTodo
+													? "hover:bg-[#ccc] cursor-not-allowed"
+													: "hover:bg-[#0E51FF] hover:text-white"
+											}`}
 										>
 											Todo Difficulty
 										</button>
+
 										<button
 											onClick={(e) =>
 												handleMoreDispatch("todoDropdown", e.target.textContent)
@@ -505,18 +541,25 @@ export default function TodosContent({
 										>
 											Time Created
 										</button>
+
 										<button
 											onClick={() => {
-												handleMoreDispatch("todoDropdown", "");
-												copyTodoText();
+												todolist.completed
+													? null
+													: handleMoreDispatch("todoDropdown", "");
+												todolist.completed ? null : handleIgnoreTodo();
 											}}
-											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+											className={`px-2 py-1 w-full rounded-b-md ${
+												todolist.completed
+													? "cursor-not-allowed hover:bg-[#ccc]"
+													: "hover:bg-[#0E51FF] hover:text-white"
+											}`}
 										>
-											Copy Text
+											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
 										</button>
 
 										{moreState.todoDropdown && (
-											<div className="absolute top-24 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div className="absolute top-32 left-0 w-full h-fit bg-white border rounded-md shadow-md">
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button

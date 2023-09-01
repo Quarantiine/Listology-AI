@@ -9,6 +9,7 @@ export default function Filters({ user }) {
 		difficulty,
 		closeFilterSidebar,
 		setCloseFilterSidebar,
+		completedTodos,
 	} = useContext(StateCtx);
 
 	const handleFilterSidebar = () => {
@@ -51,15 +52,17 @@ export default function Filters({ user }) {
 		<>
 			<div
 				onClick={() => {
-					!closeFilterSidebar && handleFilterSidebar();
+					!completedTodos && !closeFilterSidebar && handleFilterSidebar();
 				}}
 				className={`filter-system z-40 fixed top-1/2 -translate-y-1/2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
 				} ${
 					closeFilterSidebar
 						? "w-[120px] h-[100px]"
-						: "w-[40px] h-[40px] p-2 flex justify-center items-center cursor-pointer"
-				} ${user.themeColor ? "text-white" : "text-black"}`}
+						: "w-[40px] h-[40px] p-2 flex justify-center items-center"
+				} ${user.themeColor ? "text-white" : "text-black"} ${
+					completedTodos ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+				}`}
 			>
 				{closeFilterSidebar ? (
 					<>
@@ -71,7 +74,7 @@ export default function Filters({ user }) {
 										e.target.textContent
 									);
 								}}
-								className={`w-fit text-btn px-1 rounded-md ${
+								className={`w-fit px-1 rounded-md ${
 									user.themeColor
 										? `${
 												filterState.filterCategories === "All"
@@ -89,7 +92,7 @@ export default function Filters({ user }) {
 							</button>
 							<button onClick={handleFilterSidebar} className={`w-fit`}>
 								<Image
-									className="w-[15px] h-auto -rotate-90"
+									className={`w-[15px] h-auto -rotate-90`}
 									src={
 										user.themeColor
 											? "/icons/arrow-white.svg"
@@ -186,7 +189,9 @@ export default function Filters({ user }) {
 					</>
 				) : (
 					<button
-						className={`w-fit h-fit absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex justify-center items-center`}
+						className={`w-fit h-fit absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex justify-center items-center ${
+							completedTodos ? "opacity-50 cursor-not-allowed" : null
+						}`}
 					>
 						<Image
 							className={`w-auto min-h-[20px] max-h-[20px] rotate-90`}

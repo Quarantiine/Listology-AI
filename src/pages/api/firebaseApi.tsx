@@ -610,6 +610,14 @@ export default function FirebaseApi() {
 				mainFolder,
 			});
 		};
+
+		updatingIgnoreTodo = async (id: string, ignoreTodo: boolean) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				ignoreTodo: ignoreTodo,
+			});
+		};
 	}
 	const TLS = new TodoListSystem();
 	const addingTodos = TLS.addingTodos;
@@ -625,6 +633,7 @@ export default function FirebaseApi() {
 	const updatingTodoDifficulty = TLS.updatingTodoDifficulty;
 	const updatingTodoMainFolder = TLS.updatingTodoMainFolder;
 	const updatingSubTodoMainFolder = TLS.updatingSubTodoMainFolder;
+	const updatingIgnoreTodo = TLS.updatingIgnoreTodo;
 
 	return {
 		auth,
@@ -682,6 +691,7 @@ export default function FirebaseApi() {
 			updatingTodoDifficulty,
 			updatingTodoMainFolder,
 			updatingSubTodoMainFolder,
+			updatingIgnoreTodo,
 		},
 	};
 }

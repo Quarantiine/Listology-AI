@@ -165,7 +165,13 @@ export default function MainContent() {
 													/>
 												</div>
 
-												{/* TODO: Add a indicator that there are no hidden folder */}
+												{/* Recent Section */}
+												{null && (
+													<div className="">
+														<h1 className="text-2xl font-semibold">Recent</h1>
+													</div>
+												)}
+
 												<div className="flex flex-col justify-start items-start w-full gap-4">
 													<div className="flex justify-between items-center gap-2 w-full">
 														<h1 className="text-2xl font-semibold">
@@ -268,9 +274,7 @@ export default function MainContent() {
 																										<Image
 																											className="w-auto min-h-[15px] max-h-[15px]"
 																											src={
-																												user.themeColor
-																													? "/icons/lock-white.svg"
-																													: "/icons/lock-black.svg"
+																												"/icons/lock-black.svg"
 																											}
 																											alt="trash"
 																											width={25}

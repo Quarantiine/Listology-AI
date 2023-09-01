@@ -225,29 +225,34 @@ export default function TodoFoldersDashboard({
 								<span>/</span>
 							</>
 						)}
+
 						<span>
 							{todoLists.allTodoLists
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid
+										value.userID === auth.currentUser?.uid &&
+										!value.ignoreTodo
 								)
 								?.map((todo) => todo).length === 0
-								? "No Todos"
+								? "No Todos to Complete"
 								: todoLists.allTodoLists
 										?.filter(
 											(value) =>
 												value.folderID === todoFolder.id &&
-												value.userID === auth.currentUser?.uid
+												value.userID === auth.currentUser?.uid &&
+												!value.ignoreTodo
 										)
 										?.map((todo) => todo).length}
 						</span>
+
 						{todoLists.allTodoLists
 							?.filter(
 								(value) =>
 									value.folderID === todoFolder.id &&
 									value.userID === auth.currentUser?.uid &&
-									value.completed === true
+									value.completed === true &&
+									!value.ignoreTodo
 							)
 							?.map((todo) => todo).length !== 0 ? (
 							<span>Todos Completed</span>
@@ -255,7 +260,8 @@ export default function TodoFoldersDashboard({
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid
+										value.userID === auth.currentUser?.uid &&
+										!value.ignoreTodo
 								)
 								?.map((todo) => todo).length === 0 ? (
 							""
@@ -263,7 +269,8 @@ export default function TodoFoldersDashboard({
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid
+										value.userID === auth.currentUser?.uid &&
+										!value.ignoreTodo
 								)
 								?.map((todo) => todo).length === 1 ? (
 							<span>Todo Not Completed</span>

@@ -25,6 +25,8 @@ export default function TodolistMainContent({
 		closeSidebar,
 		filterState,
 		filterDispatch,
+		completedTodos,
+		setCompletedTodos,
 	} = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
@@ -37,7 +39,6 @@ export default function TodolistMainContent({
 	const [subSearchDropdown, setSubSearchDropdown] = useState(false);
 	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
 	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
-	const [completedTodos, setCompletedTodos] = useState(false);
 	const [openTodoSearchInput, setOpenTodoSearchInput] = useState(false);
 	const [deleteCompletedTodo, setDeleteCompletedTodo] = useState(false);
 	const windowWidthCheckRef = useRef();
@@ -180,6 +181,15 @@ export default function TodolistMainContent({
 
 	const handleCompletedTodosBtn = () => {
 		setCompletedTodos(!completedTodos);
+
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: "filterCategories",
+				value: "All",
+				value2: "",
+			},
+		});
 	};
 
 	const handleOpenTodoSearchInput = () => {
@@ -253,7 +263,8 @@ export default function TodolistMainContent({
 				?.filter(
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
-						value.folderID === clickedTodoFolder
+						value.folderID === clickedTodoFolder &&
+						!value.ignoreTodo
 				)
 				?.map((todo) => todo).length
 		}`;
