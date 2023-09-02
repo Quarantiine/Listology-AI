@@ -300,6 +300,31 @@ export default function TodolistMainContent({
 		});
 	};
 
+	const totalCompletionPercentage = () => {
+		const percentage =
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.userID === auth.currentUser.uid &&
+						value.folderID === clickedTodoFolder &&
+						value.mainFolder[0] === clickedFolder &&
+						value.completed &&
+						!value.ignoreTodo
+				)
+				?.map((todolist) => todolist).length /
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.userID === auth.currentUser.uid &&
+						value.folderID === clickedTodoFolder &&
+						value.mainFolder[0] === clickedFolder &&
+						!value.ignoreTodo
+				)
+				?.map((todolist) => todolist).length;
+
+		return percentage;
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
@@ -680,7 +705,7 @@ export default function TodolistMainContent({
 							todoSearchInputWidthCheck() ? "hidden" : ""
 						}`}
 					>
-						<h1 className="text-2xl font-semibold line-clamp-1">
+						<h1 className="text-2xl font-semibold line-clamp-1 flex justify-start items-center gap-2">
 							<span>
 								{totalTodos()} {totalTodos() === 1 ? "Todo" : "Todos"}
 							</span>
@@ -760,7 +785,7 @@ export default function TodolistMainContent({
 								)}
 							</div>
 						) : (
-							<div className="w-fit flex justify-start items-start gap-2">
+							<div className="w-full flex justify-start items-center gap-2">
 								<p
 									className={`text-xl font-semibold ${
 										user.themeColor ? "text-[#555]" : "text-gray-400"
@@ -768,6 +793,61 @@ export default function TodolistMainContent({
 								>
 									{filterState.filterCategories}
 								</p>
+
+								{filterState.filterCategories === "All" && (
+									<>
+										{totalCompletionPercentage() ? (
+											<>
+												{totalCompletionPercentage() >= 1 ? (
+													<p
+														className={`text-base font-normal ml-auto ${
+															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+														}`}
+													>
+														{totalCompletionPercentage()
+															.toFixed(2)
+															.replace("0.", "")
+															.replace(".", "")}
+														% Completed
+													</p>
+												) : totalCompletionPercentage()
+														.toString()
+														.includes("0") ? (
+													<p
+														className={`text-base font-normal ml-auto ${
+															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+														}`}
+													>
+														{totalCompletionPercentage()
+															.toFixed(2)
+															.replace("0.", "")}
+														% Completed
+													</p>
+												) : (
+													<p
+														className={`text-base font-normal ml-auto ${
+															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+														}`}
+													>
+														{totalCompletionPercentage()
+															.toFixed(2)
+															.replace("0.", "")
+															.replace("0", "")}
+														% Completed
+													</p>
+												)}
+											</>
+										) : (
+											<p
+												className={`text-base font-normal ml-auto ${
+													user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+												}`}
+											>
+												0% Completed
+											</p>
+										)}
+									</>
+								)}
 
 								{filterState.filterCategories !== "All" && (
 									<button
