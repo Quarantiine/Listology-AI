@@ -7,6 +7,8 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
 import TodosContent from "./TodosContent";
 import Filters from "../Sidebar/Filters";
+import AllIgnoredTodos from "./AllIgnoredTodos";
+import AllTodos from "./AllTodos";
 
 export default function TodolistMainContent({
 	todolistFolder,
@@ -117,6 +119,7 @@ export default function TodolistMainContent({
 
 	const handleAddingTodos = () => {
 		setCompletedTodos(false);
+
 		todoLists.addingTodos(
 			todolistFolder.id,
 			folders.allFolders
@@ -640,7 +643,7 @@ export default function TodolistMainContent({
 
 					<button
 						onClick={handleAddingTodos}
-						className="base-btn w-full md:w-auto md:min-w-[130px] flex justify-center items-center gap-3"
+						className={`base-btn w-full md:w-auto md:min-w-[130px] flex justify-center items-center gap-3`}
 					>
 						<h1 className={`text-white`}>Add Todo</h1>
 						<div className="flex justify-center items-center relative">
@@ -776,84 +779,32 @@ export default function TodolistMainContent({
 								)}
 							</div>
 						)}
-						{todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todolistFolder.id &&
-									value.userID === auth.currentUser?.uid &&
-									value.completed === completedTodos
-							)
-							?.map((todolist) => {
-								if (
-									todolist.folderID === clickedTodoFolder &&
-									todolist.todo
-										.normalize("NFD")
-										.replace(/\p{Diacritic}/gu, "")
-										.toLowerCase()
-										.includes(todoSearchInput.toLowerCase())
-								) {
-									if (filterState.filterCategories === "All") {
-										return (
-											<TodosContent
-												key={todolist.id}
-												todoLists={todoLists}
-												todolist={todolist}
-												folders={folders}
-												todolistFolder={todolistFolder}
-												subTodoSearchInput={subTodoSearchInput}
-												todoSearchInput={todoSearchInput}
-											/>
-										);
-									}
 
-									if (
-										filterState.filterCategories === "Favorites" &&
-										todolist.favorited === true
-									) {
-										return (
-											<TodosContent
-												key={todolist.id}
-												todoLists={todoLists}
-												todolist={todolist}
-												folders={folders}
-												todolistFolder={todolistFolder}
-												subTodoSearchInput={subTodoSearchInput}
-												todoSearchInput={todoSearchInput}
-											/>
-										);
-									}
+						<AllTodos
+							TodosContent={TodosContent}
+							todoLists={todoLists}
+							filterState={filterState}
+							clickedTodoFolder={clickedTodoFolder}
+							auth={auth}
+							completedTodos={completedTodos}
+							todolistFolder={todolistFolder}
+							folders={folders}
+							subTodoSearchInput={subTodoSearchInput}
+							todoSearchInput={todoSearchInput}
+						/>
 
-									if (
-										filterState.filterCategories.value === "Difficulty" &&
-										filterState.filterCategories.value2 === todolist.difficulty
-									) {
-										return (
-											<TodosContent
-												key={todolist.id}
-												todoLists={todoLists}
-												todolist={todolist}
-												folders={folders}
-												todolistFolder={todolistFolder}
-												subTodoSearchInput={subTodoSearchInput}
-												todoSearchInput={todoSearchInput}
-											/>
-										);
-									} else if (filterState.filterCategories.value2 === "") {
-										return (
-											<TodosContent
-												key={todolist.id}
-												todoLists={todoLists}
-												todolist={todolist}
-												folders={folders}
-												todolistFolder={todolistFolder}
-												subTodoSearchInput={subTodoSearchInput}
-												todoSearchInput={todoSearchInput}
-											/>
-										);
-									}
-								}
-							})}
-						{}
+						<AllIgnoredTodos
+							TodosContent={TodosContent}
+							todoLists={todoLists}
+							filterState={filterState}
+							clickedTodoFolder={clickedTodoFolder}
+							auth={auth}
+							completedTodos={completedTodos}
+							todolistFolder={todolistFolder}
+							folders={folders}
+							subTodoSearchInput={subTodoSearchInput}
+							todoSearchInput={todoSearchInput}
+						/>
 					</>
 
 					{/* Difficulty Main */}
@@ -862,7 +813,8 @@ export default function TodolistMainContent({
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
-								todolist.completed === false
+								todolist.completed === false &&
+								!todolist.ignoreTodo
 						)
 						.includes(true) &&
 						!completedTodos &&

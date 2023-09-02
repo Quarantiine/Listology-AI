@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
 	CollectionReference,
@@ -9,12 +9,14 @@ import {
 	collection,
 	deleteDoc,
 	doc,
+	endAt,
 	getFirestore,
 	onSnapshot,
 	orderBy,
 	query,
 	serverTimestamp,
 	updateDoc,
+	where,
 } from "firebase/firestore";
 import {
 	createUserWithEmailAndPassword,
@@ -64,7 +66,10 @@ const colRefTodoFolders: CollectionReference = collection(
 const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
 
 const colRefTodoLists: CollectionReference = collection(db, "todo-lists", "");
-const queTodoLists: Query = query(colRefTodoLists, orderBy("createdTime"));
+const queTodoLists: Query = query(
+	colRefTodoLists,
+	orderBy("createdTime", "asc")
+);
 
 const colRefSubTodoLists: CollectionReference = collection(
 	db,
@@ -75,8 +80,6 @@ const queSubTodoLists: Query = query(
 	colRefSubTodoLists,
 	orderBy("createdTime")
 );
-
-// ADD HERE -----
 
 // ==================
 
@@ -506,6 +509,7 @@ export default function FirebaseApi() {
 				favorited: false,
 				completed: false,
 				userID: auth.currentUser?.uid,
+				ignoreTodo: false,
 				createdTime: serverTimestamp(),
 			});
 		};
