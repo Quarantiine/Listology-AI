@@ -20,7 +20,6 @@ export default function MainContent() {
 		setOpenFolderModal,
 		clickedTodoFolder,
 		setClickedFolder,
-		clickedFolder,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, todolistFolders, folders } = FirebaseApi();
@@ -67,25 +66,6 @@ export default function MainContent() {
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
 	};
-
-	const date = () => {
-		const d = new Date().getTime();
-
-		return d;
-	};
-
-	useEffect(() =>
-		console.log(
-			todolistFolders.allTodoFolders
-				?.sort()
-				?.slice(0, 3)
-				?.filter(
-					(value) =>
-						value.userID === auth.currentUser?.uid && !value.folderHidden
-				)
-				?.map((todolistFolder) => todolistFolder.clickTimeStamp)
-		)
-	);
 
 	return (
 		<>
@@ -184,65 +164,63 @@ export default function MainContent() {
 													/>
 												</div>
 
-												{todolistFolders.allTodoFolders
-													?.filter(
-														(value) =>
-															value.userID === auth.currentUser?.uid &&
-															!value.folderHidden &&
-															value.clickTimeStamp
-													)
-													?.map((todoFolder) => todoFolder.clickTimeStamp)
-													.length > 0 && (
-													<div className="flex flex-col justify-start items-start w-full gap-4">
-														<div className="flex justify-between items-center gap-2 w-full">
-															<h1 className="text-2xl font-semibold">
-																Most Recent
-															</h1>
+												<div className="flex flex-col justify-start items-start w-full gap-4">
+													<div className="flex justify-between items-center gap-2 w-full">
+														<h1 className="text-2xl font-semibold">
+															Todo Folders
+														</h1>
 
-															{todolistFolders.allTodoFolders
-																?.filter(
-																	(value) =>
-																		value.userID === auth.currentUser?.uid &&
-																		!value.folderHidden &&
-																		value.clickTimeStamp
-																)
-																?.map((todoFolder) => todoFolder.clickTimeStamp)
-																.length > 0 && (
-																<div className="relative hidden-folder-container">
-																	<div
-																		onClick={handleHiddenFoldersDropdown}
-																		className="flex justify-center items-center gap-2 text-btn select-none"
-																	>
-																		<p
-																			className={`text-sm ${
-																				user.themeColor
-																					? "text-[#555]"
-																					: "text-[#999]"
-																			}`}
-																		>
-																			Hidden Folders
+														<div className="relative hidden-folder-container">
+															<div
+																onClick={handleHiddenFoldersDropdown}
+																className="flex justify-center items-center gap-2 text-btn select-none"
+															>
+																<p
+																	className={`text-sm ${
+																		user.themeColor
+																			? "text-[#555]"
+																			: "text-[#999]"
+																	}`}
+																>
+																	Hidden Folders
+																</p>
+
+																<Image
+																	className={`min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer ${
+																		null ? "rotate-180" : "rotate-0"
+																	}`}
+																	src={
+																		user.themeColor
+																			? "/icons/arrow-white.svg"
+																			: "/icons/arrow-black.svg"
+																	}
+																	alt="search"
+																	width={20}
+																	height={20}
+																/>
+															</div>
+
+															{openHiddenFoldersDropdown && (
+																<div
+																	className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex justify-start items-center bg-white text-black border shadow-md`}
+																>
+																	{!todolistFolders.allTodoFolders
+																		?.filter(
+																			(value) =>
+																				value.userID === auth.currentUser.uid
+																		)
+																		?.map(
+																			(todoFolder) => todoFolder.folderHidden
+																		)
+																		.includes(true) && (
+																		<p className={`text-sm text-[#aaa] w-full`}>
+																			No Hidden Folders
 																		</p>
+																	)}
 
-																		<Image
-																			className={`min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer ${
-																				null ? "rotate-180" : "rotate-0"
-																			}`}
-																			src={
-																				user.themeColor
-																					? "/icons/arrow-white.svg"
-																					: "/icons/arrow-black.svg"
-																			}
-																			alt="search"
-																			width={20}
-																			height={20}
-																		/>
-																	</div>
-
-																	{openHiddenFoldersDropdown && (
-																		<div
-																			className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex justify-start items-center bg-white text-black border shadow-md`}
-																		>
-																			{!todolistFolders.allTodoFolders
+																	<div
+																		className={`flex flex-col gap-3 justify-start items-center ${
+																			todolistFolders.allTodoFolders
 																				?.filter(
 																					(value) =>
 																						value.userID ===
@@ -252,382 +230,78 @@ export default function MainContent() {
 																					(todoFolder) =>
 																						todoFolder.folderHidden
 																				)
-																				.includes(true) && (
-																				<p
-																					className={`text-sm text-[#aaa] w-full`}
-																				>
-																					No Hidden Folders
-																				</p>
-																			)}
-
-																			<div
-																				className={`flex flex-col gap-3 justify-start items-center ${
-																					todolistFolders.allTodoFolders
-																						?.filter(
-																							(value) =>
-																								value.userID ===
-																								auth.currentUser.uid
-																						)
-																						?.map(
-																							(todoFolder) =>
-																								todoFolder.folderHidden
-																						)
-																						.includes(true) && "w-full"
-																				}`}
-																			>
-																				{todolistFolders.allTodoFolders
-																					.filter(
-																						(value) =>
-																							value.userID ===
-																							auth.currentUser.uid
-																					)
-																					.map((todoFolder) => {
-																						if (
-																							todoFolder.folderHidden === true
-																						) {
-																							return (
-																								<React.Fragment
-																									key={todoFolder.id}
-																								>
-																									<div className="flex justify-between items-center gap-2 w-full">
-																										<div
-																											className={`flex justify-center items-center gap-1`}
-																										>
-																											<button
-																												onClick={() =>
-																													!todoFolder.pin &&
-																													handleClickHiddenFolder(
-																														todoFolder
-																													)
-																												}
-																												className={`text-sm text-start line-clamp-2 ${
-																													todoFolder.pin
-																														? "cursor-not-allowed"
-																														: "hover:text-[#0E51FF]"
-																												}`}
-																											>
-																												{todoFolder.folderTitle}
-																											</button>
-
-																											{todoFolder.pin && (
-																												<Image
-																													className="w-auto min-h-[15px] max-h-[15px]"
-																													src={
-																														"/icons/lock-black.svg"
-																													}
-																													alt="trash"
-																													width={25}
-																													height={25}
-																												/>
-																											)}
-																										</div>
-
-																										<button
-																											onClick={() =>
-																												handleHideTodoFolder(
-																													todoFolder
-																												)
-																											}
-																											className="rotate-45"
-																										>
-																											<Image
-																												className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
-																												src={
-																													"/icons/plus-black.svg"
-																												}
-																												alt="add"
-																												width={30}
-																												height={30}
-																											/>
-																										</button>
-																									</div>
-																								</React.Fragment>
-																							);
-																						}
-																					})}
-																			</div>
-																		</div>
-																	)}
-																</div>
-															)}
-														</div>
-
-														<>
-															<div className="hidden 2xl:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
-																{todolistFolders.allTodoFolders
-																	?.slice(0, 4)
-																	?.filter(
-																		(value) =>
-																			value.userID === auth.currentUser?.uid &&
-																			!value.folderHidden &&
-																			value.clickTimeStamp
-																	)
-																	?.map((todoFolder) => {
-																		if (
-																			todoFolder.folderTitle
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase()) ||
-																			todoFolder.folderName
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase())
-																		) {
-																			return (
-																				<React.Fragment key={todoFolder.id}>
-																					<TodoFoldersDashboard
-																						todoFolder={todoFolder}
-																						user={user}
-																						setClickedTodoFolder={
-																							setClickedTodoFolder
-																						}
-																						setClickedFolder={setClickedFolder}
-																						auth={auth}
-																					/>
-																				</React.Fragment>
-																			);
-																		}
-																	})}
-															</div>
-
-															<div className="hidden xl:grid 2xl:hidden grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
-																{todolistFolders.allTodoFolders
-																	?.slice(0, 3)
-																	?.filter(
-																		(value) =>
-																			value.userID === auth.currentUser?.uid &&
-																			!value.folderHidden &&
-																			value.clickTimeStamp
-																	)
-																	?.map((todoFolder) => {
-																		if (
-																			todoFolder.folderTitle
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase()) ||
-																			todoFolder.folderName
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase())
-																		) {
-																			return (
-																				<React.Fragment key={todoFolder.id}>
-																					<TodoFoldersDashboard
-																						todoFolder={todoFolder}
-																						user={user}
-																						setClickedTodoFolder={
-																							setClickedTodoFolder
-																						}
-																						setClickedFolder={setClickedFolder}
-																						auth={auth}
-																					/>
-																				</React.Fragment>
-																			);
-																		}
-																	})}
-															</div>
-
-															<div className="grid xl:hidden grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
-																{todolistFolders.allTodoFolders
-																	?.slice(0, 2)
-																	?.filter(
-																		(value) =>
-																			value.userID === auth.currentUser?.uid &&
-																			!value.folderHidden &&
-																			value.clickTimeStamp
-																	)
-																	?.map((todoFolder) => {
-																		if (
-																			todoFolder.folderTitle
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase()) ||
-																			todoFolder.folderName
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase())
-																		) {
-																			return (
-																				<React.Fragment key={todoFolder.id}>
-																					<TodoFoldersDashboard
-																						todoFolder={todoFolder}
-																						user={user}
-																						setClickedTodoFolder={
-																							setClickedTodoFolder
-																						}
-																						setClickedFolder={setClickedFolder}
-																						auth={auth}
-																					/>
-																				</React.Fragment>
-																			);
-																		}
-																	})}
-															</div>
-														</>
-													</div>
-												)}
-
-												<div className="flex flex-col justify-start items-start w-full gap-4">
-													<div className="flex justify-between items-center gap-2 w-full">
-														<h1 className="text-2xl font-semibold">
-															Todo Folders
-														</h1>
-
-														{todolistFolders.allTodoFolders
-															?.filter(
-																(value) =>
-																	value.userID === auth.currentUser?.uid &&
-																	!value.folderHidden &&
-																	value.clickTimeStamp
-															)
-															?.map((todoFolder) => todoFolder.clickTimeStamp)
-															.length < 1 && (
-															<div className="relative hidden-folder-container">
-																<div
-																	onClick={handleHiddenFoldersDropdown}
-																	className="flex justify-center items-center gap-2 text-btn select-none"
-																>
-																	<p
-																		className={`text-sm ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-[#999]"
+																				.includes(true) && "w-full"
 																		}`}
 																	>
-																		Hidden Folders
-																	</p>
-
-																	<Image
-																		className={`min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer ${
-																			null ? "rotate-180" : "rotate-0"
-																		}`}
-																		src={
-																			user.themeColor
-																				? "/icons/arrow-white.svg"
-																				: "/icons/arrow-black.svg"
-																		}
-																		alt="search"
-																		width={20}
-																		height={20}
-																	/>
-																</div>
-
-																{openHiddenFoldersDropdown && (
-																	<div
-																		className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex justify-start items-center bg-white text-black border shadow-md`}
-																	>
-																		{!todolistFolders.allTodoFolders
-																			?.filter(
+																		{todolistFolders.allTodoFolders
+																			.filter(
 																				(value) =>
 																					value.userID === auth.currentUser.uid
 																			)
-																			?.map(
-																				(todoFolder) => todoFolder.folderHidden
-																			)
-																			.includes(true) && (
-																			<p
-																				className={`text-sm text-[#aaa] w-full`}
-																			>
-																				No Hidden Folders
-																			</p>
-																		)}
-
-																		<div
-																			className={`flex flex-col gap-3 justify-start items-center ${
-																				todolistFolders.allTodoFolders
-																					?.filter(
-																						(value) =>
-																							value.userID ===
-																							auth.currentUser.uid
-																					)
-																					?.map(
-																						(todoFolder) =>
-																							todoFolder.folderHidden
-																					)
-																					.includes(true) && "w-full"
-																			}`}
-																		>
-																			{todolistFolders.allTodoFolders
-																				.filter(
-																					(value) =>
-																						value.userID ===
-																						auth.currentUser.uid
-																				)
-																				.map((todoFolder) => {
-																					if (
-																						todoFolder.folderHidden === true
-																					) {
-																						return (
-																							<React.Fragment
-																								key={todoFolder.id}
-																							>
-																								<div className="flex justify-between items-center gap-2 w-full">
-																									<div
-																										className={`flex justify-center items-center gap-1`}
-																									>
-																										<button
-																											onClick={() =>
-																												!todoFolder.pin &&
-																												handleClickHiddenFolder(
-																													todoFolder
-																												)
-																											}
-																											className={`text-sm text-start line-clamp-2 ${
-																												todoFolder.pin
-																													? "cursor-not-allowed"
-																													: "hover:text-[#0E51FF]"
-																											}`}
-																										>
-																											{todoFolder.folderTitle}
-																										</button>
-
-																										{todoFolder.pin && (
-																											<Image
-																												className="w-auto min-h-[15px] max-h-[15px]"
-																												src={
-																													"/icons/lock-black.svg"
-																												}
-																												alt="trash"
-																												width={25}
-																												height={25}
-																											/>
-																										)}
-																									</div>
-
+																			.map((todoFolder) => {
+																				if (todoFolder.folderHidden === true) {
+																					return (
+																						<React.Fragment key={todoFolder.id}>
+																							<div className="flex justify-between items-center gap-2 w-full">
+																								<div
+																									className={`flex justify-center items-center gap-1`}
+																								>
 																									<button
 																										onClick={() =>
-																											handleHideTodoFolder(
+																											!todoFolder.pin &&
+																											handleClickHiddenFolder(
 																												todoFolder
 																											)
 																										}
-																										className="rotate-45"
+																										className={`text-sm text-start line-clamp-2 ${
+																											todoFolder.pin
+																												? "cursor-not-allowed"
+																												: "hover:text-[#0E51FF]"
+																										}`}
 																									>
-																										<Image
-																											className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
-																											src={
-																												"/icons/plus-black.svg"
-																											}
-																											alt="add"
-																											width={30}
-																											height={30}
-																										/>
+																										{todoFolder.folderTitle}
 																									</button>
+
+																									{todoFolder.pin && (
+																										<Image
+																											className="w-auto min-h-[15px] max-h-[15px]"
+																											src={
+																												"/icons/lock-black.svg"
+																											}
+																											alt="trash"
+																											width={25}
+																											height={25}
+																										/>
+																									)}
 																								</div>
-																							</React.Fragment>
-																						);
-																					}
-																				})}
-																		</div>
+
+																								<button
+																									onClick={() =>
+																										handleHideTodoFolder(
+																											todoFolder
+																										)
+																									}
+																									className="rotate-45"
+																								>
+																									<Image
+																										className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
+																										src={
+																											"/icons/plus-black.svg"
+																										}
+																										alt="add"
+																										width={30}
+																										height={30}
+																									/>
+																								</button>
+																							</div>
+																						</React.Fragment>
+																					);
+																				}
+																			})}
 																	</div>
-																)}
-															</div>
-														)}
+																</div>
+															)}
+														</div>
 													</div>
 
 													{todolistFolders.allTodoFolders
@@ -675,6 +349,7 @@ export default function MainContent() {
 																				}
 																				setClickedFolder={setClickedFolder}
 																				auth={auth}
+																				searchQuery={searchQuery}
 																			/>
 																		</React.Fragment>
 																	);

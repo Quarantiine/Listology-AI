@@ -11,10 +11,10 @@ export default function TodoFoldersDashboard({
 	setClickedFolder,
 	setClickedTodoFolder,
 	auth,
+	searchQuery,
 }) {
 	const { todoLists, todolistFolders } = FirebaseApi();
-	const { filterDispatch, setCompletedTodos, completedTodos } =
-		useContext(StateCtx);
+	const { filterDispatch, setCompletedTodos } = useContext(StateCtx);
 	const [openDeletionModal, setOpenDeletionModal] = useState(false);
 	const [openMoreModal, setOpenMoreModal] = useState(false);
 	const [openAddPinModal, setOpenAddPinModal] = useState(false);
@@ -26,17 +26,10 @@ export default function TodoFoldersDashboard({
 	const removePinIndicator = useRef();
 	const pinAddedIndicator = useRef();
 
-	const timeStamp = () => {
-		let date = new Date();
-		return date;
-	};
-
 	const handleEnteringTodoFolder = () => {
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
 		setCompletedTodos(false);
-
-		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 
 		filterDispatch({
 			type: "filter-category",
@@ -148,6 +141,18 @@ export default function TodoFoldersDashboard({
 		return percentage;
 	};
 
+	const highlightingLetterSearch = () => {
+		let highlightedLetters = "";
+
+		for (let index = 0; index < todoFolder.folderTitle.length; index++) {
+			const element = todoFolder.folderTitle[index];
+
+			highlightedLetters = element;
+		}
+
+		return highlightedLetters;
+	};
+
 	return (
 		<div className="flex justify-center items-center w-full h-fit relative">
 			{removedPinMesg &&
@@ -155,7 +160,7 @@ export default function TodoFoldersDashboard({
 					<>
 						<div className="absolute w-full h-fit bg-red-500 text-center flex gap-2 justify-center items-center text-white px-2 py-1">
 							<p className="text-lg font-light">{removedPinMesg}</p>
-							<p className="text-lg italic font-medium">
+							<p className={`text-lg italic font-medium`}>
 								{todoFolder.folderTitle}
 							</p>
 						</div>
@@ -166,7 +171,7 @@ export default function TodoFoldersDashboard({
 				createPortal(
 					<div className="absolute w-full h-fit bg-green-500 text-center flex gap-2 justify-center items-center text-white px-2 py-1">
 						<p className="text-lg font-light">{pinAddedMesg}</p>
-						<p className="text-lg italic font-medium">
+						<p className={`text-lg italic font-medium`}>
 							{todoFolder.folderTitle}
 						</p>
 					</div>,
@@ -181,6 +186,8 @@ export default function TodoFoldersDashboard({
 					user.themeColor
 						? "bg-[#333] border-[#555]"
 						: "bg-[#eee] border-[#ccc]"
+				}  ${
+					searchQuery && highlightingLetterSearch() ? "border-[#5182ff]" : ""
 				}`}
 			>
 				{todoFolder.pin &&
@@ -212,7 +219,7 @@ export default function TodoFoldersDashboard({
 						<span className="font-bold underline">{todoFolder.folderName}</span>
 					</h1>
 					<div className="flex justify-between items-center w-full">
-						<h2 className="text-2xl font-semibold line-clamp-1">
+						<h2 className={`text-2xl font-semibold line-clamp-1`}>
 							{todoFolder.folderTitle}
 						</h2>
 						{todoFolder.folderEmoji ? (
@@ -233,11 +240,7 @@ export default function TodoFoldersDashboard({
 						{totalCompletionPercentage() ? (
 							<>
 								{totalCompletionPercentage() >= 1 ? (
-									<p
-										className={`text-base font-normal ${
-											user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
-										}`}
-									>
+									<p className={`text-base font-normal text-green-500`}>
 										{totalCompletionPercentage()
 											.toFixed(2)
 											.replace("0.", "")
@@ -248,6 +251,12 @@ export default function TodoFoldersDashboard({
 									<p
 										className={`text-base font-normal ${
 											user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+										} ${
+											totalCompletionPercentage() > 0.59
+												? "text-yellow-600"
+												: totalCompletionPercentage() < 0.6
+												? "text-red-500"
+												: ""
 										}`}
 									>
 										{totalCompletionPercentage().toFixed(2).replace("0.", "")}%
