@@ -13,7 +13,8 @@ export default function TodoFoldersDashboard({
 	auth,
 }) {
 	const { todoLists, todolistFolders } = FirebaseApi();
-	const { filterDispatch } = useContext(StateCtx);
+	const { filterDispatch, setCompletedTodos, completedTodos } =
+		useContext(StateCtx);
 	const [openDeletionModal, setOpenDeletionModal] = useState(false);
 	const [openMoreModal, setOpenMoreModal] = useState(false);
 	const [openAddPinModal, setOpenAddPinModal] = useState(false);
@@ -25,9 +26,17 @@ export default function TodoFoldersDashboard({
 	const removePinIndicator = useRef();
 	const pinAddedIndicator = useRef();
 
+	const timeStamp = () => {
+		let date = new Date();
+		return date;
+	};
+
 	const handleEnteringTodoFolder = () => {
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
+		setCompletedTodos(false);
+
+		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 
 		filterDispatch({
 			type: "filter-category",
@@ -116,6 +125,29 @@ export default function TodoFoldersDashboard({
 		);
 	};
 
+	const totalCompletionPercentage = () => {
+		const percentage =
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === todoFolder.id &&
+						value.userID === auth.currentUser?.uid &&
+						value.completed === true &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length /
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === todoFolder.id &&
+						value.userID === auth.currentUser?.uid &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length;
+
+		return percentage;
+	};
+
 	return (
 		<div className="flex justify-center items-center w-full h-fit relative">
 			{removedPinMesg &&
@@ -195,89 +227,87 @@ export default function TodoFoldersDashboard({
 					</div>
 				</div>
 				<p className="line-clamp-2">{todoFolder.folderDescription}</p>
+
 				<div className="flex justify-between items-center gap-2 w-full mt-auto">
-					<p
-						className={`text-sm flex justify-center items-center gap-1 ${
-							user.themeColor ? "text-[#666]" : "text-[#aaa]"
-						}`}
-					>
-						{todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser?.uid &&
-									value.completed === true
-							)
-							?.map((todo) => todo).length !== 0 && (
+					<>
+						{totalCompletionPercentage() ? (
 							<>
-								<span>
-									{
-										todoLists.allTodoLists
-											?.filter(
-												(value) =>
-													value.folderID === todoFolder.id &&
-													value.userID === auth.currentUser?.uid &&
-													value.completed === true
-											)
-											?.map((todo) => todo).length
-									}
-								</span>
-								<span>/</span>
+								{totalCompletionPercentage() >= 1 ? (
+									<p
+										className={`text-base font-normal ${
+											user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+										}`}
+									>
+										{totalCompletionPercentage()
+											.toFixed(2)
+											.replace("0.", "")
+											.replace(".", "")}
+										% Completed
+									</p>
+								) : totalCompletionPercentage().toString().includes("0") ? (
+									<p
+										className={`text-base font-normal ${
+											user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+										}`}
+									>
+										{totalCompletionPercentage().toFixed(2).replace("0.", "")}%
+										Completed
+									</p>
+								) : (
+									<p
+										className={`text-base font-normal ${
+											user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+										}`}
+									>
+										{totalCompletionPercentage()
+											.toFixed(2)
+											.replace("0.", "")
+											.replace("0", "")}
+										% Completed
+									</p>
+								)}
 							</>
-						)}
-
-						<span>
-							{todoLists.allTodoLists
+						) : todoLists.allTodoLists
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid &&
-										!value.ignoreTodo
+										value.userID === auth.currentUser?.uid
 								)
-								?.map((todo) => todo).length === 0
-								? "No Todos to Complete"
-								: todoLists.allTodoLists
-										?.filter(
-											(value) =>
-												value.folderID === todoFolder.id &&
-												value.userID === auth.currentUser?.uid &&
-												!value.ignoreTodo
-										)
-										?.map((todo) => todo).length}
-						</span>
-
-						{todoLists.allTodoLists
-							?.filter(
-								(value) =>
-									value.folderID === todoFolder.id &&
-									value.userID === auth.currentUser?.uid &&
-									value.completed === true &&
-									!value.ignoreTodo
+								?.map((todo) => todo).length > 0 ? (
+							todoLists.allTodoLists
+								?.filter(
+									(value) =>
+										value.folderID === todoFolder.id &&
+										value.userID === auth.currentUser?.uid
+								)
+								?.map((todo) => todo.ignoreTodo)
+								.includes(false) ? (
+								<p
+									className={`text-base font-normal ${
+										user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+									}`}
+								>
+									0% Completed
+								</p>
+							) : (
+								<p
+									className={`text-base font-normal ${
+										user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+									}`}
+								>
+									All Ignored Todos
+								</p>
 							)
-							?.map((todo) => todo).length !== 0 ? (
-							<span>Todos Completed</span>
-						) : todoLists.allTodoLists
-								?.filter(
-									(value) =>
-										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid &&
-										!value.ignoreTodo
-								)
-								?.map((todo) => todo).length === 0 ? (
-							""
-						) : todoLists.allTodoLists
-								?.filter(
-									(value) =>
-										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid &&
-										!value.ignoreTodo
-								)
-								?.map((todo) => todo).length === 1 ? (
-							<span>Todo Not Completed</span>
 						) : (
-							<span>Todos Not Completed</span>
+							<p
+								className={`text-base font-normal ${
+									user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+								}`}
+							>
+								No Todos
+							</p>
 						)}
-					</p>
+					</>
 				</div>
 			</button>
 
