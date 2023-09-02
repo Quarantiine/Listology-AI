@@ -26,10 +26,17 @@ export default function TodoFoldersDashboard({
 	const removePinIndicator = useRef();
 	const pinAddedIndicator = useRef();
 
+	const timeStamp = () => {
+		let date = new Date();
+		return date;
+	};
+
 	const handleEnteringTodoFolder = () => {
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
 		setCompletedTodos(false);
+
+		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 
 		filterDispatch({
 			type: "filter-category",
