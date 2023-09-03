@@ -843,7 +843,7 @@ export default function TodolistMainContent({
 													user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
 												}`}
 											>
-												0% Completed
+												No Todos Completed
 											</p>
 										)}
 									</>
