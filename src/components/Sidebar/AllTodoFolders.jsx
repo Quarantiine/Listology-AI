@@ -77,7 +77,13 @@ export default function AllTodoFolders({
 		clearTimeout(todoFolderDeletionRef.current);
 	};
 
+	const timeStamp = () => {
+		let date = new Date();
+		return date;
+	};
+
 	const handleClickedTodoFolder = () => {
+		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 		setClickedTodoFolder(todoFolder.id);
 		setOpenTodolistSidebar(false);
 
