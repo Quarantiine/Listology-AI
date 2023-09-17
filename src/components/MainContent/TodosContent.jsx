@@ -399,7 +399,7 @@ export default function TodosContent({
 							</div>
 						) : linkPattern.test(todolist.todo) ? (
 							<>
-								{openLinkDropdown && (
+								{openLinkDropdown && extractLink() && (
 									<div
 										className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
 									>
