@@ -246,7 +246,7 @@ export default function TodolistMainContent({
 		setOpenTodolistSidebar(false);
 		setCloseSidebar(closeSidebar);
 
-		if (window.innerWidth > 768) {
+		if (window.innerWidth > 1024) {
 			setTimeout(() => {
 				searchQueryRef.current?.focus();
 			}, 10);

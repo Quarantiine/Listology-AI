@@ -438,11 +438,13 @@ export default function TodosContent({
 											: "translate-x-0 lg:-translate-x-8"
 									}`}
 								>
-									<p className="">{todolist.todo.replace(extractLink(), "")}</p>
-									<p className="text-[#0E51FF]">
-										{shortenUrl(extractLink(), -30)
-											.replace("", "(Link)")
-											.slice(0, 6)}
+									<p className="">
+										{todolist.todo.replace(extractLink(), "")}{" "}
+										<span className="text-[#0E51FF]">
+											{shortenUrl(extractLink(), -30)
+												.replace("", "(Link)")
+												.slice(0, 6)}
+										</span>
 									</p>
 								</button>
 							</>

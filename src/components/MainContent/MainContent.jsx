@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserCredentialCtx } from "../../pages";
-import TodolistPlaceholder from "./TodolistPlaceholder";
 import Banner from "./Banner";
 import { createPortal } from "react-dom";
 import FolderModal from "../Sidebar/FolderModal";
@@ -22,7 +21,7 @@ export default function MainContent() {
 		setClickedFolder,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, todolistFolders, folders } = FirebaseApi();
+	const { auth, todolistFolders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
 		useState(false);
