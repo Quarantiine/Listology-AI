@@ -291,33 +291,20 @@ export default function SubTodos({
 						</div>
 					) : linkPattern.test(subTodo.todo) ? (
 						<>
-							{/* <button
-								onClick={handleLinkDropdown}
-								title={"Go to link"}
-								className={`text-btn w-full text-start underline line-clamp-1 ${
-									subTodo.completed || todolist.completed
-										? "line-through select-all"
-										: ""
-								}`}
-							>
-								{subTodo.todo.replace(extractLink(), "")}
-								{shortenUrl(extractLink(), 0)}
-							</button> */}
-
 							<button
 								onClick={handleLinkDropdown}
 								title={"Go to link"}
-								className={`text-btn w-full text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+								className={`text-btn w-full text-start no-underline line-clamp-1 flex flex-wrap items-start gap-1 ${
 									subTodo.completed ? "line-through select-all" : ""
 								}`}
 							>
 								<p className={`${subTodo.completed ? "line-through" : ""}`}>
-									{subTodo.todo.replace(extractLink(), "")}
-								</p>
-								<p className="text-[#0E51FF]">
-									{shortenUrl(extractLink(), -30)
-										.replace("", "(Link)")
-										.slice(0, 6)}
+									{subTodo.todo.replace(extractLink(), "")}{" "}
+									<span className="text-[#0E51FF]">
+										{shortenUrl(extractLink(), -30)
+											.replace("", "(Link)")
+											.slice(0, 6)}
+									</span>
 								</p>
 							</button>
 						</>
