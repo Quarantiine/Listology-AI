@@ -246,9 +246,11 @@ export default function TodolistMainContent({
 		setOpenTodolistSidebar(false);
 		setCloseSidebar(closeSidebar);
 
-		setTimeout(() => {
-			searchQueryRef.current?.focus();
-		}, 10);
+		if (window.innerWidth > 768) {
+			setTimeout(() => {
+				searchQueryRef.current?.focus();
+			}, 10);
+		}
 	};
 
 	const totalTodos = () => {
