@@ -333,7 +333,7 @@ export default function TodolistMainContent({
 				<Filters user={user} />
 
 				<button
-					onClick={(e) => {
+					onClick={() => {
 						handleClearTodoFolderClick();
 					}}
 					className={`w-fit flex justify-start items-center gap-2 text-sm ${

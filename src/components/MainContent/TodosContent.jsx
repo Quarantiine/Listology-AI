@@ -267,6 +267,7 @@ export default function TodosContent({
 	return (
 		<div className="flex flex-col w-full">
 			<div
+				id={todolist.ignoreTodo && "ignore-todo"}
 				onMouseOver={() => setSubTodoButtonAppear(true)}
 				onMouseLeave={() =>
 					openLinkDropdown ? null : setSubTodoButtonAppear(false)
@@ -275,7 +276,7 @@ export default function TodosContent({
 					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
 				} ${
 					todolist.ignoreTodo
-						? "bg-[#0e52ff1f]"
+						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
 						? user.themeColor
 							? "bg-[#292929]"
