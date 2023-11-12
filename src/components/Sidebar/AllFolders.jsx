@@ -8,8 +8,13 @@ import { StateCtx } from "../Layout";
 const AllFolders = ({ setClickedFolder, folder }) => {
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, folders, todolistFolders, todoLists } = FirebaseApi();
-	const { setOpenTodolistSidebar, clickedFolder, setClickedTodoFolder } =
-		useContext(StateCtx);
+	const {
+		setOpenTodolistSidebar,
+		clickedFolder,
+		setClickedTodoFolder,
+		setTodoSearchInput,
+		setOpenTodoSearchInput,
+	} = useContext(StateCtx);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 
 	const handleCompletedFolder = () => {
@@ -56,6 +61,9 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	const handleTodolistSidebar = () => {
 		setOpenTodolistSidebar(true);
 		setClickedFolder(folder.folderName);
+		setTodoSearchInput("");
+		setOpenTodoSearchInput(false);
+
 		if (folder.folderName !== clickedFolder) {
 			setClickedTodoFolder("");
 		}

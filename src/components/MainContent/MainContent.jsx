@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { use, useContext, useEffect, useRef, useState } from "react";
 import { UserCredentialCtx } from "../../pages";
 import Banner from "./Banner";
 import { createPortal } from "react-dom";
@@ -8,6 +8,7 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import TodolistMainContent from "./TodolistMainContent";
 import TodoFoldersDashboard from "./TodoFoldersDashboard";
 import Image from "next/image";
+import ImportantTodos from "./ImportantTodos";
 
 // TODO: Create a shortcut to search for todo folders
 
@@ -19,12 +20,33 @@ export default function MainContent() {
 		setOpenFolderModal,
 		clickedTodoFolder,
 		setClickedFolder,
+		setOpenTodolistSidebar,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
-	const { auth, todolistFolders } = FirebaseApi();
+	const { auth, todolistFolders, todoLists, folders } = FirebaseApi();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
 		useState(false);
+	const [importantTodosDropdown, setImportantTodosDropdown] = useState(true);
+	const lengthOfSearchedFolders = todolistFolders.allTodoFolders
+		?.filter(
+			(value) =>
+				(value.userID === auth.currentUser?.uid &&
+					!value.folderHidden &&
+					value.folderTitle
+						.normalize("NFD")
+						.replace(/\p{Diacritic}/gu, "")
+						.toLowerCase()
+						.includes(searchQuery.toLowerCase())) ||
+				(value.userID === auth.currentUser?.uid &&
+					!value.folderHidden &&
+					value.folderName
+						.normalize("NFD")
+						.replace(/\p{Diacritic}/gu, "")
+						.toLowerCase()
+						.includes(searchQuery.toLowerCase()))
+		)
+		?.map((t) => t).length;
 
 	useEffect(() => {
 		const closeFolderModal = (e) => {
@@ -64,6 +86,14 @@ export default function MainContent() {
 	const handleClickHiddenFolder = (todoFolder) => {
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
+	};
+
+	const handleImportantTodoDropDown = () => {
+		setImportantTodosDropdown(!importantTodosDropdown);
+	};
+
+	const handleCreateTodoFolder = () => {
+		setOpenTodolistSidebar(true);
 	};
 
 	return (
@@ -116,6 +146,116 @@ export default function MainContent() {
 											})
 									) : (
 										<>
+											<div className="flex flex-col justify-center items-start gap-4 w-full">
+												<button
+													onClick={handleImportantTodoDropDown}
+													className="flex justify-between items-center gap-3 btn"
+												>
+													<h1 className="text-2xl font-semibold">
+														Important Todos:{" "}
+														<span>
+															{
+																todoLists.allTodoLists
+																	.filter(
+																		(value) =>
+																			value.userID === auth.currentUser.uid &&
+																			value.markImportant &&
+																			!value.completed
+																	)
+																	.map((t) => t).length
+															}
+														</span>
+													</h1>
+													<Image
+														className={`min-w-[15px] min-h-[15px] transition-all ${
+															importantTodosDropdown ? "rotate-180" : ""
+														}`}
+														src={
+															user.themeColor
+																? "/icons/arrow-white.svg"
+																: "/icons/arrow-black.svg"
+														}
+														alt="undo"
+														width={20}
+														height={20}
+													/>
+												</button>
+
+												{importantTodosDropdown && (
+													<div
+														className={`grid justify-start items-center gap-3 w-full ${
+															todoLists.allTodoLists
+																?.filter(
+																	(value) =>
+																		value.userID === auth.currentUser.uid &&
+																		value.markImportant &&
+																		!value.completed
+																)
+																.map((todolist) => todolist).length > 1
+																? "grid-cols-1 md:grid-cols-2"
+																: "grid-cols-1"
+														}`}
+													>
+														{todoLists.allTodoLists
+															.filter(
+																(value) =>
+																	value.userID === auth.currentUser.uid &&
+																	!value.ignoreTodo &&
+																	!value.completed
+															)
+															.map((todolist) => {
+																if (todolist.markImportant) {
+																	return (
+																		<ImportantTodos
+																			key={todolist.id}
+																			todolist={todolist}
+																		/>
+																	);
+																}
+															})}
+
+														{todoLists.allTodoLists
+															.filter(
+																(value) =>
+																	value.userID === auth.currentUser.uid &&
+																	value.ignoreTodo &&
+																	!value.completed
+															)
+															.map((todolist) => {
+																if (todolist.markImportant) {
+																	return (
+																		<ImportantTodos
+																			key={todolist.id}
+																			todolist={todolist}
+																		/>
+																	);
+																}
+															})}
+
+														{!todoLists.allTodoLists
+															.filter(
+																(value) =>
+																	value.userID === auth.currentUser.uid &&
+																	!value.completed
+															)
+															.map((todolist) =>
+																todolist.markImportant ? true : false
+															)
+															.includes(true) && (
+															<p
+																className={`${
+																	user.themeColor
+																		? "text-[#555]"
+																		: "text-gray-400"
+																}`}
+															>
+																No Important Todos to Complete
+															</p>
+														)}
+													</div>
+												)}
+											</div>
+
 											<div className="w-full flex flex-col justify-start items-start gap-5">
 												<div className="flex justify-start items-center gap-3 w-full relative">
 													<>
@@ -156,6 +296,7 @@ export default function MainContent() {
 														}`}
 														type="search"
 														name="search"
+														autoComplete="off"
 														placeholder="Search by todo and main folders"
 														ref={searchQueryRef}
 														onChange={(e) => setSearchQuery(e.target.value)}
@@ -165,9 +306,14 @@ export default function MainContent() {
 
 												<div className="flex flex-col justify-start items-start w-full gap-4">
 													<div className="flex justify-between items-center gap-2 w-full">
-														<h1 className="text-2xl font-semibold">
-															Todo Folders
-														</h1>
+														<div className="flex justify-center items-center gap-1">
+															<h1 className="text-2xl font-semibold">
+																Todo Folders:
+															</h1>
+															<h1 className="text-2xl font-semibold">
+																{lengthOfSearchedFolders}
+															</h1>
+														</div>
 
 														<div className="relative hidden-folder-container">
 															<div
@@ -311,14 +457,40 @@ export default function MainContent() {
 														.includes(true) ? null : (
 														<p
 															className={`mr-auto ${
-																user.themeColor ? "text-[#555]" : "text-[#ccc]"
+																user.themeColor
+																	? "text-[#555]"
+																	: "text-gray-400"
 															}`}
 														>
 															You have hidden Todo Folders
 														</p>
 													)}
 
-													<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full justify-start items-center gap-5 flex-wrap">
+													<div
+														className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+															todolistFolders.allTodoFolders
+																?.filter(
+																	(value) =>
+																		(value.userID === auth.currentUser?.uid &&
+																			!value.folderHidden &&
+																			value.folderTitle
+																				.normalize("NFD")
+																				.replace(/\p{Diacritic}/gu, "")
+																				.toLowerCase()
+																				.includes(searchQuery.toLowerCase())) ||
+																		(value.userID === auth.currentUser?.uid &&
+																			!value.folderHidden &&
+																			value.folderName
+																				.normalize("NFD")
+																				.replace(/\p{Diacritic}/gu, "")
+																				.toLowerCase()
+																				.includes(searchQuery.toLowerCase()))
+																)
+																?.map((t) => t).length < 1
+																? "grid-cols-1"
+																: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+														}`}
+													>
 														{todolistFolders.allTodoFolders
 															?.filter(
 																(value) =>
@@ -327,16 +499,22 @@ export default function MainContent() {
 															)
 															?.map((todoFolder) => {
 																if (
-																	todoFolder.folderTitle
-																		.normalize("NFD")
-																		.replace(/\p{Diacritic}/gu, "")
-																		.toLowerCase()
-																		.includes(searchQuery.toLowerCase()) ||
-																	todoFolder.folderName
-																		.normalize("NFD")
-																		.replace(/\p{Diacritic}/gu, "")
-																		.toLowerCase()
-																		.includes(searchQuery.toLowerCase())
+																	(todoFolder.userID ===
+																		auth.currentUser?.uid &&
+																		!todoFolder.folderHidden &&
+																		todoFolder.folderTitle
+																			.normalize("NFD")
+																			.replace(/\p{Diacritic}/gu, "")
+																			.toLowerCase()
+																			.includes(searchQuery.toLowerCase())) ||
+																	(todoFolder.userID ===
+																		auth.currentUser?.uid &&
+																		!todoFolder.folderHidden &&
+																		todoFolder.folderName
+																			.normalize("NFD")
+																			.replace(/\p{Diacritic}/gu, "")
+																			.toLowerCase()
+																			.includes(searchQuery.toLowerCase()))
 																) {
 																	return (
 																		<React.Fragment key={todoFolder.id}>
@@ -354,6 +532,64 @@ export default function MainContent() {
 																	);
 																}
 															})}
+
+														{todolistFolders.allTodoFolders
+															?.filter(
+																(value) =>
+																	(value.userID === auth.currentUser?.uid &&
+																		!value.folderHidden &&
+																		value.folderTitle
+																			.normalize("NFD")
+																			.replace(/\p{Diacritic}/gu, "")
+																			.toLowerCase()
+																			.includes(searchQuery.toLowerCase())) ||
+																	(value.userID === auth.currentUser?.uid &&
+																		!value.folderHidden &&
+																		value.folderName
+																			.normalize("NFD")
+																			.replace(/\p{Diacritic}/gu, "")
+																			.toLowerCase()
+																			.includes(searchQuery.toLowerCase()))
+															)
+															?.map((t) => t).length < 1 &&
+															todolistFolders.allTodoFolders
+																?.filter(
+																	(value) =>
+																		value.userID === auth.currentUser.uid
+																)
+																?.map((todoFolder) => !todoFolder.folderHidden)
+																.includes(true) && (
+																<div className="flex flex-col gap-4 justify-center items-center w-full pt-10">
+																	<svg
+																		width="50"
+																		height="50"
+																		viewBox="0 0 30 30"
+																		fill="none"
+																		xmlns="http://www.w3.org/2000/svg"
+																	>
+																		<path
+																			d="M0 29.0769H6.11918L24.1667 10.9815L18.0475 4.84613L0 22.9415V29.0769ZM3.26356 24.2994L18.0475 9.47631L19.5487 10.9815L4.7648 25.8047H3.26356V24.2994Z"
+																			fill={user.themeColor ? "#555" : "#aaa"}
+																		/>
+																		<path
+																			d="M24.6667 0.482758C24.0247 -0.160919 22.9877 -0.160919 22.3457 0.482758L19.3334 3.50309L25.5062 9.6923L28.5186 6.67197C29.1605 6.02829 29.1605 4.9885 28.5186 4.34482L24.6667 0.482758Z"
+																			fill={user.themeColor ? "#555" : "#aaa"}
+																		/>
+																	</svg>
+																	<p
+																		className={`text-lg ${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-400"
+																		}`}
+																	>
+																		No Folder Called:{" "}
+																		<span className="text-gray-600 italic">
+																			{searchQuery}
+																		</span>
+																	</p>
+																</div>
+															)}
 													</div>
 												</div>
 											</div>
@@ -388,12 +624,26 @@ export default function MainContent() {
 													}`}
 												>
 													<p>You Have no Todo Folders</p>
-													<button
-														onClick={handleFolderCreation}
-														className="base-btn"
-													>
-														Create Main Folder
-													</button>
+													{folders.allFolders
+														?.filter(
+															(folder) =>
+																folder.userID === auth.currentUser?.uid
+														)
+														?.map((folder) => folder).length > 0 ? (
+														<button
+															onClick={handleCreateTodoFolder}
+															className="base-btn"
+														>
+															Create Todo Folder
+														</button>
+													) : (
+														<button
+															onClick={handleFolderCreation}
+															className="base-btn"
+														>
+															Create Main Folder
+														</button>
+													)}
 												</div>
 											</div>
 										</div>

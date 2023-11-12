@@ -15,6 +15,8 @@ export default function TodolistSidebar() {
 		clickedFolder,
 		openTodolistSidebarModal,
 		setOpenTodolistSidebarModal,
+		handleCreateTodos,
+		handleCreateFolder,
 	} = useContext(StateCtx);
 	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } =
 		useContext(StateCtx);
@@ -53,21 +55,6 @@ export default function TodolistSidebar() {
 
 	const handleTodolistSidebar = () => {
 		setOpenTodolistSidebar(!openTodolistSidebar);
-	};
-
-	const handleCreateTodos = () => {
-		setOpenTodolistSidebarModal(clickedFolder && !openTodolistSidebarModal);
-	};
-
-	const handleCreateFolder = () => {
-		const folderDescriptionText =
-			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos nesciunt quas, fugiat aliquid nemo unde, sit labore assumenda asperiores a vero magnam iusto delectus cupiditate placeat consequatur nihil facere. Voluptates?";
-		todolistFolders.addingTodoFolder(
-			"",
-			"Untitled",
-			folderDescriptionText,
-			clickedFolder
-		);
 	};
 
 	const handleDeletionIndicator = () => {

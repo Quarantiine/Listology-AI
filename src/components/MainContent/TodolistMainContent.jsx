@@ -29,6 +29,10 @@ export default function TodolistMainContent({
 		filterDispatch,
 		completedTodos,
 		setCompletedTodos,
+		todoSearchInput,
+		setTodoSearchInput,
+		openTodoSearchInput,
+		setOpenTodoSearchInput,
 	} = useContext(StateCtx);
 	const [editFolderTitleMode, setEditFolderTitleMode] = useState(false);
 	const [editFolderTitle, setEditFolderTitle] = useState("");
@@ -37,11 +41,9 @@ export default function TodolistMainContent({
 	const [editFolderDescriptionMode, setEditFolderDescriptionMode] =
 		useState(false);
 	const [windowWidthCheck, setWindowWidthCheck] = useState(false);
-	const [todoSearchInput, setTodoSearchInput] = useState("");
 	const [subSearchDropdown, setSubSearchDropdown] = useState(false);
 	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
 	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
-	const [openTodoSearchInput, setOpenTodoSearchInput] = useState(false);
 	const [deleteCompletedTodo, setDeleteCompletedTodo] = useState(false);
 	const windowWidthCheckRef = useRef();
 
@@ -588,34 +590,48 @@ export default function TodolistMainContent({
 							)}
 
 							{openTodoSearchInput && (
-								<div className="hidden md:flex justify-center items-center gap-1 relative h-fit w-full">
-									<input
-										type="text"
-										onChange={(e) => setTodoSearchInput(e.target.value)}
-										placeholder="Search Todos"
-										className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
-											user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
-										}`}
-									/>
-									<button
-										onClick={handleSubSearchBarDropdown}
-										className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
-									>
-										<Image
-											className={`w-auto h-[9px] ${
-												subSearchDropdown ? "rotate-180" : ""
-											}`}
-											src={
+								<>
+									{todoSearchInput.length > 0 && (
+										<button
+											onClick={() => setTodoSearchInput("")}
+											className="text-[14px] base-btn !bg-red-500"
+										>
+											Clear
+										</button>
+									)}
+									<div className="hidden md:flex justify-center items-center gap-1 relative h-fit w-full">
+										<input
+											type="text"
+											onChange={(e) => setTodoSearchInput(e.target.value)}
+											value={todoSearchInput}
+											placeholder="Search Todos"
+											className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
 												user.themeColor
-													? "/icons/arrow-white.svg"
-													: "/icons/arrow-black.svg"
-											}
-											alt="arrow"
-											width={20}
-											height={20}
+													? "bg-[#333] border-[#555]"
+													: "bg-[#eee]"
+											}`}
 										/>
-									</button>
-								</div>
+
+										<button
+											onClick={handleSubSearchBarDropdown}
+											className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
+										>
+											<Image
+												className={`w-auto h-[9px] ${
+													subSearchDropdown ? "rotate-180" : ""
+												}`}
+												src={
+													user.themeColor
+														? "/icons/arrow-white.svg"
+														: "/icons/arrow-black.svg"
+												}
+												alt="arrow"
+												width={20}
+												height={20}
+											/>
+										</button>
+									</div>
+								</>
 							)}
 
 							<div
@@ -629,6 +645,7 @@ export default function TodolistMainContent({
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 									}`}
 								/>
+
 								<button
 									onClick={handleSubSearchBarDropdown}
 									className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"

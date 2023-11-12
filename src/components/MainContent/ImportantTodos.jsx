@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React, {
 	useContext,
 	useEffect,
@@ -6,11 +7,9 @@ import React, {
 	useRef,
 	useState,
 } from "react";
+import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { StateCtx } from "../Layout";
-import FirebaseApi from "../../pages/api/firebaseApi";
-import SubTodos from "../MainContent/SubTodos";
-import Link from "next/link";
 import shortenUrl from "shorten-url";
 
 const moreReducer = (state, { payload, type }) => {
@@ -25,23 +24,20 @@ const moreReducer = (state, { payload, type }) => {
 	}
 };
 
-export default function TodosContent({
-	todolist,
-	folders,
-	todolistFolder,
-	subTodoSearchInput,
-}) {
-	const { auth, todoLists } = FirebaseApi();
+export default function ImportantTodos({ todolist }) {
+	const { auth, todoLists, todolistFolders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
-	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
+	const {
+		setClickedFolder,
+		setClickedTodoFolder,
+		setCompletedTodos,
+		setTodoSearchInput,
+		setOpenTodoSearchInput,
+	} = useContext(StateCtx);
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		todoDropdown: "",
 	});
-	const [todoText, setTodoText] = useState("");
 	const [editTextActive, setEditTextActive] = useState(false);
-	const editTextActiveRef = useRef();
-	const [subTodoButtonAppear, setSubTodoButtonAppear] = useState(false);
-	const [closeSubTodos, setCloseSubTodos] = useState(true);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
@@ -64,28 +60,7 @@ export default function TodosContent({
 
 	const handleCompletedTodo = () => {
 		todoLists.updatingTodolistCompleted(todolist.id, !todolist.completed);
-	};
-
-	const handleEditTextActive = () => {
-		setEditTextActive(!editTextActive);
-		setTimeout(() => {
-			editTextActiveRef.current?.focus();
-		}, 10);
-	};
-
-	const handleChangeEditText = () => {
-		if (todoText) {
-			setTodoText("");
-			setEditTextActive(false);
-			todoLists.updatingTodolist(todolist.id, todoText);
-		}
-	};
-
-	const handleKeyedChangeEditText = (e) => {
-		if (e.key === "Enter") {
-			setTodoText("");
-			handleChangeEditText();
-		}
+		todoLists.updatingMarkAsImportant(todolist.id, false);
 	};
 
 	const handleFavorited = () => {
@@ -126,27 +101,6 @@ export default function TodosContent({
 		setDeletionIntervals(5000);
 		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
-	};
-
-	const handleCreateSubTodo = () => {
-		setCloseSubTodos(false);
-
-		todoLists.addSubTodo(
-			folders.allFolders
-				?.filter(
-					(value) =>
-						value.userID === auth.currentUser?.uid &&
-						value.folderName === clickedFolder
-				)
-				.slice(0, 1)
-				?.map((folder) => folder.folderName),
-			todolistFolder.id,
-			todolist.id
-		);
-	};
-
-	const handleCloseSubTodos = () => {
-		setCloseSubTodos(!closeSubTodos);
 	};
 
 	function extractLink() {
@@ -243,7 +197,6 @@ export default function TodosContent({
 	createdTimeText();
 
 	const handleSetDifficulty = (difficulty) => {
-		setSubTodoButtonAppear(false);
 		setOpenMoreDropdown(false);
 		todoLists.updatingTodoDifficulty(todolist.id, difficulty);
 	};
@@ -267,20 +220,36 @@ export default function TodosContent({
 	const handleMarkImportant = (markImportant) => {
 		todoLists.updatingMarkAsImportant(todolist.id, markImportant);
 		setOpenMoreDropdown(false);
-		setSubTodoButtonAppear(false);
+	};
+
+	const handleTodoLocation = () => {
+		setClickedFolder(todolist.mainFolder[0]);
+		setClickedTodoFolder(todolist.folderID);
+		setOpenMoreDropdown(false);
+		setCompletedTodos(false);
+		setTodoSearchInput(todolist.todo);
+		setOpenTodoSearchInput(true);
 	};
 
 	return (
 		<div className="flex flex-col w-full">
+			<p className="text-[10px] text-gray-400">
+				{
+					todolistFolders.allTodoFolders
+						?.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.id === todolist.folderID
+						)
+						.map((todoListFolder) => todoListFolder.folderTitle)[0]
+				}
+			</p>
 			<div
 				id={todolist.ignoreTodo && "ignore-todo"}
-				onMouseOver={() => setSubTodoButtonAppear(true)}
-				onMouseLeave={() =>
-					openLinkDropdown ? null : setSubTodoButtonAppear(false)
-				}
-				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors duration-300 ${
-					todolist.markImportant ? "border-r-4 border-[#0E51FF]" : ""
-				} ${deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""} ${
+				title={todolist.todo}
+				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
+					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
+				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
@@ -329,94 +298,20 @@ export default function TodosContent({
 							/>
 						</button>
 					)}
-
-					<button
-						className={`lg:pr-1 transition-all duration-300 ${
-							subTodoButtonAppear ? "opacity-100" : "opacity-100 lg:opacity-0"
-						}`}
-						onClick={deletedTodo ? null : handleCreateSubTodo}
-					>
-						<div
-							className={`w-auto h-auto ${
-								deletedTodo ? "cursor-not-allowed opacity-50" : ""
-							}`}
-						>
-							{user.themeColor ? (
-								<Image
-									className="min-w-[20px] max-w-[20px] h-[20px]"
-									src={"/icons/add-todo-white.svg"}
-									alt="add-sub-todo"
-									width={25}
-									height={25}
-								/>
-							) : (
-								<Image
-									className="min-w-[20px] max-w-[20px] h-[20px]"
-									src={"/icons/add-todo-black.svg"}
-									alt="add-sub-todo"
-									width={25}
-									height={25}
-								/>
-							)}
-						</div>
-					</button>
 				</div>
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
 					<div className="w-full h-fit relative flex justify-start items-center gap-3">
-						{!deletedTodo && editTextActive && !todolist.completed ? (
-							<div className="flex justify-start items-center gap-2 w-full">
-								<>
-									<textarea
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-									<input
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-								</>
-								<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-									<button onClick={handleChangeEditText} className="base-btn">
-										change
-									</button>
-									<button
-										onClick={handleEditTextActive}
-										className="base-btn !bg-red-500"
-									>
-										cancel
-									</button>
-								</div>
-							</div>
-						) : linkPattern.test(todolist.todo) ? (
+						{linkPattern.test(todolist.todo) && !todolist.completed ? (
 							<>
-								{openLinkDropdown && extractLink() && (
+								{!deletedTodo && openLinkDropdown && extractLink() && (
 									<div
 										className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
 									>
 										<Link
 											href={extractLink()}
 											target="_blank"
-											onClick={() => {
-												handleLinkDropdown();
-												setSubTodoButtonAppear(false);
-											}}
+											onClick={handleLinkDropdown}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
 												todolist.completed ? "line-through select-all" : ""
 											}`}
@@ -424,12 +319,12 @@ export default function TodosContent({
 											<span>Link</span>
 										</Link>
 										<button
-											onClick={handleEditTextActive}
+											onClick={handleTodoLocation}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
 												todolist.completed ? "line-through select-all" : ""
 											}`}
 										>
-											<span>Edit</span>
+											<span>Todo</span>
 										</button>
 									</div>
 								)}
@@ -439,10 +334,6 @@ export default function TodosContent({
 									title={"Go to link"}
 									className={`text-btn w-full text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
 										todolist.completed ? "line-through select-all" : ""
-									} ${
-										subTodoButtonAppear || openLinkDropdown
-											? "translate-x-0"
-											: "translate-x-0 lg:-translate-x-8"
 									}`}
 								>
 									<p className="">
@@ -457,13 +348,9 @@ export default function TodosContent({
 							</>
 						) : (
 							<p
-								onClick={handleEditTextActive}
-								className={`text-btn w-full ${
+								onClick={handleTodoLocation}
+								className={`text-btn w-full line-clamp-1 ${
 									todolist.completed ? "line-through select-all" : ""
-								} ${
-									subTodoButtonAppear || openLinkDropdown
-										? "translate-x-0"
-										: "translate-x-0 lg:-translate-x-8"
 								}`}
 							>
 								{todolist.todo}
@@ -518,10 +405,7 @@ export default function TodosContent({
 								</button>
 
 								{openMoreDropdown && (
-									<div
-										onMouseLeave={() => setSubTodoButtonAppear(false)}
-										className="more-dropdown absolute w-[140px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 -left-10 bg-white text-sm text-black border shadow-md z-10"
-									>
+									<div className="more-dropdown absolute w-[140px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 -left-10 bg-white text-sm text-black border shadow-md z-10">
 										<button
 											onClick={() => {
 												handleMoreDispatch("todoDropdown", "");
@@ -584,9 +468,7 @@ export default function TodosContent({
 															: "hover:bg-[#0E51FF] hover:text-white"
 													}`}
 													onClick={() => {
-														todolist.completed
-															? null
-															: handleMarkImportant(false);
+														handleMarkImportant(false);
 													}}
 												>
 													Marked Important
@@ -710,71 +592,6 @@ export default function TodosContent({
 						/>
 					</div>
 				</div>
-			</div>
-
-			<div className="flex flex-col justify-start items-center w-full relative">
-				{todoLists?.allSubTodos
-					?.filter(
-						(value) =>
-							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser?.uid &&
-							value.todoID === todolist.id
-					)
-					.map((subTodo) => subTodo.todoID === todolist.id)
-					.includes(true) && (
-					<button
-						onClick={handleCloseSubTodos}
-						className={`w-full h-fit p-1 rounded-md flex justify-start items-center gap-2 text-sm border ${
-							user.themeColor
-								? "bg-[#333] border-[#555]"
-								: "bg-[#eee] border-[#ccc]"
-						}`}
-					>
-						<p>{closeSubTodos ? "Show more" : "Close"}</p>
-						<Image
-							className={`w-[15px] h-auto text-btn ${
-								closeSubTodos ? "" : "rotate-180"
-							}`}
-							src={
-								user.themeColor
-									? "/icons/arrow-white.svg"
-									: "/icons/arrow-black.svg"
-							}
-							alt="arrow"
-							width={20}
-							height={20}
-						/>
-					</button>
-				)}
-				{todoLists?.allSubTodos
-					?.filter(
-						(value) =>
-							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser?.uid
-					)
-					.map((subTodo) => {
-						if (
-							subTodo.folderID === clickedTodoFolder &&
-							subTodo.todoID === todolist.id &&
-							subTodo.todo
-								.normalize("NFD")
-								.replace(/\p{Diacritic}/gu, "")
-								.toLowerCase()
-								.includes(subTodoSearchInput.toLowerCase())
-						) {
-							return (
-								<React.Fragment key={subTodo.id}>
-									<SubTodos
-										subTodo={subTodo}
-										user={user}
-										todolist={todolist}
-										todoLists={todoLists}
-										closeSubTodos={closeSubTodos}
-									/>
-								</React.Fragment>
-							);
-						}
-					})}
 			</div>
 		</div>
 	);

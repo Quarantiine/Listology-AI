@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
 	CollectionReference,
@@ -10,14 +10,12 @@ import {
 	collection,
 	deleteDoc,
 	doc,
-	endAt,
 	getFirestore,
 	onSnapshot,
 	orderBy,
 	query,
 	serverTimestamp,
 	updateDoc,
-	where,
 } from "firebase/firestore";
 import {
 	createUserWithEmailAndPassword,
@@ -33,7 +31,6 @@ import {
 	FacebookAuthProvider,
 	AuthProvider,
 	TwitterAuthProvider,
-	updateEmail,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -631,6 +628,14 @@ export default function FirebaseApi() {
 				ignoreTodo: ignoreTodo,
 			});
 		};
+
+		updatingMarkAsImportant = async (id: string, markImportant: boolean) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				markImportant: markImportant,
+			});
+		};
 	}
 	const TLS = new TodoListSystem();
 	const addingTodos = TLS.addingTodos;
@@ -647,6 +652,7 @@ export default function FirebaseApi() {
 	const updatingTodoMainFolder = TLS.updatingTodoMainFolder;
 	const updatingSubTodoMainFolder = TLS.updatingSubTodoMainFolder;
 	const updatingIgnoreTodo = TLS.updatingIgnoreTodo;
+	const updatingMarkAsImportant = TLS.updatingMarkAsImportant;
 
 	return {
 		auth,
@@ -706,6 +712,7 @@ export default function FirebaseApi() {
 			updatingTodoMainFolder,
 			updatingSubTodoMainFolder,
 			updatingIgnoreTodo,
+			updatingMarkAsImportant,
 		},
 	};
 }

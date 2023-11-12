@@ -46,7 +46,7 @@ const filterReducer = (state, { payload, type }) => {
 };
 
 export default function Layout({ children }) {
-	const { auth } = FirebaseApi();
+	const { auth, todolistFolders } = FirebaseApi();
 	const router = useRouter();
 	const [navState, navDispatch] = useReducer(navigationBarReducer, {
 		navigatorLink: "Dashboard",
@@ -69,6 +69,8 @@ export default function Layout({ children }) {
 	const [closeFilterSidebar, setCloseFilterSidebar] = useState();
 	const [openGalleryModal, setOpenGalleryModal] = useState(false);
 	const [completedTodos, setCompletedTodos] = useState(false);
+	const [openTodoSearchInput, setOpenTodoSearchInput] = useState(false);
+	const [todoSearchInput, setTodoSearchInput] = useState("");
 
 	const searchQueryRef = useRef();
 
@@ -122,6 +124,22 @@ export default function Layout({ children }) {
 	const handleCloseSidebar = () => {
 		setCloseSidebar(!closeSidebar);
 	};
+
+	const handleCreateTodos = () => {
+		setOpenTodolistSidebarModal(clickedFolder && !openTodolistSidebarModal);
+	};
+
+	const handleCreateFolder = () => {
+		const folderDescriptionText =
+			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos nesciunt quas, fugiat aliquid nemo unde, sit labore assumenda asperiores a vero magnam iusto delectus cupiditate placeat consequatur nihil facere. Voluptates?";
+		todolistFolders.addingTodoFolder(
+			"",
+			"Untitled",
+			folderDescriptionText,
+			clickedFolder
+		);
+	};
+
 	return (
 		<>
 			<Head>
@@ -165,6 +183,12 @@ export default function Layout({ children }) {
 						setOpenGalleryModal,
 						completedTodos,
 						setCompletedTodos,
+						openTodoSearchInput,
+						setOpenTodoSearchInput,
+						todoSearchInput,
+						setTodoSearchInput,
+						handleCreateTodos,
+						handleCreateFolder,
 					}}
 				>
 					<div

@@ -14,7 +14,12 @@ export default function TodoFoldersDashboard({
 	searchQuery,
 }) {
 	const { todoLists, todolistFolders } = FirebaseApi();
-	const { filterDispatch, setCompletedTodos } = useContext(StateCtx);
+	const {
+		filterDispatch,
+		setCompletedTodos,
+		setTodoSearchInput,
+		setOpenTodoSearchInput,
+	} = useContext(StateCtx);
 	const [openDeletionModal, setOpenDeletionModal] = useState(false);
 	const [openMoreModal, setOpenMoreModal] = useState(false);
 	const [openAddPinModal, setOpenAddPinModal] = useState(false);
@@ -35,6 +40,8 @@ export default function TodoFoldersDashboard({
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
 		setCompletedTodos(false);
+		setTodoSearchInput("");
+		setOpenTodoSearchInput(false);
 
 		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 
@@ -148,18 +155,6 @@ export default function TodoFoldersDashboard({
 		return percentage;
 	};
 
-	const highlightingLetterSearch = () => {
-		let highlightedLetters = "";
-
-		for (let index = 0; index < todoFolder.folderTitle.length; index++) {
-			const element = todoFolder.folderTitle[index];
-
-			highlightedLetters = element;
-		}
-
-		return highlightedLetters;
-	};
-
 	return (
 		<div className="flex justify-center items-center w-full h-fit relative">
 			{removedPinMesg &&
@@ -193,8 +188,6 @@ export default function TodoFoldersDashboard({
 					user.themeColor
 						? "bg-[#333] border-[#555]"
 						: "bg-[#eee] border-[#ccc]"
-				}  ${
-					searchQuery && highlightingLetterSearch() ? "border-[#5182ff]" : ""
 				}`}
 			>
 				{todoFolder.pin &&
