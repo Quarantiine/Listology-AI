@@ -12,6 +12,8 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import SubTodos from "../MainContent/SubTodos";
 import Link from "next/link";
 import shortenUrl from "shorten-url";
+import { createPortal } from "react-dom";
+import Timeline from "../MainContent/Timeline";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -46,10 +48,28 @@ export default function TodosContent({
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
+	const [nextTimeline, setNextTimeline] = useState(false);
+	const [timelineDate, setTimelineDate] = useState(new Date());
+	const [timelineDate2, setTimelineDate2] = useState(new Date());
+	const [openTimelineModal, setOpenTimelineModal] = useState(false);
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
+	const timeMonths = [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	];
 
 	useEffect(() => {
 		const closeTodoTextEdit = (e) => {
@@ -64,6 +84,7 @@ export default function TodosContent({
 
 	const handleCompletedTodo = () => {
 		todoLists.updatingTodolistCompleted(todolist.id, !todolist.completed);
+		todoLists.updatingMarkAsImportant(todolist.id, false);
 	};
 
 	const handleEditTextActive = () => {
@@ -217,22 +238,6 @@ export default function TodosContent({
 	};
 
 	const createdTimeText = () => {
-		// TODO: Add time here
-		const timeMonths = [
-			"January",
-			"February",
-			"March",
-			"April",
-			"May",
-			"June",
-			"July",
-			"August",
-			"September",
-			"October",
-			"November",
-			"December",
-		];
-
 		const timeMiliSec = todolist.createdTime?.seconds * 1000;
 		const date = new Date(timeMiliSec);
 		const month = date.getMonth();
@@ -265,15 +270,176 @@ export default function TodosContent({
 	};
 
 	const handleMarkImportant = (markImportant) => {
-		todoLists.updatingMarkAsImportant(todolist.id, markImportant);
+		if (todolist.completed) {
+			null;
+		} else {
+			todoLists.updatingMarkAsImportant(todolist.id, markImportant);
+			setOpenMoreDropdown(false);
+			setSubTodoButtonAppear(false);
+		}
+	};
+
+	const handleOpenTimelineModal = () => {
+		setOpenTimelineModal(!openTimelineModal);
 		setOpenMoreDropdown(false);
-		setSubTodoButtonAppear(false);
+	};
+
+	useEffect(() => {
+		const closeTimeline = (e) => {
+			if (!e.target.closest(".timeline")) {
+				setOpenTimelineModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTimeline);
+		return () => document.removeEventListener("mousedown", closeTimeline);
+	}, []);
+
+	const timelineDateTxt = (tld) => {
+		const day = tld?.getDate();
+		const month = tld?.getMonth();
+		const year = tld?.getFullYear();
+		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${year || "Year"}`;
+	};
+
+	const fixedTimelineDateTxt = () => {
+		const date = new Date(todolist.startDate.seconds * 1000);
+
+		const day = date?.getDate();
+		const month = date?.getMonth();
+		const year = date?.getFullYear();
+		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${year || "Year"}`;
+	};
+
+	const fixedTimelineDateTxt2 = () => {
+		const date = new Date(todolist.endDate.seconds * 1000);
+
+		const day = date?.getDate();
+		const month = date?.getMonth();
+		const year = date?.getFullYear();
+		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${year || "Year"}`;
+	};
+
+	const handleCompletionTodoTime = () => {
+		if (timelineDate && timelineDate2) {
+			todoLists.updatingTodoCompletionDates(
+				todolist.id,
+				timelineDate,
+				timelineDate2,
+				true
+			);
+			setOpenTimelineModal(false);
+			setTimelineDate(new Date());
+			setTimelineDate2(new Date());
+			setNextTimeline(false);
+		}
+	};
+
+	const handleRemoveCompletionTodoTime = () => {
+		todoLists.updatingTodoCompletionDates(todolist.id, "", "", false);
 	};
 
 	return (
 		<div className="flex flex-col w-full">
+			{createPortal(
+				<>
+					{openTimelineModal && (
+						<div className="flex justify-center items-center text-center w-full h-full fixed bg-[rgba(0,0,0,0.7)] z-[60]">
+							<div className="bg-white w-[90%] h-[80%] sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll">
+								<div className="flex flex-col justify-center items-center gap-4 w-full">
+									<h1 className="text-2xl font-semibold">
+										{nextTimeline ? "Set End Time" : "Set Start Time"}
+									</h1>
+
+									{todolist.startDate && todolist.endDate && (
+										<div className="flex flex-col justify-center items-center gap-1">
+											<>
+												<div className="flex flex-col justify-center items-center">
+													<p className="text-lg font-semibold">
+														Completion Date:
+													</p>
+													<div className="flex flex-col justify-center items-center">
+														<p className="font-semibold">
+															Start:{" "}
+															<span className="font-normal">
+																{fixedTimelineDateTxt()}
+															</span>
+														</p>
+														<p className="font-semibold">
+															End:{" "}
+															<span className="font-normal">
+																{fixedTimelineDateTxt2()}
+															</span>
+														</p>
+													</div>
+												</div>
+
+												<button
+													onClick={handleRemoveCompletionTodoTime}
+													className="base-btn !bg-red-500 w-full"
+												>
+													Remove Date
+												</button>
+											</>
+										</div>
+									)}
+
+									<p>
+										<span className="text-lg font-semibold">Date Set:</span>{" "}
+										{nextTimeline
+											? timelineDateTxt(timelineDate2)
+											: timelineDateTxt(timelineDate)}
+									</p>
+
+									{nextTimeline ? (
+										<>
+											<button
+												onClick={() => setNextTimeline(false)}
+												className="border border-[#0E51FF] text-[#0E51FF] px-2 py-1 rounded-md cursor-pointer hover:opacity-80 transition-all w-full"
+											>
+												Back
+											</button>
+											<button
+												onClick={handleCompletionTodoTime}
+												className="base-btn w-full"
+											>
+												Set Date
+											</button>
+										</>
+									) : (
+										<button
+											onClick={() => setNextTimeline(true)}
+											className="base-btn w-full"
+										>
+											Next
+										</button>
+									)}
+								</div>
+
+								<div className="flex justify-center items-center flex-col w-full h-auto">
+									<p className="text-sm text-gray-400">Set date below</p>
+									{nextTimeline ? (
+										<Timeline
+											value={timelineDate2}
+											onChange={setTimelineDate2}
+										/>
+									) : (
+										<Timeline value={timelineDate} onChange={setTimelineDate} />
+									)}
+								</div>
+							</div>
+						</div>
+					)}
+				</>,
+				document.body
+			)}
+
 			<div
-				id={todolist.ignoreTodo && "ignore-todo"}
+				id={
+					todolist.ignoreTodo === false
+						? ""
+						: todolist.ignoreTodo && "ignore-todo"
+				}
 				onMouseOver={() => setSubTodoButtonAppear(true)}
 				onMouseLeave={() =>
 					openLinkDropdown ? null : setSubTodoButtonAppear(false)
@@ -307,7 +473,6 @@ export default function TodosContent({
 						}`}
 					/>
 				)}
-
 				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
 					{!todolist.ignoreTodo && (
 						<button
@@ -363,7 +528,7 @@ export default function TodosContent({
 				</div>
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
-					<div className="w-full h-fit relative flex justify-start items-center gap-3">
+					<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
 						{!deletedTodo && editTextActive && !todolist.completed ? (
 							<div className="flex justify-start items-center gap-2 w-full">
 								<>
@@ -437,7 +602,7 @@ export default function TodosContent({
 								<button
 									onClick={handleLinkDropdown}
 									title={"Go to link"}
-									className={`text-btn w-full text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+									className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
 										todolist.completed ? "line-through select-all" : ""
 									} ${
 										subTodoButtonAppear || openLinkDropdown
@@ -501,7 +666,21 @@ export default function TodosContent({
 						)}
 
 						{!editTextActive && deletionIntervals === 5000 && (
-							<div className="w-fit h-auto relative">
+							<div className="w-fit h-auto relative flex justify-center items-center">
+								{todolist.startDate && todolist.endDate && (
+									<Image
+										className="w-auto h-[20px] absolute top-1/2 -translate-y-1/2 left-24 opacity-20"
+										src={
+											user.themeColor
+												? "/icons/calendar_month_white.svg"
+												: "/icons/calendar_month_black.svg"
+										}
+										alt="favorite"
+										width={30}
+										height={30}
+									/>
+								)}
+
 								<button className="min-w-[25px] text-btn relative flex justify-center items-center">
 									<Image
 										onClick={handleOpenMoreDropdown}
@@ -520,7 +699,7 @@ export default function TodosContent({
 								{openMoreDropdown && (
 									<div
 										onMouseLeave={() => setSubTodoButtonAppear(false)}
-										className="more-dropdown absolute w-[140px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 -left-10 bg-white text-sm text-black border shadow-md z-10"
+										className="more-dropdown absolute w-[160px] h-fit rounded-md flex flex-col justify-center items-center gap-1 top-8 -left-12 bg-white text-sm text-black border shadow-md z-10"
 									>
 										<button
 											onClick={() => {
@@ -570,6 +749,8 @@ export default function TodosContent({
 												todolist.completed
 													? "cursor-not-allowed hover:bg-[#ccc]"
 													: "hover:bg-[#0E51FF] hover:text-white"
+											} ${
+												todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
 											}`}
 										>
 											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
@@ -578,7 +759,7 @@ export default function TodosContent({
 										<div className="flex justify-center items-center gap-2 w-full">
 											{todolist.markImportant ? (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md bg-[#0e52ff6b] text-gray-700 ${
+													className={`px-2 py-1 w-full bg-[#0e52ff6b] text-black ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
@@ -593,7 +774,7 @@ export default function TodosContent({
 												</button>
 											) : (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md ${
+													className={`px-2 py-1 w-full ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
@@ -607,8 +788,24 @@ export default function TodosContent({
 											)}
 										</div>
 
+										{todolist.startDate && todolist.endDate ? (
+											<button
+												onClick={handleOpenTimelineModal}
+												className="px-2 py-1 bg-[#0e52ff6b] text-black hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+											>
+												Change/Remove Date
+											</button>
+										) : (
+											<button
+												onClick={handleOpenTimelineModal}
+												className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+											>
+												Set Completion Date
+											</button>
+										)}
+
 										{moreState.todoDropdown && (
-											<div className="absolute top-40 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div className="absolute top-48 left-0 w-full h-fit bg-white border rounded-md shadow-md">
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button
@@ -659,7 +856,6 @@ export default function TodosContent({
 								)}
 							</div>
 						)}
-
 						{!todolist.ignoreTodo && (
 							<>
 								{todolist.favorited ? (
@@ -695,7 +891,6 @@ export default function TodosContent({
 								)}
 							</>
 						)}
-
 						<Image
 							onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
 							className={`w-auto h-[18px] ${

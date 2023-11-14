@@ -703,15 +703,25 @@ export default function TodolistMainContent({
 
 					<button
 						onClick={handleCompletedTodosBtn}
-						className={`bg-[#0E51FF] w-full md:w-auto md:min-w-[180px] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md ${
-							completedTodos ? "opacity-50 border border-[#94b4ff]" : "text-btn"
+						className={`w-full md:w-auto md:min-w-[180px] px-2 py-1 flex justify-center items-center gap-2 text-center rounded-md ${
+							user.themeColor
+								? completedTodos
+									? "border border-[#0E51FF] text-white"
+									: "text-btn bg-[#0E51FF] text-white"
+								: completedTodos
+								? "border border-[#0E51FF] text-[#0E51FF]"
+								: "text-btn bg-[#0E51FF] text-white"
 						}`}
 					>
-						<p className="text-white">Completed Todos</p>
+						<p>Completed Todos</p>
 						{completedTodos && (
 							<Image
 								className="min-w-[15px] min-h-[15px] rotate-[45deg]"
-								src={"/icons/plus-white.svg"}
+								src={
+									user.themeColor
+										? "/icons/plus-white.svg"
+										: "/icons/plus-black.svg"
+								}
 								alt="complete"
 								width={20}
 								height={20}

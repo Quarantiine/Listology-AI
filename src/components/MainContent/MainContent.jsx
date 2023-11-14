@@ -146,165 +146,215 @@ export default function MainContent() {
 											})
 									) : (
 										<>
-											<div className="flex flex-col justify-center items-start gap-4 w-full">
-												<button
-													onClick={handleImportantTodoDropDown}
-													className="flex justify-between items-center gap-3 btn"
-												>
-													<h1 className="text-2xl font-semibold">
-														Important Todos:{" "}
-														<span>
-															{
-																todoLists.allTodoLists
+											<div className="flex flex-col justify-start items-start gap-10 w-full">
+												<div className="flex flex-col justify-between items-start gap-10 w-full">
+													{todoLists.allTodoLists
+														?.filter(
+															(todolist) =>
+																todolist.userID === auth.currentUser.uid &&
+																todolist.startDate &&
+																todolist.endDate &&
+																!todolist.completed
+														)
+														.map((todolist) => todolist).length > 0 && (
+														<div className="flex flex-col justify-center items-start gap-4 w-full">
+															<h1 className="text-2xl font-semibold">
+																Timeline:{" "}
+																{
+																	todoLists.allTodoLists
+																		?.filter(
+																			(todolist) =>
+																				todolist.userID ===
+																					auth.currentUser.uid &&
+																				todolist.startDate &&
+																				todolist.endDate &&
+																				!todolist.completed
+																		)
+																		.map((todolist) => todolist).length
+																}
+															</h1>
+
+															<div className="grid grid-cols-2 w-full h-auto">
+																{todoLists.allTodoLists
+																	?.filter(
+																		(todolist) =>
+																			todolist.userID ===
+																				auth.currentUser.uid &&
+																			todolist.startDate &&
+																			todolist.endDate &&
+																			!todolist.completed
+																	)
+																	.map((todolist) => {
+																		return (
+																			<React.Fragment key={todolist.id}>
+																				<div>{todolist.todo}</div>
+																			</React.Fragment>
+																		);
+																	})}
+															</div>
+														</div>
+													)}
+
+													<div className="flex flex-col justify-center items-start gap-4 w-full">
+														<button
+															onClick={handleImportantTodoDropDown}
+															className="flex justify-between items-center gap-3 btn"
+														>
+															<h1 className="text-2xl font-semibold">
+																Important Todos:{" "}
+																<span>
+																	{
+																		todoLists.allTodoLists
+																			.filter(
+																				(value) =>
+																					value.userID ===
+																						auth.currentUser.uid &&
+																					value.markImportant &&
+																					!value.completed
+																			)
+																			.map((t) => t).length
+																	}
+																</span>
+															</h1>
+															<Image
+																className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
+																	importantTodosDropdown ? "rotate-180" : ""
+																}`}
+																src={
+																	user.themeColor
+																		? "/icons/arrow-white.svg"
+																		: "/icons/arrow-black.svg"
+																}
+																alt="undo"
+																width={30}
+																height={30}
+															/>
+														</button>
+
+														{importantTodosDropdown && (
+															<div
+																className={`grid justify-start items-center gap-3 w-full ${
+																	todoLists.allTodoLists
+																		?.filter(
+																			(value) =>
+																				value.userID === auth.currentUser.uid &&
+																				value.markImportant &&
+																				!value.completed
+																		)
+																		.map((todolist) => todolist).length > 1
+																		? "grid-cols-1 md:grid-cols-2"
+																		: "grid-cols-1"
+																}`}
+															>
+																{todoLists.allTodoLists
 																	.filter(
 																		(value) =>
 																			value.userID === auth.currentUser.uid &&
-																			value.markImportant &&
+																			!value.ignoreTodo &&
 																			!value.completed
 																	)
-																	.map((t) => t).length
-															}
-														</span>
-													</h1>
-													<Image
-														className={`min-w-[15px] min-h-[15px] transition-all ${
-															importantTodosDropdown ? "rotate-180" : ""
-														}`}
-														src={
-															user.themeColor
-																? "/icons/arrow-white.svg"
-																: "/icons/arrow-black.svg"
-														}
-														alt="undo"
-														width={20}
-														height={20}
-													/>
-												</button>
+																	.map((todolist) => {
+																		if (todolist.markImportant) {
+																			return (
+																				<ImportantTodos
+																					key={todolist.id}
+																					todolist={todolist}
+																				/>
+																			);
+																		}
+																	})}
 
-												{importantTodosDropdown && (
-													<div
-														className={`grid justify-start items-center gap-3 w-full ${
-															todoLists.allTodoLists
-																?.filter(
-																	(value) =>
-																		value.userID === auth.currentUser.uid &&
-																		value.markImportant &&
-																		!value.completed
-																)
-																.map((todolist) => todolist).length > 1
-																? "grid-cols-1 md:grid-cols-2"
-																: "grid-cols-1"
-														}`}
-													>
-														{todoLists.allTodoLists
-															.filter(
-																(value) =>
-																	value.userID === auth.currentUser.uid &&
-																	!value.ignoreTodo &&
-																	!value.completed
-															)
-															.map((todolist) => {
-																if (todolist.markImportant) {
-																	return (
-																		<ImportantTodos
-																			key={todolist.id}
-																			todolist={todolist}
-																		/>
-																	);
-																}
-															})}
+																{todoLists.allTodoLists
+																	.filter(
+																		(value) =>
+																			value.userID === auth.currentUser.uid &&
+																			value.ignoreTodo &&
+																			!value.completed
+																	)
+																	.map((todolist) => {
+																		if (todolist.markImportant) {
+																			return (
+																				<ImportantTodos
+																					key={todolist.id}
+																					todolist={todolist}
+																				/>
+																			);
+																		}
+																	})}
 
-														{todoLists.allTodoLists
-															.filter(
-																(value) =>
-																	value.userID === auth.currentUser.uid &&
-																	value.ignoreTodo &&
-																	!value.completed
-															)
-															.map((todolist) => {
-																if (todolist.markImportant) {
-																	return (
-																		<ImportantTodos
-																			key={todolist.id}
-																			todolist={todolist}
-																		/>
-																	);
-																}
-															})}
-
-														{!todoLists.allTodoLists
-															.filter(
-																(value) =>
-																	value.userID === auth.currentUser.uid &&
-																	!value.completed
-															)
-															.map((todolist) =>
-																todolist.markImportant ? true : false
-															)
-															.includes(true) && (
-															<p
-																className={`${
-																	user.themeColor
-																		? "text-[#555]"
-																		: "text-gray-400"
-																}`}
-															>
-																No Important Todos to Complete
-															</p>
+																{!todoLists.allTodoLists
+																	.filter(
+																		(value) =>
+																			value.userID === auth.currentUser.uid &&
+																			!value.completed
+																	)
+																	.map((todolist) =>
+																		todolist.markImportant ? true : false
+																	)
+																	.includes(true) && (
+																	<p
+																		className={`${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-400"
+																		}`}
+																	>
+																		No Important Todos to Complete
+																	</p>
+																)}
+															</div>
 														)}
 													</div>
-												)}
-											</div>
-
-											<div className="w-full flex flex-col justify-start items-start gap-5">
-												<div className="flex justify-start items-center gap-3 w-full relative">
-													<>
-														{user.themeColor ? (
-															<svg
-																className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
-																width="20"
-																height="20"
-																viewBox="0 0 27 27"
-																xmlns="http://www.w3.org/2000/svg"
-															>
-																<path
-																	d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
-																	fill="white"
-																/>
-															</svg>
-														) : (
-															<svg
-																className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
-																width="20"
-																height="20"
-																viewBox="0 0 27 27"
-																xmlns="http://www.w3.org/2000/svg"
-															>
-																<path
-																	d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
-																	fill="black"
-																/>
-															</svg>
-														)}
-													</>
-
-													<input
-														className={`pl-10 pr-2 py-1 rounded-md outline-none w-full ${
-															user.themeColor
-																? "bg-[#333] text-white"
-																: "bg-[#eee] text-black"
-														}`}
-														type="search"
-														name="search"
-														autoComplete="off"
-														placeholder="Search by todo and main folders"
-														ref={searchQueryRef}
-														onChange={(e) => setSearchQuery(e.target.value)}
-														value={searchQuery}
-													/>
 												</div>
 
-												<div className="flex flex-col justify-start items-start w-full gap-4">
+												<div className="flex flex-col justify-start items-start gap-4 w-full">
+													<div className="flex justify-start items-center gap-3 w-full relative">
+														<>
+															{user.themeColor ? (
+																<svg
+																	className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+																	width="20"
+																	height="20"
+																	viewBox="0 0 27 27"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+																		fill="white"
+																	/>
+																</svg>
+															) : (
+																<svg
+																	className="w-auto min-h-[18px] max-h-[18px] absolute top-1/2 -translate-y-1/2 left-3"
+																	width="20"
+																	height="20"
+																	viewBox="0 0 27 27"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path
+																		d="M19.2967 16.9811H18.0772L17.6449 16.5643C19.1578 14.8045 20.0686 12.5197 20.0686 10.0343C20.0686 4.49228 15.5763 0 10.0343 0C4.49228 0 0 4.49228 0 10.0343C0 15.5763 4.49228 20.0686 10.0343 20.0686C12.5197 20.0686 14.8045 19.1578 16.5643 17.6449L16.9811 18.0772V19.2967L24.6998 27L27 24.6998L19.2967 16.9811ZM10.0343 16.9811C6.19039 16.9811 3.08748 13.8782 3.08748 10.0343C3.08748 6.19039 6.19039 3.08748 10.0343 3.08748C13.8782 3.08748 16.9811 6.19039 16.9811 10.0343C16.9811 13.8782 13.8782 16.9811 10.0343 16.9811Z"
+																		fill="black"
+																	/>
+																</svg>
+															)}
+														</>
+
+														<input
+															className={`pl-10 pr-2 py-1 rounded-md outline-none w-full ${
+																user.themeColor
+																	? "bg-[#333] text-white"
+																	: "bg-[#eee] text-black"
+															}`}
+															type="search"
+															name="search"
+															autoComplete="off"
+															placeholder="Search by todo and main folders"
+															ref={searchQueryRef}
+															onChange={(e) => setSearchQuery(e.target.value)}
+															value={searchQuery}
+														/>
+													</div>
+
 													<div className="flex justify-between items-center gap-2 w-full">
 														<div className="flex justify-center items-center gap-1">
 															<h1 className="text-2xl font-semibold">

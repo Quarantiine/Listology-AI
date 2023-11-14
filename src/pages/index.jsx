@@ -53,6 +53,7 @@ export default function Home() {
 					/>
 				</div>
 			</>
+
 			{auth.currentUser &&
 				registration.allusers &&
 				registration.allusers[0] &&

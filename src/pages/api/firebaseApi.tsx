@@ -636,7 +636,21 @@ export default function FirebaseApi() {
 				markImportant: markImportant,
 			});
 		};
+
+		updatingTodoCompletionDates = async (
+			id: string,
+			startDate: string,
+			endDate: string
+		) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				startDate: startDate,
+				endDate: endDate,
+			});
+		};
 	}
+
 	const TLS = new TodoListSystem();
 	const addingTodos = TLS.addingTodos;
 	const updatingTodolist = TLS.updatingTodolist;
@@ -653,6 +667,7 @@ export default function FirebaseApi() {
 	const updatingSubTodoMainFolder = TLS.updatingSubTodoMainFolder;
 	const updatingIgnoreTodo = TLS.updatingIgnoreTodo;
 	const updatingMarkAsImportant = TLS.updatingMarkAsImportant;
+	const updatingTodoCompletionDates = TLS.updatingTodoCompletionDates;
 
 	return {
 		auth,
@@ -713,6 +728,7 @@ export default function FirebaseApi() {
 			updatingSubTodoMainFolder,
 			updatingIgnoreTodo,
 			updatingMarkAsImportant,
+			updatingTodoCompletionDates,
 		},
 	};
 }

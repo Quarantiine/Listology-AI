@@ -218,7 +218,9 @@ export default function ImportantTodos({ todolist }) {
 	};
 
 	const handleMarkImportant = (markImportant) => {
-		todoLists.updatingMarkAsImportant(todolist.id, markImportant);
+		todolist.completed
+			? null
+			: todoLists.updatingMarkAsImportant(todolist.id, markImportant);
 		setOpenMoreDropdown(false);
 	};
 
@@ -245,7 +247,11 @@ export default function ImportantTodos({ todolist }) {
 				}
 			</p>
 			<div
-				id={todolist.ignoreTodo && "ignore-todo"}
+				id={
+					todolist.ignoreTodo === false
+						? ""
+						: todolist.ignoreTodo && "ignore-todo"
+				}
 				title={todolist.todo}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
 					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
@@ -336,7 +342,7 @@ export default function ImportantTodos({ todolist }) {
 										todolist.completed ? "line-through select-all" : ""
 									}`}
 								>
-									<p className="">
+									<p className="w-full sm:w-[90%] line-clamp-1">
 										{todolist.todo.replace(extractLink(), "")}{" "}
 										<span className="text-[#0E51FF]">
 											{shortenUrl(extractLink(), -30)
@@ -349,7 +355,7 @@ export default function ImportantTodos({ todolist }) {
 						) : (
 							<p
 								onClick={handleTodoLocation}
-								className={`text-btn w-full line-clamp-1 ${
+								className={`text-btn w-full sm:w-[90%] line-clamp-1 ${
 									todolist.completed ? "line-through select-all" : ""
 								}`}
 							>
@@ -454,6 +460,8 @@ export default function ImportantTodos({ todolist }) {
 												todolist.completed
 													? "cursor-not-allowed hover:bg-[#ccc]"
 													: "hover:bg-[#0E51FF] hover:text-white"
+											} ${
+												todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
 											}`}
 										>
 											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
@@ -462,7 +470,7 @@ export default function ImportantTodos({ todolist }) {
 										<div className="flex justify-center items-center gap-2 w-full">
 											{todolist.markImportant ? (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md bg-[#0e52ff6b] text-gray-700 ${
+													className={`px-2 py-1 w-full rounded-b-md bg-[#0e52ff6b] text-black ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
