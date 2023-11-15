@@ -216,6 +216,7 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 		todoLists.updatingTodolistFavorite(todolist.id, false);
 		handleSetDifficulty("");
 		setOpenMoreDropdown(!openMoreDropdown);
+		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
 	const handleMarkImportant = (markImportant) => {
@@ -509,23 +510,25 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 											Time Created
 										</button>
 
-										<button
-											onClick={() => {
-												todolist.completed
-													? null
-													: handleMoreDispatch("todoDropdown", "");
-												todolist.completed ? null : handleIgnoreTodo();
-											}}
-											className={`px-2 py-1 w-full ${
-												todolist.completed
-													? "cursor-not-allowed hover:bg-[#ccc]"
-													: "hover:bg-[#0E51FF] hover:text-white"
-											} ${
-												todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
-											}`}
-										>
-											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
-										</button>
+										{todolist.ignoreTodo && (
+											<button
+												onClick={() => {
+													todolist.completed
+														? null
+														: handleMoreDispatch("todoDropdown", "");
+													todolist.completed ? null : handleIgnoreTodo();
+												}}
+												className={`px-2 py-1 w-full ${
+													todolist.completed
+														? "cursor-not-allowed hover:bg-[#ccc]"
+														: "hover:bg-[#0E51FF] hover:text-white"
+												} ${
+													todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
+												}`}
+											>
+												{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
+											</button>
+										)}
 
 										<div className="flex justify-center items-center gap-2 w-full">
 											{todolist.markImportant ? (
@@ -567,7 +570,7 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 										)}
 
 										{moreState.todoDropdown && (
-											<div className="absolute top-48 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div className="absolute top-40 left-0 w-full h-fit bg-white border rounded-md shadow-md">
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button

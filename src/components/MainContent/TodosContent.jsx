@@ -267,6 +267,7 @@ export default function TodosContent({
 		todoLists.updatingTodolistFavorite(todolist.id, false);
 		handleSetDifficulty("");
 		setOpenMoreDropdown(!openMoreDropdown);
+		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
 	const handleMarkImportant = (markImportant) => {
@@ -337,7 +338,7 @@ export default function TodosContent({
 	};
 
 	const handleRemoveCompletionTodoTime = () => {
-		todoLists.updatingTodoCompletionDates(todolist.id, "", "", false);
+		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
 	return (
@@ -804,15 +805,27 @@ export default function TodosContent({
 
 										{todolist.startDate && todolist.endDate ? (
 											<button
-												onClick={handleOpenTimelineModal}
-												className="px-2 py-1 bg-[#0e52ff6b] text-black hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+												onClick={
+													todolist.ignoreTodo ? null : handleOpenTimelineModal
+												}
+												className={`px-2 py-1 bg-[#0e52ff6b] text-black w-full rounded-b-md ${
+													todolist.ignoreTodo
+														? "cursor-not-allowed hover:bg-[#ccc]"
+														: "hover:bg-[#0E51FF] hover:text-white"
+												}`}
 											>
 												Change/Remove Date
 											</button>
 										) : (
 											<button
-												onClick={handleOpenTimelineModal}
-												className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-b-md"
+												onClick={
+													todolist.ignoreTodo ? null : handleOpenTimelineModal
+												}
+												className={`px-2 py-1 w-full rounded-b-md ${
+													todolist.ignoreTodo
+														? "cursor-not-allowed hover:bg-[#ccc]"
+														: "hover:bg-[#0E51FF] hover:text-white"
+												}`}
 											>
 												Set Completion Date
 											</button>

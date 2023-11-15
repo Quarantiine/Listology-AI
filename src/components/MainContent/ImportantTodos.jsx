@@ -215,6 +215,7 @@ export default function ImportantTodos({ todolist }) {
 		todoLists.updatingTodolistFavorite(todolist.id, false);
 		handleSetDifficulty("");
 		setOpenMoreDropdown(!openMoreDropdown);
+		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
 	const handleMarkImportant = (markImportant) => {
@@ -399,6 +400,22 @@ export default function ImportantTodos({ todolist }) {
 
 						{!editTextActive && deletionIntervals === 5000 && (
 							<div className="w-fit h-auto relative">
+								{todolist.startDate && todolist.endDate && (
+									<Image
+										className={`w-auto h-[20px] absolute top-1/2 -translate-y-1/2 opacity-20 ${
+											todolist.markImportant ? "-left-[20px]" : "left-24"
+										}`}
+										src={
+											user.themeColor
+												? "/icons/calendar_month_white.svg"
+												: "/icons/calendar_month_black.svg"
+										}
+										alt="favorite"
+										width={30}
+										height={30}
+									/>
+								)}
+
 								<button className="min-w-[25px] text-btn relative flex justify-center items-center">
 									<Image
 										onClick={handleOpenMoreDropdown}
@@ -474,10 +491,14 @@ export default function ImportantTodos({ todolist }) {
 										<div className="flex justify-center items-center gap-2 w-full">
 											{todolist.markImportant ? (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md bg-[#0e52ff6b] text-black ${
+													className={`px-2 py-1 w-full bg-[#0e52ff6b] text-black ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
+													} ${
+														todolist.startDate && todolist.endDate
+															? ""
+															: "rounded-b-md"
 													}`}
 													onClick={() => {
 														handleMarkImportant(false);
@@ -487,10 +508,14 @@ export default function ImportantTodos({ todolist }) {
 												</button>
 											) : (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md ${
+													className={`px-2 py-1 w-full ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
+													} ${
+														todolist.startDate && todolist.endDate
+															? ""
+															: "rounded-b-md"
 													}`}
 													onClick={() => {
 														handleMarkImportant(true);
@@ -511,7 +536,13 @@ export default function ImportantTodos({ todolist }) {
 										)}
 
 										{moreState.todoDropdown && (
-											<div className="absolute top-40 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div
+												className={`absolute left-0 w-full h-fit bg-white border rounded-md shadow-md ${
+													todolist.startDate && todolist.endDate
+														? "top-48"
+														: "top-40"
+												}`}
+											>
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button
