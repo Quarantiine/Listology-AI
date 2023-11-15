@@ -11,8 +11,6 @@ import Image from "next/image";
 import ImportantTodos from "./ImportantTodos";
 import TimelineTodos from "./TimelineTodos";
 
-// TODO: Create a shortcut to search for todo folders
-
 export default function MainContent() {
 	const {
 		setClickedTodoFolder,
@@ -180,7 +178,9 @@ export default function MainContent() {
 																onClick={() =>
 																	setTodoTimelineDropdown(!todoTimelineDropdown)
 																}
-																className="w-full flex justify-between items-center gap-3 bg-gray-100 py-1 px-3 rounded-md"
+																className={`w-full flex justify-between items-center gap-3 py-1 px-3 rounded-md ${
+																	user.themeColor ? "bg-[#333]" : "bg-gray-100"
+																}`}
 															>
 																<h1 className="text-2xl font-semibold">
 																	Todo Timeline:{" "}
@@ -268,7 +268,9 @@ export default function MainContent() {
 												<div className="flex flex-col justify-center items-start gap-4 w-full">
 													<button
 														onClick={handleImportantTodoDropDown}
-														className="flex justify-between items-center gap-3 btn w-full bg-gray-100 py-1 px-3 rounded-md"
+														className={`flex justify-between items-center gap-3 btn w-full py-1 px-3 rounded-md ${
+															user.themeColor ? "bg-[#333]" : "bg-gray-100"
+														}`}
 													>
 														<div>
 															<h1 className="text-2xl font-semibold">
