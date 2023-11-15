@@ -11,6 +11,7 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { StateCtx } from "../Layout";
 import shortenUrl from "shorten-url";
+import { createPortal } from "react-dom";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -24,8 +25,8 @@ const moreReducer = (state, { payload, type }) => {
 	}
 };
 
-export default function ImportantTodos({ todolist }) {
-	const { auth, todoLists, todolistFolders } = FirebaseApi();
+export default function TimelineTodos({ todolist, modifiedEndDate }) {
+	const { auth, todoLists } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const {
 		setClickedFolder,
@@ -237,19 +238,74 @@ export default function ImportantTodos({ todolist }) {
 		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
+	const currentDateTime = new Date().getTime();
+	const endDateTime = new Date(todolist.endDate?.seconds * 1000);
+	const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+	const differenceInEndMilliseconds = endDateTime - currentDateTime;
+	const differenceInEndHours = (
+		(differenceInEndMilliseconds / millisecondsPerDay) *
+		24
+	).toFixed(0);
+	const differenceInEndHoursRounded = Math.round(
+		(differenceInEndMilliseconds / millisecondsPerDay) * 24
+	);
+
+	const differenceInEndDays = (
+		differenceInEndMilliseconds / millisecondsPerDay < 1
+			? (differenceInEndMilliseconds / millisecondsPerDay) * 24
+			: differenceInEndMilliseconds / millisecondsPerDay
+	).toFixed(0);
+	const differenceInEndDaysRounded = Math.round(
+		differenceInEndMilliseconds / millisecondsPerDay < 1
+			? (differenceInEndMilliseconds / millisecondsPerDay) * 24
+			: differenceInEndMilliseconds / millisecondsPerDay
+	);
+
 	return (
-		<div className="flex flex-col w-full">
-			<p className="text-[10px] text-gray-400">
-				{
-					todolistFolders.allTodoFolders
-						?.filter(
-							(value) =>
-								value.userID === auth.currentUser.uid &&
-								value.id === todolist.folderID
-						)
-						.map((todoListFolder) => todoListFolder.folderTitle)[0]
-				}
-			</p>
+		<div className="flex flex-col w-full h-auto">
+			<div className="flex justify-start items-center gap-2">
+				<p
+					className={`text-sm ${
+						user.themeColor ? "text-[#888]" : "text-gray-400"
+					}`}
+				>
+					<span className="font-bold">Due:</span> {modifiedEndDate}
+				</p>
+
+				<>
+					{differenceInEndDays <= -1 && (
+						<p className={`text-sm text-red-500`}>
+							{differenceInEndHours <= -1 && differenceInEndHours > -23
+								? differenceInEndHoursRounded === 1
+									? `${Math.abs(differenceInEndHours)} Hour`
+									: `${Math.abs(differenceInEndHours)} Hours`
+								: differenceInEndDaysRounded === 1
+								? `${Math.abs(differenceInEndDays / 24).toFixed(0)} Day`
+								: `${Math.abs(differenceInEndDays / 24).toFixed(0)} Days`}{" "}
+							Overdue
+						</p>
+					)}
+
+					{differenceInEndHours < 1 && differenceInEndHours > -1 && (
+						<p className={`text-sm text-yellow-500`}>{"Due < 1 Hour"}</p>
+					)}
+
+					{differenceInEndHours >= 1 && (
+						<p className={`text-sm text-yellow-500`}>
+							Due in{" "}
+							{differenceInEndMilliseconds / millisecondsPerDay < 1
+								? differenceInEndHoursRounded === 1
+									? `${differenceInEndHours} Hour`
+									: `${differenceInEndHours} Hours`
+								: differenceInEndDaysRounded === 1
+								? `${differenceInEndDays} Day`
+								: `${differenceInEndDays} Days`}
+						</p>
+					)}
+				</>
+			</div>
+
 			<div
 				id={
 					todolist.ignoreTodo === false
@@ -474,7 +530,7 @@ export default function ImportantTodos({ todolist }) {
 										<div className="flex justify-center items-center gap-2 w-full">
 											{todolist.markImportant ? (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md bg-[#0e52ff6b] text-black ${
+													className={`px-2 py-1 w-full bg-[#0e52ff6b] text-black ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
@@ -487,7 +543,7 @@ export default function ImportantTodos({ todolist }) {
 												</button>
 											) : (
 												<button
-													className={`px-2 py-1 w-full rounded-b-md ${
+													className={`px-2 py-1 w-full ${
 														todolist.completed
 															? "cursor-not-allowed hover:bg-[#ccc]"
 															: "hover:bg-[#0E51FF] hover:text-white"
@@ -511,7 +567,7 @@ export default function ImportantTodos({ todolist }) {
 										)}
 
 										{moreState.todoDropdown && (
-											<div className="absolute top-40 left-0 w-full h-fit bg-white border rounded-md shadow-md">
+											<div className="absolute top-48 left-0 w-full h-fit bg-white border rounded-md shadow-md">
 												{moreState.todoDropdown === "Todo Difficulty" && (
 													<div className="flex flex-col justify-center items-center w-full">
 														<button

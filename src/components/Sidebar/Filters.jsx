@@ -54,7 +54,7 @@ export default function Filters({ user }) {
 				onClick={() => {
 					!completedTodos && !closeFilterSidebar && handleFilterSidebar();
 				}}
-				className={`filter-system z-40 fixed top-1/2 -translate-y-1/2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
+				className={`filter-system z-40 fixed top-1/2 translate-y-10 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
 					user.themeColor ? "bg-[#111]" : "bg-white shadow-md border"
 				} ${
 					closeFilterSidebar

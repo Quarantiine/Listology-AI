@@ -282,6 +282,7 @@ export default function TodosContent({
 	const handleOpenTimelineModal = () => {
 		setOpenTimelineModal(!openTimelineModal);
 		setOpenMoreDropdown(false);
+		setSubTodoButtonAppear(false);
 	};
 
 	useEffect(() => {
@@ -344,8 +345,19 @@ export default function TodosContent({
 			{createPortal(
 				<>
 					{openTimelineModal && (
-						<div className="flex justify-center items-center text-center w-full h-full fixed bg-[rgba(0,0,0,0.7)] z-[60]">
-							<div className="bg-white w-[90%] h-[80%] sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll">
+						<div
+							className={`flex justify-center items-center text-center w-full h-full fixed bg-[rgba(0,0,0,0.7)] z-[60]`}
+						>
+							<div
+								className={`bg-white w-[90%] h-[80%] sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll relative ${
+									todolist.completed ? "border-4 border-green-500" : ""
+								}`}
+							>
+								{todolist.completed && (
+									<h1 className="text-2xl font-semibold text-green-500 text-center w-full">
+										Completed Todo
+									</h1>
+								)}
 								<div className="flex flex-col justify-center items-center gap-4 w-full">
 									<h1 className="text-2xl font-semibold">
 										{nextTimeline ? "Set End Time" : "Set Start Time"}
@@ -669,7 +681,9 @@ export default function TodosContent({
 							<div className="w-fit h-auto relative flex justify-center items-center">
 								{todolist.startDate && todolist.endDate && (
 									<Image
-										className="w-auto h-[20px] absolute top-1/2 -translate-y-1/2 left-24 opacity-20"
+										className={`w-auto h-[20px] absolute top-1/2 -translate-y-1/2 opacity-20 ${
+											todolist.markImportant ? "left-[105px]" : "left-24"
+										}`}
 										src={
 											user.themeColor
 												? "/icons/calendar_month_white.svg"

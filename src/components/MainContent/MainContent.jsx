@@ -9,6 +9,7 @@ import TodolistMainContent from "./TodolistMainContent";
 import TodoFoldersDashboard from "./TodoFoldersDashboard";
 import Image from "next/image";
 import ImportantTodos from "./ImportantTodos";
+import TimelineTodos from "./TimelineTodos";
 
 // TODO: Create a shortcut to search for todo folders
 
@@ -28,6 +29,7 @@ export default function MainContent() {
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
 		useState(false);
 	const [importantTodosDropdown, setImportantTodosDropdown] = useState(true);
+	const [todoTimelineDropdown, setTodoTimelineDropdown] = useState(true);
 	const lengthOfSearchedFolders = todolistFolders.allTodoFolders
 		?.filter(
 			(value) =>
@@ -47,6 +49,20 @@ export default function MainContent() {
 						.includes(searchQuery.toLowerCase()))
 		)
 		?.map((t) => t).length;
+	const timeMonths = [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December",
+	];
 
 	useEffect(() => {
 		const closeFolderModal = (e) => {
@@ -146,7 +162,9 @@ export default function MainContent() {
 											})
 									) : (
 										<>
-											<div className="flex flex-col justify-start items-start gap-10 w-full">
+											<div
+												className={`flex flex-col justify-start items-start w-full transition-all gap-5`}
+											>
 												<div className="flex flex-col justify-between items-start gap-10 w-full">
 													{todoLists.allTodoLists
 														?.filter(
@@ -158,10 +176,61 @@ export default function MainContent() {
 														)
 														.map((todolist) => todolist).length > 0 && (
 														<div className="flex flex-col justify-center items-start gap-4 w-full">
-															<h1 className="text-2xl font-semibold">
-																Timeline:{" "}
-																{
-																	todoLists.allTodoLists
+															<button
+																onClick={() =>
+																	setTodoTimelineDropdown(!todoTimelineDropdown)
+																}
+																className="w-full flex justify-between items-center gap-3 bg-gray-100 py-1 px-3 rounded-md"
+															>
+																<h1 className="text-2xl font-semibold">
+																	Todo Timeline:{" "}
+																	{
+																		todoLists.allTodoLists
+																			?.filter(
+																				(todolist) =>
+																					todolist.userID ===
+																						auth.currentUser.uid &&
+																					todolist.startDate &&
+																					todolist.endDate &&
+																					!todolist.completed
+																			)
+																			.map((todolist) => todolist).length
+																	}
+																</h1>
+
+																<Image
+																	className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
+																		todoTimelineDropdown ? "rotate-180" : ""
+																	}`}
+																	src={
+																		user.themeColor
+																			? "/icons/arrow-white.svg"
+																			: "/icons/arrow-black.svg"
+																	}
+																	alt="undo"
+																	width={30}
+																	height={30}
+																/>
+															</button>
+
+															{todoTimelineDropdown && (
+																<div
+																	className={`grid w-full h-auto gap-x-5 gap-y-3 ${
+																		todoLists.allTodoLists
+																			?.filter(
+																				(todolist) =>
+																					todolist.userID ===
+																						auth.currentUser.uid &&
+																					todolist.startDate &&
+																					todolist.endDate &&
+																					!todolist.completed
+																			)
+																			.map((todolist) => todolist).length > 1
+																			? "grid-cols-1 md:grid-cols-2"
+																			: "grid-cols-1"
+																	}`}
+																>
+																	{todoLists.allTodoLists
 																		?.filter(
 																			(todolist) =>
 																				todolist.userID ===
@@ -170,36 +239,38 @@ export default function MainContent() {
 																				todolist.endDate &&
 																				!todolist.completed
 																		)
-																		.map((todolist) => todolist).length
-																}
-															</h1>
+																		.map((todolist) => {
+																			const currentDate = new Date();
+																			const endDate = new Date(
+																				todolist.endDate.seconds * 1000
+																			);
 
-															<div className="grid grid-cols-2 w-full h-auto">
-																{todoLists.allTodoLists
-																	?.filter(
-																		(todolist) =>
-																			todolist.userID ===
-																				auth.currentUser.uid &&
-																			todolist.startDate &&
-																			todolist.endDate &&
-																			!todolist.completed
-																	)
-																	.map((todolist) => {
-																		return (
-																			<React.Fragment key={todolist.id}>
-																				<div>{todolist.todo}</div>
-																			</React.Fragment>
-																		);
-																	})}
-															</div>
+																			const modifiedEndDate = `${
+																				timeMonths[endDate.getMonth()]
+																			} ${endDate.getDate()}, ${endDate.getFullYear()}`;
+
+																			return (
+																				<TimelineTodos
+																					key={todolist.id}
+																					todolist={todolist}
+																					modifiedEndDate={modifiedEndDate}
+																					endDate={endDate}
+																					currentDate={currentDate}
+																				/>
+																			);
+																		})}
+																</div>
+															)}
 														</div>
 													)}
+												</div>
 
-													<div className="flex flex-col justify-center items-start gap-4 w-full">
-														<button
-															onClick={handleImportantTodoDropDown}
-															className="flex justify-between items-center gap-3 btn"
-														>
+												<div className="flex flex-col justify-center items-start gap-4 w-full">
+													<button
+														onClick={handleImportantTodoDropDown}
+														className="flex justify-between items-center gap-3 btn w-full bg-gray-100 py-1 px-3 rounded-md"
+													>
+														<div>
 															<h1 className="text-2xl font-semibold">
 																Important Todos:{" "}
 																<span>
@@ -216,95 +287,96 @@ export default function MainContent() {
 																	}
 																</span>
 															</h1>
-															<Image
-																className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
-																	importantTodosDropdown ? "rotate-180" : ""
-																}`}
-																src={
-																	user.themeColor
-																		? "/icons/arrow-white.svg"
-																		: "/icons/arrow-black.svg"
-																}
-																alt="undo"
-																width={30}
-																height={30}
-															/>
-														</button>
+														</div>
 
-														{importantTodosDropdown && (
-															<div
-																className={`grid justify-start items-center gap-3 w-full ${
-																	todoLists.allTodoLists
-																		?.filter(
-																			(value) =>
-																				value.userID === auth.currentUser.uid &&
-																				value.markImportant &&
-																				!value.completed
-																		)
-																		.map((todolist) => todolist).length > 1
-																		? "grid-cols-1 md:grid-cols-2"
-																		: "grid-cols-1"
-																}`}
-															>
-																{todoLists.allTodoLists
-																	.filter(
+														<Image
+															className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
+																importantTodosDropdown ? "rotate-180" : ""
+															}`}
+															src={
+																user.themeColor
+																	? "/icons/arrow-white.svg"
+																	: "/icons/arrow-black.svg"
+															}
+															alt="undo"
+															width={30}
+															height={30}
+														/>
+													</button>
+
+													{importantTodosDropdown && (
+														<div
+															className={`grid justify-start items-center gap-3 w-full ${
+																todoLists.allTodoLists
+																	?.filter(
 																		(value) =>
 																			value.userID === auth.currentUser.uid &&
-																			!value.ignoreTodo &&
+																			value.markImportant &&
 																			!value.completed
 																	)
-																	.map((todolist) => {
-																		if (todolist.markImportant) {
-																			return (
-																				<ImportantTodos
-																					key={todolist.id}
-																					todolist={todolist}
-																				/>
-																			);
-																		}
-																	})}
+																	.map((todolist) => todolist).length > 1
+																	? "grid-cols-1 md:grid-cols-2"
+																	: "grid-cols-1"
+															}`}
+														>
+															{todoLists.allTodoLists
+																.filter(
+																	(value) =>
+																		value.userID === auth.currentUser.uid &&
+																		!value.ignoreTodo &&
+																		!value.completed
+																)
+																.map((todolist) => {
+																	if (todolist.markImportant) {
+																		return (
+																			<ImportantTodos
+																				key={todolist.id}
+																				todolist={todolist}
+																			/>
+																		);
+																	}
+																})}
 
-																{todoLists.allTodoLists
-																	.filter(
-																		(value) =>
-																			value.userID === auth.currentUser.uid &&
-																			value.ignoreTodo &&
-																			!value.completed
-																	)
-																	.map((todolist) => {
-																		if (todolist.markImportant) {
-																			return (
-																				<ImportantTodos
-																					key={todolist.id}
-																					todolist={todolist}
-																				/>
-																			);
-																		}
-																	})}
+															{todoLists.allTodoLists
+																.filter(
+																	(value) =>
+																		value.userID === auth.currentUser.uid &&
+																		value.ignoreTodo &&
+																		!value.completed
+																)
+																.map((todolist) => {
+																	if (todolist.markImportant) {
+																		return (
+																			<ImportantTodos
+																				key={todolist.id}
+																				todolist={todolist}
+																			/>
+																		);
+																	}
+																})}
 
-																{!todoLists.allTodoLists
-																	.filter(
-																		(value) =>
-																			value.userID === auth.currentUser.uid &&
-																			!value.completed
-																	)
-																	.map((todolist) =>
-																		todolist.markImportant ? true : false
-																	)
-																	.includes(true) && (
-																	<p
-																		className={`${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-400"
-																		}`}
-																	>
-																		No Important Todos to Complete
-																	</p>
-																)}
-															</div>
-														)}
-													</div>
+															{!todoLists.allTodoLists
+																.filter(
+																	(value) =>
+																		value.userID === auth.currentUser.uid &&
+																		!value.completed
+																)
+																.map((todolist) =>
+																	todolist.markImportant ? true : false
+																)
+																.includes(true) && (
+																<p
+																	className={`${
+																		user.themeColor
+																			? "text-[#555]"
+																			: "text-gray-400"
+																	}`}
+																>
+																	No Important Todos to Complete
+																</p>
+															)}
+														</div>
+													)}
 												</div>
 
 												<div className="flex flex-col justify-start items-start gap-4 w-full">
