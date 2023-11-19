@@ -11,7 +11,6 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { StateCtx } from "../Layout";
 import shortenUrl from "shorten-url";
-import { createPortal } from "react-dom";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -244,67 +243,39 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 	const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
 	const differenceInEndMilliseconds = endDateTime - currentDateTime;
+
 	const differenceInEndHours = (
 		(differenceInEndMilliseconds / millisecondsPerDay) *
 		24
 	).toFixed(0);
-	const differenceInEndHoursRounded = Math.round(
-		(differenceInEndMilliseconds / millisecondsPerDay) * 24
-	);
-
-	const differenceInEndDays = (
-		differenceInEndMilliseconds / millisecondsPerDay < 1
-			? (differenceInEndMilliseconds / millisecondsPerDay) * 24
-			: differenceInEndMilliseconds / millisecondsPerDay
-	).toFixed(0);
-	const differenceInEndDaysRounded = Math.round(
-		differenceInEndMilliseconds / millisecondsPerDay < 1
-			? (differenceInEndMilliseconds / millisecondsPerDay) * 24
-			: differenceInEndMilliseconds / millisecondsPerDay
-	);
 
 	return (
 		<div className="flex flex-col w-full h-auto">
 			<div className="flex justify-start items-center gap-2">
 				<p
 					className={`text-sm ${
-						user.themeColor ? "text-[#888]" : "text-gray-400"
+						differenceInEndHours >= 1
+							? "text-yellow-500"
+							: user.themeColor
+							? "text-[#888]"
+							: "text-gray-400"
+					} ${
+						differenceInEndHours <= -1
+							? "text-red-500"
+							: user.themeColor
+							? "text-[#888]"
+							: "text-gray-400"
 					}`}
 				>
-					<span className="font-bold">Due:</span> {modifiedEndDate}
+					<span className="font-bold">
+						Due
+						{differenceInEndHours <= -1 && (
+							<span className="italic"> Today</span>
+						)}
+						:
+					</span>{" "}
+					{modifiedEndDate}
 				</p>
-
-				<>
-					{differenceInEndDays <= -1 && (
-						<p className={`text-sm text-red-500`}>
-							{differenceInEndHours <= -1 && differenceInEndHours > -23
-								? differenceInEndHoursRounded === 1
-									? `${Math.abs(differenceInEndHours)} Hour`
-									: `${Math.abs(differenceInEndHours)} Hours`
-								: differenceInEndDaysRounded === 1
-								? `${Math.abs(differenceInEndDays / 24).toFixed(0)} Day`
-								: `${Math.abs(differenceInEndDays / 24).toFixed(0)} Days`}{" "}
-							Overdue
-						</p>
-					)}
-
-					{differenceInEndHours < 1 && differenceInEndHours > -1 && (
-						<p className={`text-sm text-yellow-500`}>{"Due < 1 Hour"}</p>
-					)}
-
-					{differenceInEndHours >= 1 && (
-						<p className={`text-sm text-yellow-500`}>
-							Due in{" "}
-							{differenceInEndMilliseconds / millisecondsPerDay < 1
-								? differenceInEndHoursRounded === 1
-									? `${differenceInEndHours} Hour`
-									: `${differenceInEndHours} Hours`
-								: differenceInEndDaysRounded === 1
-								? `${differenceInEndDays} Day`
-								: `${differenceInEndDays} Days`}
-						</p>
-					)}
-				</>
 			</div>
 
 			<div

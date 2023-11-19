@@ -155,8 +155,24 @@ export default function TodoFoldersDashboard({
 		return percentage;
 	};
 
+	useEffect(() => {
+		if (totalCompletionPercentage() >= 1) {
+			todolistFolders.updatingCompletion(todoFolder.id, true);
+		}
+
+		if (totalCompletionPercentage() < 1) {
+			todolistFolders.updatingCompletion(todoFolder.id, false);
+		}
+	}, [todoFolder, todolistFolders]);
+
 	return (
-		<div className="flex justify-center items-center w-full h-fit relative">
+		<div
+			className={`flex justify-center items-center w-full h-fit relative ${
+				totalCompletionPercentage() >= 1
+					? "border border-green-500 rounded-md"
+					: ""
+			}`}
+		>
 			{removedPinMesg &&
 				createPortal(
 					<>
