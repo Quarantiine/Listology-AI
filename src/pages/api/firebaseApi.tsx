@@ -360,6 +360,13 @@ export default function FirebaseApi() {
 		updatingUserEmail = async (email: string) => {
 			await updateEmail(auth?.currentUser, email);
 		};
+
+		updatingProfileImage = async (profileImage: string, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+			await updateDoc(docRef, {
+				profileImage: profileImage,
+			});
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -374,6 +381,7 @@ export default function FirebaseApi() {
 	const facebookProvider = RS.facebookProvider;
 	const twitterProvider = RS.twitterProvider;
 	const updatingUserEmail = RS.updatingUserEmail;
+	const updatingProfileImage = RS.updatingProfileImage;
 
 	class FolderSystem {
 		constructor() {}
@@ -693,6 +701,7 @@ export default function FirebaseApi() {
 			facebookProvider,
 			twitterProvider,
 			updatingUserEmail,
+			updatingProfileImage,
 		},
 
 		folders: {

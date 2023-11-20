@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-calendar": "^4.6.1",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-query": "^3.39.3",
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",

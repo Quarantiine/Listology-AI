@@ -104,10 +104,10 @@ export default function Misc({ user, handleNavigator }) {
 						>
 							{user.username}
 						</p>
-						{user.photoURL && (
+						{user.profileImage && (
 							<Image
-								className="min-w-[25px] max-w-[25px]  min-h-[25px] max-h-[25px]  rounded-full"
-								src={user.photoURL}
+								className="min-w-[25px] max-w-[25px]  min-h-[25px] max-h-[25px] rounded-full object-cover object-center"
+								src={user.profileImage}
 								alt="undo"
 								width={30}
 								height={30}

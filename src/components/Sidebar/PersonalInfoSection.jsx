@@ -1,14 +1,28 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import GalleryModal from "../MainContent/GalleryModal";
 import { createPortal } from "react-dom";
 import { StateCtx } from "../Layout";
 import FirebaseApi from "../../pages/api/firebaseApi";
+import { useDropzone } from "react-dropzone";
 
 export default function PersonalInfoSection({ user }) {
 	const { openGalleryModal, setOpenGalleryModal, clickedImageLoading } =
 		useContext(StateCtx);
+	const { registration } = FirebaseApi();
+	const onDrop = useCallback((acceptedFiles) => {
+		const reader = new FileReader();
+		reader.onload = () => {
+			setUploadProfileImage(reader.result);
+		};
+		reader.readAsDataURL(acceptedFiles[0]);
+
+		// console.log(acceptedFiles);
+	}, []);
+	const { getRootProps, getInputProps } = useDropzone({ onDrop });
 	const [fullSize, setFullSize] = useState(false);
+	const [uploadModal, setUploadModal] = useState(false);
+	const [uploadProfileImage, setUploadProfileImage] = useState();
 
 	const handleOpenGalleryModal = () => {
 		setOpenGalleryModal(!openGalleryModal);
@@ -16,6 +30,26 @@ export default function PersonalInfoSection({ user }) {
 
 	const handleFullSize = () => {
 		setFullSize(!fullSize);
+	};
+
+	const handleUploadModal = () => {
+		setUploadModal(!uploadModal);
+	};
+
+	useEffect(() => {
+		const closeUploadModal = (e) => {
+			if (!e.target.closest(".upload-modal")) {
+				setUploadModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeUploadModal);
+		return () => document.removeEventListener("mousedown", closeUploadModal);
+	}, []);
+
+	const handleSubmitImage = () => {
+		registration.updatingProfileImage(uploadProfileImage, user.id);
+		setUploadModal(false);
 	};
 
 	return (
@@ -53,25 +87,75 @@ export default function PersonalInfoSection({ user }) {
 					document.body
 				)}
 
+			{uploadModal &&
+				createPortal(
+					<>
+						<div className="flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgb(0,0,0,0.7)] z-50 p-10">
+							<div className="w-80 h-fit rounded-md p-5 bg-white upload-modal flex flex-col justify-center items-center gap-4">
+								<div className="flex flex-col justify-center items-center gap-2 w-full">
+									<h1 className="text-2xl font-semibold">Upload Image</h1>
+									<p className="text-sm text-gray-500 text-center">
+										Ensure that the image size remains optimized to facilitate
+										efficient loading and display
+									</p>
+								</div>
+								<div className="flex flex-col justify-center items-center gap-3 w-full">
+									<div
+										className="flex flex-col justify-center items-center gap-3 w-full"
+										{...getRootProps()}
+									>
+										{uploadProfileImage ? (
+											<div className="bg-gray-300 rounded-md text-btn relative w-full h-full">
+												<Image
+													className="w-full h-auto rounded-md text-btn relative object-cover object-center"
+													src={uploadProfileImage}
+													alt="uploaded image"
+													width={160}
+													height={160}
+												/>
+											</div>
+										) : (
+											<div className="w-full h-40 p-2 bg-gray-300 rounded-md text-btn relative">
+												<input {...getInputProps()} />
+												<p className="text-gray-500 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+													Click
+												</p>
+											</div>
+										)}
+									</div>
+
+									<button
+										className="base-btn w-full"
+										onClick={handleSubmitImage}
+									>
+										Save
+									</button>
+								</div>
+							</div>
+						</div>
+					</>,
+					document.body
+				)}
+
 			<div className="w-full h-full flex flex-col gap-7 relative">
 				<div className="w-full h-auto relative">
 					<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-5 z-10">
-						{user.photoURL ? (
+						{user.profileImage ? (
 							<Image
-								onClick={null}
+								onClick={handleUploadModal}
 								className={`object-cover rounded-full w-16 h-16 text-btn ${
 									user.themeColor
 										? "bg-[#333] border border-[#666]"
 										: "bg-[#eee] border"
 								}`}
-								src={user.photoURL}
-								alt={user.photoURL}
+								src={user.profileImage}
+								alt={user.profileImage}
 								width={80}
 								height={80}
 							/>
 						) : (
 							<div
-								onClick={null}
+								onClick={handleUploadModal}
 								className={`rounded-full w-16 h-16 text-btn flex justify-center items-center ${
 									user.themeColor
 										? "bg-[#333] border border-[#666]"
