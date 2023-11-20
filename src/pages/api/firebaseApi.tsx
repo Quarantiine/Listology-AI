@@ -31,6 +31,7 @@ import {
 	FacebookAuthProvider,
 	AuthProvider,
 	TwitterAuthProvider,
+	updateEmail,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -355,6 +356,10 @@ export default function FirebaseApi() {
 				console.log(`Twitter sign in Error |`, err.message);
 			}
 		};
+
+		updatingUserEmail = async (email: string) => {
+			await updateEmail(auth?.currentUser, email);
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -368,6 +373,7 @@ export default function FirebaseApi() {
 	const googleProvider = RS.googleProvider;
 	const facebookProvider = RS.facebookProvider;
 	const twitterProvider = RS.twitterProvider;
+	const updatingUserEmail = RS.updatingUserEmail;
 
 	class FolderSystem {
 		constructor() {}
@@ -686,6 +692,7 @@ export default function FirebaseApi() {
 			googleProvider,
 			facebookProvider,
 			twitterProvider,
+			updatingUserEmail,
 		},
 
 		folders: {

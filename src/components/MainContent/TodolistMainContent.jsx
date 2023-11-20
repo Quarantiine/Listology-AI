@@ -223,6 +223,7 @@ export default function TodolistMainContent({
 
 				return todoLists.deletingTodolist(todos.id);
 			});
+
 		setDeleteCompletedTodo(false);
 	};
 
@@ -753,6 +754,7 @@ export default function TodolistMainContent({
 						>
 							<p className="text-white">Delete All</p>
 						</button>
+
 						{deleteCompletedTodo &&
 							createPortal(
 								<div className="bg-[rgba(0,0,0,0.7)] z-50 flex justify-center items-center w-full h-full top-0 left-0 absolute text-center px-10">
@@ -784,7 +786,9 @@ export default function TodolistMainContent({
 					</>
 				)}
 
-				<div className={`flex flex-col justify-start items-start w-full gap-2`}>
+				<div
+					className={`flex flex-col justify-start items-start w-full gap-2 rounded-md`}
+				>
 					<>
 						{filterState.filterCategories.value ? (
 							<div className="flex justify-start items-start gap-2">

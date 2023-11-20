@@ -459,7 +459,11 @@ export default function TodosContent({
 				}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors duration-300 ${
 					todolist.markImportant ? "border-r-4 border-[#0E51FF]" : ""
-				} ${deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""} ${
+				} ${
+					deletedTodo === todolist.todo
+						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
+						: ""
+				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited

@@ -28,6 +28,7 @@ export default function MainContent() {
 		useState(false);
 	const [importantTodosDropdown, setImportantTodosDropdown] = useState(true);
 	const [todoTimelineDropdown, setTodoTimelineDropdown] = useState(true);
+	const [inputTxt, setInputTxt] = useState("");
 	const lengthOfSearchedFolders = todolistFolders.allTodoFolders
 		?.filter(
 			(value) =>
@@ -77,6 +78,7 @@ export default function MainContent() {
 		const closeHiddenFolderDropdown = (e) => {
 			if (!e.target.closest(".hidden-folder-container")) {
 				setOpenHiddenFoldersDropdown(false);
+				setInputTxt("");
 			}
 		};
 
@@ -502,6 +504,15 @@ export default function MainContent() {
 																				.includes(true) && "w-full"
 																		}`}
 																	>
+																		<input
+																			className="px-2 py-1 rounded-md w-full outline-none border border-gray-200 text-sm placeholder:text-sm"
+																			type="search"
+																			placeholder="Search Hidden Folders"
+																			onChange={(e) =>
+																				setInputTxt(e.target.value)
+																			}
+																		/>
+
 																		{todolistFolders.allTodoFolders
 																			.filter(
 																				(value) =>
@@ -509,62 +520,72 @@ export default function MainContent() {
 																			)
 																			.map((todoFolder) => {
 																				if (todoFolder.folderHidden === true) {
-																					return (
-																						<React.Fragment key={todoFolder.id}>
-																							<div className="flex justify-between items-center gap-2 w-full">
-																								<div
-																									className={`flex justify-center items-center gap-1`}
-																								>
+																					if (
+																						todoFolder.folderTitle
+																							.normalize("NFD")
+																							.replace(/\p{Diacritic}/gu, "")
+																							.toLowerCase()
+																							.includes(inputTxt.toLowerCase())
+																					) {
+																						return (
+																							<React.Fragment
+																								key={todoFolder.id}
+																							>
+																								<div className="flex justify-between items-center gap-2 w-full">
+																									<div
+																										className={`flex justify-center items-center gap-1`}
+																									>
+																										<button
+																											onClick={() =>
+																												!todoFolder.pin &&
+																												handleClickHiddenFolder(
+																													todoFolder
+																												)
+																											}
+																											className={`text-sm text-start line-clamp-2 ${
+																												todoFolder.pin
+																													? "cursor-not-allowed"
+																													: "hover:text-[#0E51FF]"
+																											}`}
+																										>
+																											{todoFolder.folderTitle}
+																										</button>
+
+																										{todoFolder.pin && (
+																											<Image
+																												className="w-auto min-h-[15px] max-h-[15px]"
+																												src={
+																													"/icons/lock-black.svg"
+																												}
+																												alt="trash"
+																												width={25}
+																												height={25}
+																											/>
+																										)}
+																									</div>
+
 																									<button
 																										onClick={() =>
-																											!todoFolder.pin &&
-																											handleClickHiddenFolder(
+																											handleHideTodoFolder(
 																												todoFolder
 																											)
 																										}
-																										className={`text-sm text-start line-clamp-2 ${
-																											todoFolder.pin
-																												? "cursor-not-allowed"
-																												: "hover:text-[#0E51FF]"
-																										}`}
+																										className="rotate-45"
 																									>
-																										{todoFolder.folderTitle}
-																									</button>
-
-																									{todoFolder.pin && (
 																										<Image
-																											className="w-auto min-h-[15px] max-h-[15px]"
+																											className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
 																											src={
-																												"/icons/lock-black.svg"
+																												"/icons/plus-black.svg"
 																											}
-																											alt="trash"
-																											width={25}
-																											height={25}
+																											alt="add"
+																											width={30}
+																											height={30}
 																										/>
-																									)}
+																									</button>
 																								</div>
-
-																								<button
-																									onClick={() =>
-																										handleHideTodoFolder(
-																											todoFolder
-																										)
-																									}
-																									className="rotate-45"
-																								>
-																									<Image
-																										className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
-																										src={
-																											"/icons/plus-black.svg"
-																										}
-																										alt="add"
-																										width={30}
-																										height={30}
-																									/>
-																								</button>
-																							</div>
-																						</React.Fragment>
-																					);
+																							</React.Fragment>
+																						);
+																					}
 																				}
 																			})}
 																	</div>

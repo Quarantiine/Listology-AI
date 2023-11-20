@@ -46,6 +46,7 @@ export default function PersonalInfoSection({ user }) {
 								src={user.bannerImage}
 								alt={user.bannerImage}
 								fill
+								sizes="(max-width: 768px) 100vw, 33vw"
 							></Image>
 						</div>
 					</div>,
@@ -99,6 +100,7 @@ export default function PersonalInfoSection({ user }) {
 									src={user.bannerImage}
 									alt={user.bannerImage}
 									fill
+									sizes="(max-width: 768px) 100vw, 33vw"
 								></Image>
 							</button>
 
@@ -150,6 +152,16 @@ const ChangingInfoSection = ({ user }) => {
 	const { registration } = FirebaseApi();
 	const [username, setUsername] = useState("");
 	const [changeUsername, setChangeUsername] = useState(false);
+	const [email, setEmail] = useState("");
+	const [changingEmail, setChangingEmail] = useState(false);
+	const [countDownDisplay, setCountDownDisplay] = useState("");
+
+	const currentDate = new Date();
+	const emailChangeWaitTime = new Date();
+	emailChangeWaitTime.setDate(emailChangeWaitTime.getDate() + 1);
+	emailChangeWaitTime.setHours(16); // Set the desired hour (in 24-hour format)
+	emailChangeWaitTime.setMinutes(0); // Set the desired minute
+	emailChangeWaitTime.setSeconds(0); // Set the desired second
 
 	const handleChangeInputs = (setChangeInput, changeInput) => {
 		setChangeInput(!changeInput);
@@ -173,6 +185,51 @@ const ChangingInfoSection = ({ user }) => {
 			setUsername("");
 		}
 	};
+
+	const handleChangingEmail = () => {
+		setChangingEmail(!changingEmail);
+	};
+
+	const handleChangeUserEmail = () => {
+		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+			registration.updatingUserEmail(email);
+		}
+	};
+
+	function calculateTimeDifference(currentTime, desiredTime) {
+		const timeDifference = desiredTime - currentTime;
+		const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+		const minutes = Math.floor(
+			(timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+		);
+		const hours = Math.floor(
+			(timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+		);
+		const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+		return {
+			days,
+			hours,
+			minutes,
+			seconds,
+		};
+	}
+
+	function updateCountdownDisplay(currentTime, desiredTime) {
+		const timeDifference = calculateTimeDifference(currentTime, desiredTime);
+		setCountDownDisplay(timeDifference);
+	}
+
+	const countdownInterval = setInterval(() => {
+		const currentTime = new Date();
+		updateCountdownDisplay(currentTime, emailChangeWaitTime);
+	}, 1000);
+
+	useEffect(() => {
+		if (currentDate > emailChangeWaitTime) {
+			clearTimeout(countdownInterval);
+		}
+	}, [currentDate, countdownInterval]);
 
 	return (
 		<>
@@ -224,29 +281,80 @@ const ChangingInfoSection = ({ user }) => {
 			</div>
 
 			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end gap-3 w-full">
-				<div className="flex flex-col justify-center items-start">
+				<div className="flex flex-col justify-center items-start w-full">
 					<h1 className="text-lg font-semibold">Email</h1>
 					<p>{user.email}</p>
+					<p
+						className={`text-sm pt-1 ${
+							user.themeColor ? "text-[#888]" : "text-gray-500"
+						}`}
+					>
+						Takes up to 24 hours for visible change{" "}
+						{/* <span className="">{`| ${countDownDisplay.days}d, ${countDownDisplay.hours}h`}</span> */}
+					</p>
+
+					{changingEmail && (
+						<div className="flex flex-col justify-center items-start pt-1 w-full">
+							<label className="text-gray-400" htmlFor="new-email">
+								New Email:
+							</label>
+
+							<input
+								className={`px-2 p-1 rounded-md outline-none border w-full ${
+									user.themeColor
+										? "bg-[#222] border-[#444]"
+										: "bg-[#eee] border-gray-200"
+								}`}
+								type="text"
+								onChange={(e) => setEmail(e.target.value)}
+								placeholder="example123@example.com"
+							/>
+						</div>
+					)}
 				</div>
-				{/* <button
-					onClick={null}
-					className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white`}
-				>
-					Change
-				</button> */}
+
+				{/* currentDate > emailChangeWaitTime */}
+				{/* {true && (
+					<>
+						{changingEmail ? (
+							<div className="flex flex-col sm:flex-row justify-start items-start sm:justify-end sm:items-end gap-2 w-full">
+								<button
+									onClick={handleChangeUserEmail}
+									className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white w-full sm:w-auto`}
+								>
+									Change
+								</button>
+								<button
+									onClick={handleChangingEmail}
+									className={`text-sm text-btn bg-red-500 px-2 py-1 rounded-md text-white w-full sm:w-auto`}
+								>
+									Cancel
+								</button>
+							</div>
+						) : (
+							<button
+								onClick={handleChangingEmail}
+								className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white`}
+							>
+								Change
+							</button>
+						)}
+					</>
+				)} */}
 			</div>
 
 			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end gap-3 w-full">
 				<div className="flex flex-col justify-center items-start">
 					<h1 className="text-lg font-semibold">Password</h1>
-					<p>*********</p>
+					<p>************</p>
+					<p
+						className={`text-sm ${
+							user.themeColor ? "text-[#888]" : "text-gray-500"
+						}`}
+					>
+						To change your password, logout and click {"forget password"}
+					</p>
 				</div>
-				{/* <button
-					onClick={null}
-					className={`text-sm text-btn base-bg px-2 py-1 rounded-md text-white`}
-				>
-					Change
-				</button> */}
 			</div>
 		</>
 	);
