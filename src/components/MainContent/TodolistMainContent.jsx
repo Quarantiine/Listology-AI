@@ -330,6 +330,19 @@ export default function TodolistMainContent({
 		return percentage;
 	};
 
+	const handleCopyAll = () => {
+		const todos = todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID &&
+					auth.currentUser.uid &&
+					todolistFolder.id === value.folderID
+			)
+			?.map((todolist) => `• ${todolist.todo} \n`);
+
+		navigator.clipboard.writeText(todos.toString());
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto">
@@ -827,6 +840,24 @@ export default function TodolistMainContent({
 									{filterState.filterCategories}
 								</p>
 
+								{todoLists.allTodoLists
+									?.filter(
+										(value) =>
+											value.userID &&
+											auth.currentUser.uid &&
+											todolistFolder.id === value.folderID
+									)
+									?.map((todolist) => todolist).length > 1 && (
+									<button
+										onClick={handleCopyAll}
+										className={`text-btn text-sm ${
+											user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
+										}`}
+									>
+										Copy All Todos
+									</button>
+								)}
+
 								{filterState.filterCategories === "All" && (
 									<>
 										{totalCompletionPercentage() ? (
@@ -881,7 +912,6 @@ export default function TodolistMainContent({
 										)}
 									</>
 								)}
-
 								{filterState.filterCategories !== "All" && (
 									<button
 										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
