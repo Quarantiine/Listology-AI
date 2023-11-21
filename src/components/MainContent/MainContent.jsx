@@ -243,6 +243,9 @@ export default function MainContent() {
 																		)
 																		.map((todolist) => {
 																			const currentDate = new Date();
+																			const startDate = new Date(
+																				todolist.startDate.seconds * 1000
+																			);
 																			const endDate = new Date(
 																				todolist.endDate.seconds * 1000
 																			);
@@ -251,11 +254,16 @@ export default function MainContent() {
 																				timeMonths[endDate.getMonth()]
 																			} ${endDate.getDate()}, ${endDate.getFullYear()}`;
 
+																			const modifiedStartDate = `${
+																				timeMonths[startDate.getMonth()]
+																			} ${startDate.getDate()}, ${startDate.getFullYear()}`;
+
 																			return (
 																				<TimelineTodos
 																					key={todolist.id}
 																					todolist={todolist}
 																					modifiedEndDate={modifiedEndDate}
+																					modifiedStartDate={modifiedStartDate}
 																					endDate={endDate}
 																					currentDate={currentDate}
 																				/>

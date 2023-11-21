@@ -50,6 +50,7 @@ export default function PersonalInfoSection({ user }) {
 	const handleSubmitImage = () => {
 		registration.updatingProfileImage(uploadProfileImage, user.id);
 		setUploadModal(false);
+		setUploadProfileImage("");
 	};
 
 	return (

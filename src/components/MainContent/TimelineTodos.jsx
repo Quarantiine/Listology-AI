@@ -24,7 +24,11 @@ const moreReducer = (state, { payload, type }) => {
 	}
 };
 
-export default function TimelineTodos({ todolist, modifiedEndDate }) {
+export default function TimelineTodos({
+	todolist,
+	modifiedEndDate,
+	modifiedStartDate,
+}) {
 	const { auth, todoLists } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const {
@@ -238,12 +242,13 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
-	const currentDateTime = new Date().getTime();
-	const endDateTime = new Date(todolist.endDate?.seconds * 1000);
 	const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
-	const differenceInEndMilliseconds = endDateTime - currentDateTime;
+	const currentDateTime = new Date().getTime();
+	const endDateTime = new Date(todolist.endDate?.seconds * 1000);
+	const startDateTime = new Date(todolist.startDate?.seconds * 1000);
 
+	const differenceInEndMilliseconds = endDateTime - currentDateTime;
 	const differenceInEndHours = (
 		(differenceInEndMilliseconds / millisecondsPerDay) *
 		24
@@ -252,30 +257,38 @@ export default function TimelineTodos({ todolist, modifiedEndDate }) {
 	return (
 		<div className="flex flex-col w-full h-auto">
 			<div className="flex justify-start items-center gap-2">
-				<p
-					className={`text-sm ${
-						differenceInEndHours >= 1
-							? "text-yellow-500"
-							: user.themeColor
-							? "text-[#888]"
-							: "text-gray-400"
-					} ${
-						differenceInEndHours <= -1
-							? "text-red-500"
-							: user.themeColor
-							? "text-[#888]"
-							: "text-gray-400"
-					}`}
-				>
-					<span className="font-bold">
-						Due
-						{differenceInEndHours <= -1 && (
-							<span className="italic"> Today</span>
-						)}
-						:
-					</span>{" "}
-					{modifiedEndDate}
-				</p>
+				{startDateTime.getTime() > currentDateTime && (
+					<p className={`text-sm base-col`}>
+						<span className="font-bold">Start:</span> {modifiedStartDate}
+					</p>
+				)}
+
+				{startDateTime.getTime() < currentDateTime && (
+					<p
+						className={`text-sm ${
+							differenceInEndHours >= 1
+								? "text-yellow-500"
+								: user.themeColor
+								? "text-[#888]"
+								: "text-gray-400"
+						} ${
+							differenceInEndHours <= -1
+								? "text-red-500"
+								: user.themeColor
+								? "text-[#888]"
+								: "text-gray-400"
+						}`}
+					>
+						<span className="font-bold">
+							Due
+							{differenceInEndHours <= -1 && (
+								<span className="italic"> Today</span>
+							)}
+							:
+						</span>{" "}
+						{modifiedEndDate}
+					</p>
+				)}
 			</div>
 
 			<div
