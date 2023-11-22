@@ -336,9 +336,10 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID &&
 					auth.currentUser.uid &&
-					todolistFolder.id === value.folderID
+					todolistFolder.id === value.folderID &&
+					!value.completed
 			)
-			?.map((todolist) => `• ${todolist.todo} \n`);
+			?.map((todolist) => ` ${todolist.todo}`);
 
 		navigator.clipboard.writeText(todos.toString());
 	};
