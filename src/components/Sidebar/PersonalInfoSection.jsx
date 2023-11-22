@@ -16,8 +16,6 @@ export default function PersonalInfoSection({ user }) {
 			setUploadProfileImage(reader.result);
 		};
 		reader.readAsDataURL(acceptedFiles[0]);
-
-		// console.log(acceptedFiles);
 	}, []);
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
 	const [fullSize, setFullSize] = useState(false);
