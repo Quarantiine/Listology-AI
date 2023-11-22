@@ -258,7 +258,11 @@ export default function TimelineTodos({
 		<div className="flex flex-col w-full h-auto">
 			<div className="flex justify-start items-center gap-2">
 				{startDateTime.getTime() > currentDateTime && (
-					<p className={`text-sm base-col`}>
+					<p
+						className={`text-sm ${
+							user.themeColor ? "text-[#82a5fd]" : "text-[#0E51FF]"
+						}`}
+					>
 						<span className="font-bold">Start:</span> {modifiedStartDate}
 					</p>
 				)}
