@@ -341,7 +341,7 @@ export default function TodolistMainContent({
 							value.completed &&
 							!value.ignoreTodo
 					)
-					?.map((todolist) => ` ${todolist.todo.replace(", ", "")}\n\n`)
+					?.map((todolist) => ` ${todolist.todo}\n\n`)
 			: todoLists.allTodoLists
 					?.filter(
 						(value) =>
@@ -351,7 +351,7 @@ export default function TodolistMainContent({
 							!value.completed &&
 							!value.ignoreTodo
 					)
-					?.map((todolist) => ` ${todolist.todo.replace(", ", "")}\n\n`);
+					?.map((todolist) => ` ${todolist.todo}\n\n`);
 
 		completedTodos
 			? navigator.clipboard.writeText(
