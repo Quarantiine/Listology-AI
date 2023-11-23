@@ -46,6 +46,7 @@ export default function PersonalInfoSection({ user }) {
 		const closeUploadModal = (e) => {
 			if (!e.target.closest(".upload-modal")) {
 				setUploadModal(false);
+				setUploadProfileImage("");
 			}
 		};
 
