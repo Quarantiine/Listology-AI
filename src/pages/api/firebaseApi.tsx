@@ -363,6 +363,7 @@ export default function FirebaseApi() {
 
 		updatingProfileImage = async (profileImage: string, id: string) => {
 			const docRef = doc(colRefRegistration, id);
+
 			await updateDoc(docRef, {
 				profileImage: profileImage,
 			});

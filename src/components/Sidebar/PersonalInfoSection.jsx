@@ -10,17 +10,25 @@ export default function PersonalInfoSection({ user }) {
 	const { openGalleryModal, setOpenGalleryModal, clickedImageLoading } =
 		useContext(StateCtx);
 	const { registration } = FirebaseApi();
+	const [uploadProfileImage, setUploadProfileImage] = useState();
 	const onDrop = useCallback((acceptedFiles) => {
 		const reader = new FileReader();
+
 		reader.onload = () => {
 			setUploadProfileImage(reader.result);
 		};
+
 		reader.readAsDataURL(acceptedFiles[0]);
 	}, []);
-	const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+	const { getRootProps, getInputProps, fileRejections } = useDropzone({
+		onDrop,
+		maxSize: 1048487,
+		maxFiles: 1,
+	});
+
 	const [fullSize, setFullSize] = useState(false);
 	const [uploadModal, setUploadModal] = useState(false);
-	const [uploadProfileImage, setUploadProfileImage] = useState();
 
 	const handleOpenGalleryModal = () => {
 		setOpenGalleryModal(!openGalleryModal);
@@ -49,6 +57,18 @@ export default function PersonalInfoSection({ user }) {
 		registration.updatingProfileImage(uploadProfileImage, user.id);
 		setUploadModal(false);
 		setUploadProfileImage("");
+	};
+
+	const fileRejectionSystem = () => {
+		const sizeInMB = fileRejections[0]?.file.size / 1048576;
+
+		if (fileRejections.length > 0) {
+			return `File (${fileRejections[0]?.file.name.slice(
+				0,
+				10
+			)}...) is larger than 1 MB. Image File size: ${sizeInMB.toFixed(1)} MB`;
+		}
+		return false;
 	};
 
 	return (
@@ -91,11 +111,15 @@ export default function PersonalInfoSection({ user }) {
 					<>
 						<div className="flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgb(0,0,0,0.7)] z-50 p-10">
 							<div className="w-80 h-fit rounded-md p-5 bg-white upload-modal flex flex-col justify-center items-center gap-4">
+								{fileRejectionSystem() && (
+									<h1 className="bg-red-500 w-full rounded-md text-center py-1 px-2 text-white">
+										{fileRejectionSystem()}
+									</h1>
+								)}
 								<div className="flex flex-col justify-center items-center gap-2 w-full">
 									<h1 className="text-2xl font-semibold">Upload Image</h1>
 									<p className="text-sm text-gray-500 text-center">
-										Ensure that the image size remains optimized to facilitate
-										efficient loading and display
+										Image size needs to be 1 MB or less
 									</p>
 								</div>
 								<div className="flex flex-col justify-center items-center gap-3 w-full">
