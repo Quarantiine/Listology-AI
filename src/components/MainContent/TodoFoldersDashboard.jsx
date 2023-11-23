@@ -11,7 +11,6 @@ export default function TodoFoldersDashboard({
 	setClickedFolder,
 	setClickedTodoFolder,
 	auth,
-	searchQuery,
 }) {
 	const { todoLists, todolistFolders } = FirebaseApi();
 	const {
@@ -494,8 +493,8 @@ const UnlockingTodoFolderPin = ({
 						</div>
 					)}
 					<div className="w-full flex flex-col justify-center items-center gap-1">
-						<h1 className="text-2xl font-semibold">Enter Pin for:</h1>
-						<h3 className="text-xl italic">{todoFolder.folderTitle}</h3>
+						<h1 className="text-2xl font-semibold">Enter Pin for Folder:</h1>
+						<h3 className={`text-lg text-[#999]`}>{todoFolder.folderTitle}</h3>
 					</div>
 					<form className="flex justify-center items-center gap-2 relative">
 						<input

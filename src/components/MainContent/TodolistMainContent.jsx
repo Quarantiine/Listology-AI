@@ -331,17 +331,33 @@ export default function TodolistMainContent({
 	};
 
 	const handleCopyAll = () => {
-		const todos = todoLists.allTodoLists
-			?.filter(
-				(value) =>
-					value.userID &&
-					auth.currentUser.uid &&
-					todolistFolder.id === value.folderID &&
-					!value.completed
-			)
-			?.map((todolist) => ` ${todolist.todo}`);
+		const todos = completedTodos
+			? todoLists.allTodoLists
+					?.filter(
+						(value) =>
+							value.userID &&
+							auth.currentUser.uid &&
+							todolistFolder.id === value.folderID &&
+							value.completed &&
+							!value.ignoreTodo
+					)
+					?.map((todolist) => ` ${todolist.todo.replace(", ", "")}\n\n`)
+			: todoLists.allTodoLists
+					?.filter(
+						(value) =>
+							value.userID &&
+							auth.currentUser.uid &&
+							todolistFolder.id === value.folderID &&
+							!value.completed &&
+							!value.ignoreTodo
+					)
+					?.map((todolist) => ` ${todolist.todo.replace(", ", "")}\n\n`);
 
-		navigator.clipboard.writeText(todos.toString());
+		completedTodos
+			? navigator.clipboard.writeText(
+					`Completed To-dos ------\n\n ${todos.toString()}`
+			  )
+			: navigator.clipboard.writeText(`${todos.toString()}`);
 	};
 
 	return (
@@ -841,23 +857,43 @@ export default function TodolistMainContent({
 									{filterState.filterCategories}
 								</p>
 
-								{todoLists.allTodoLists
-									?.filter(
-										(value) =>
-											value.userID &&
-											auth.currentUser.uid &&
-											todolistFolder.id === value.folderID
-									)
-									?.map((todolist) => todolist).length > 1 && (
-									<button
-										onClick={handleCopyAll}
-										className={`text-btn text-sm ${
-											user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
-										}`}
-									>
-										Copy All Todos
-									</button>
-								)}
+								{completedTodos
+									? todoLists.allTodoLists
+											?.filter(
+												(value) =>
+													value.userID &&
+													auth.currentUser.uid &&
+													todolistFolder.id === value.folderID &&
+													value.completed
+											)
+											?.map((todolist) => todolist).length > 1 && (
+											<button
+												onClick={handleCopyAll}
+												className={`text-btn text-sm ${
+													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
+												}`}
+											>
+												Copy All Todos
+											</button>
+									  )
+									: todoLists.allTodoLists
+											?.filter(
+												(value) =>
+													value.userID &&
+													auth.currentUser.uid &&
+													todolistFolder.id === value.folderID &&
+													!value.completed
+											)
+											?.map((todolist) => todolist).length > 1 && (
+											<button
+												onClick={handleCopyAll}
+												className={`text-btn text-sm ${
+													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
+												}`}
+											>
+												Copy All Todos
+											</button>
+									  )}
 
 								{filterState.filterCategories === "All" && (
 									<>
@@ -903,13 +939,15 @@ export default function TodolistMainContent({
 												)}
 											</>
 										) : (
-											<p
-												className={`text-base font-normal ml-auto ${
-													user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
-												}`}
-											>
-												No Todos Completed
-											</p>
+											<>
+												<p
+													className={`text-base font-normal ml-auto ${
+														user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+													}`}
+												>
+													No Todos Completed
+												</p>
+											</>
 										)}
 									</>
 								)}
