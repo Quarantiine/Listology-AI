@@ -110,7 +110,22 @@ export default function MainContent() {
 
 	const handleCreateTodoFolder = () => {
 		setOpenTodolistSidebar(true);
+		setClickedFolder(
+			folders.allFolders
+				?.filter((value) => value.userID === auth.currentUser.uid)
+				.slice(0, 1)
+				.map((folder) => folder.folderName)[0]
+		);
 	};
+
+	useEffect(() => {
+		console.log(
+			folders.allFolders
+				?.filter((value) => value.userID === auth.currentUser.uid)
+				.slice(0, 1)
+				.map((folder) => folder.folderName)[0]
+		);
+	});
 
 	return (
 		<>
