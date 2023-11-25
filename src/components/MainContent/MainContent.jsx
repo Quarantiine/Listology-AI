@@ -496,22 +496,8 @@ export default function MainContent() {
 
 															{openHiddenFoldersDropdown && (
 																<div
-																	className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex justify-start items-center bg-white text-black border shadow-md`}
+																	className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex flex-col justify-start items-center bg-white text-black border shadow-md gap-1`}
 																>
-																	{!todolistFolders.allTodoFolders
-																		?.filter(
-																			(value) =>
-																				value.userID === auth.currentUser.uid
-																		)
-																		?.map(
-																			(todoFolder) => todoFolder.folderHidden
-																		)
-																		.includes(true) && (
-																		<p className={`text-sm text-[#aaa] w-full`}>
-																			No Hidden Folders
-																		</p>
-																	)}
-
 																	<div
 																		className={`flex flex-col gap-3 justify-start items-center ${
 																			todolistFolders.allTodoFolders
@@ -612,6 +598,20 @@ export default function MainContent() {
 																				}
 																			})}
 																	</div>
+
+																	{!todolistFolders.allTodoFolders
+																		?.filter(
+																			(value) =>
+																				value.userID === auth.currentUser.uid
+																		)
+																		?.map(
+																			(todoFolder) => todoFolder.folderHidden
+																		)
+																		.includes(true) && (
+																		<p className={`text-sm text-[#aaa] w-full`}>
+																			No Hidden Folders
+																		</p>
+																	)}
 																</div>
 															)}
 														</div>
