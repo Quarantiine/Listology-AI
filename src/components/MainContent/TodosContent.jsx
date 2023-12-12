@@ -45,7 +45,6 @@ export default function TodosContent({
 	const [subTodoButtonAppear, setSubTodoButtonAppear] = useState(false);
 	const [closeSubTodos, setCloseSubTodos] = useState(true);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
-	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
 	const [nextTimeline, setNextTimeline] = useState(false);
@@ -55,6 +54,7 @@ export default function TodosContent({
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
+	const todoIndicator = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 	const timeMonths = [
 		"January",
@@ -122,14 +122,18 @@ export default function TodosContent({
 	};
 
 	const handleDeleteTodo = () => {
-		setDeletedTodo(todolist.todo);
+		todoIndicator.current = todolist.todo;
+
+		todoLists.updatingDeletionIndicator(
+			todolist.id,
+			todoIndicator.current ? true : false
+		);
 		clearTimeout(deleteDelay.current);
 
 		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
 			clearInterval(deletionSetInterval.current);
-			setDeletedTodo("");
 			todoLists.deletingTodolist(todolist.id);
 
 			todoLists.allSubTodos
@@ -143,7 +147,8 @@ export default function TodosContent({
 	};
 
 	const handleCancelDeletion = () => {
-		setDeletedTodo("");
+		todoIndicator.current = "";
+		todoLists.updatingDeletionIndicator(todolist.id, false);
 		setDeletionIntervals(5000);
 		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
@@ -342,7 +347,7 @@ export default function TodosContent({
 	};
 
 	return (
-		<div className="flex flex-col w-full">
+		<div className="flex flex-col w-full relative">
 			{createPortal(
 				<>
 					{openTimelineModal && (
@@ -460,7 +465,7 @@ export default function TodosContent({
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors duration-300 ${
 					todolist.markImportant ? "border-r-4 border-[#0E51FF]" : ""
 				} ${
-					deletedTodo === todolist.todo
+					todolist.deletionIndicator
 						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
 						: ""
 				} ${
@@ -516,11 +521,13 @@ export default function TodosContent({
 						className={`lg:pr-1 transition-all duration-300 ${
 							subTodoButtonAppear ? "opacity-100" : "opacity-100 lg:opacity-0"
 						}`}
-						onClick={deletedTodo ? null : handleCreateSubTodo}
+						onClick={todolist.deletionIndicator ? null : handleCreateSubTodo}
 					>
 						<div
 							className={`w-auto h-auto ${
-								deletedTodo ? "cursor-not-allowed opacity-50" : ""
+								todolist.deletionIndicator
+									? "cursor-not-allowed opacity-50"
+									: ""
 							}`}
 						>
 							{user.themeColor ? (
@@ -546,7 +553,9 @@ export default function TodosContent({
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
 					<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
-						{!deletedTodo && editTextActive && !todolist.completed ? (
+						{!todolist.deletionIndicator &&
+						editTextActive &&
+						!todolist.completed ? (
 							<div className="flex justify-start items-center gap-2 w-full">
 								<>
 									<textarea
@@ -654,7 +663,11 @@ export default function TodosContent({
 					</div>
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
-						{deletedTodo === todolist.todo && (
+						{todolist.deletionIndicator && deletionIntervals === 5000 && (
+							<p className="text-white text-sm">Deleting...</p>
+						)}
+
+						{todolist.deletionIndicator && deletionIntervals !== 5000 && (
 							<>
 								<p>{deletionIntervals.toString().replace("000", "")}</p>
 								<button
@@ -682,7 +695,7 @@ export default function TodosContent({
 							</>
 						)}
 
-						{!editTextActive && deletionIntervals === 5000 && (
+						{!editTextActive && !todolist.deletionIndicator && (
 							<div className="w-fit h-auto relative flex justify-center items-center">
 								{todolist.startDate && todolist.endDate && (
 									<Image
@@ -923,9 +936,9 @@ export default function TodosContent({
 							</>
 						)}
 						<Image
-							onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
+							onClick={todolist.deletionIndicator ? null : handleDeleteTodo}
 							className={`w-auto h-[18px] ${
-								deletionIntervals !== 5000
+								todolist.deletionIndicator
 									? "cursor-not-allowed opacity-50"
 									: "text-btn"
 							}`}

@@ -23,7 +23,7 @@ const reducer = (state, { type, payload }) => {
 };
 
 export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
-	const { todolistFolders } = FirebaseApi();
+	const { auth, todolistFolders, folders } = FirebaseApi();
 	const { clickedFolder } = useContext(StateCtx);
 	const [inputState, inputDispatch] = useReducer(reducer, {
 		folderTitle: "",
@@ -106,6 +106,20 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 		setOpenEmojiModal(!openEmojiModal);
 	};
 
+	useEffect(() => {
+		console.log(
+			folders.allFolders
+				?.filter(
+					(value) =>
+						value.folderName === clickedFolder &&
+						value.userID === auth.currentUser?.uid
+				)
+				.slice(0, 1)
+				?.map((folder) => folder.folderName)
+				.toString()
+		);
+	});
+
 	return (
 		<>
 			<div className="z-50 todolist-sidebar sidebar flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
@@ -118,7 +132,18 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 						</>
 					)}
 					<div className="flex justify-between items-center gap-2 relative w-full">
-						<h1 className="text-2xl font-semibold">Create Folder</h1>
+						<h1 className="text-2xl font-semibold">
+							Create Folder in:{" "}
+							{folders.allFolders
+								?.filter(
+									(value) =>
+										value.folderName === clickedFolder &&
+										value.userID === auth.currentUser?.uid
+								)
+								.slice(0, 1)
+								?.map((folder) => folder.folderName)
+								.toString()}
+						</h1>
 						<div className="cursor-pointer">
 							{emoji ? (
 								<div onClick={handleEmojiModal}>

@@ -465,7 +465,7 @@ export default function TodolistMainContent({
 														user.themeColor ? "text-[#555]" : "text-gray-400"
 													}`}
 												>
-													{folder.folderName}
+													Transfer
 												</h3>
 											</div>
 										</div>
