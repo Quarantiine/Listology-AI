@@ -267,31 +267,26 @@ export default function FirebaseApi() {
 		googleProvider = async () => {
 			const provider: GoogleAuthProvider = new GoogleAuthProvider();
 
-			provider.addScope("profile");
-			provider.addScope("email");
-
 			try {
 				await signInWithPopup(auth, provider).then(async (result) => {
 					const user = result.user;
 
-					if (
-						user.email &&
-						allusers
-							?.map((users: any) => users.email === user.email)
-							.includes(true)
-					) {
-						console.log(null);
-					} else {
-						await addDoc(colRefRegistration, {
-							email: user.email,
-							username: user.displayName,
-							userID: user.uid,
-							themeColor: false,
-							bannerImage: "",
-							bannerSize: false,
-							photoURL: user.photoURL,
-						});
-					}
+					user.email &&
+					allusers
+						?.map((users: any) =>
+							users.email.toString() === user.email ? true : false
+						)
+						.includes(true)
+						? console.log("Signing In")
+						: await addDoc(colRefRegistration, {
+								email: user.email,
+								username: user.displayName,
+								userID: user.uid,
+								themeColor: false,
+								bannerImage: "",
+								bannerSize: false,
+								photoURL: user.photoURL,
+						  });
 				});
 			} catch (err) {
 				console.log(`Google sign in Error |`, err.message);

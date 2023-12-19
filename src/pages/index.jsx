@@ -67,6 +67,7 @@ export default function Home() {
 										user.themeColor ? "bg-[#222]" : "bg-[#fff]"
 									} fixed top-0 left-0 w-full h-full z-[-1]`}
 								/>
+
 								<UserCredentialCtx.Provider value={{ user }}>
 									<main className="absolute top-0 left-0 flex justify-center items-center w-full h-full">
 										<ThemeChanger />

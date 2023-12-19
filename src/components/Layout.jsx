@@ -46,7 +46,7 @@ const filterReducer = (state, { payload, type }) => {
 };
 
 export default function Layout({ children }) {
-	const { auth, todolistFolders } = FirebaseApi();
+	const { auth, todolistFolders, registration } = FirebaseApi();
 	const router = useRouter();
 	const [navState, navDispatch] = useReducer(navigationBarReducer, {
 		navigatorLink: "Dashboard",
