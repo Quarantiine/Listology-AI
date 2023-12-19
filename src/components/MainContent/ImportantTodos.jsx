@@ -245,7 +245,7 @@ export default function ImportantTodos({ todolist }) {
 					todolistFolders.allTodoFolders
 						?.filter(
 							(value) =>
-								value.userID === auth.currentUser.uid &&
+								value.userID === auth.currentUser?.uid &&
 								value.id === todolist.folderID
 						)
 						.map((todoListFolder) => todoListFolder.folderTitle)[0]
