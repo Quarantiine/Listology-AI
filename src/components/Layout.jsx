@@ -84,11 +84,9 @@ export default function Layout({ children }) {
 
 	function handleTouchEnd() {
 		if (endX && startX && endX - startX > 50) {
-			console.log("swiped right");
 			setCloseSidebar(false);
 			setOpenTodolistSidebar(false);
 		} else if (endX && startX && startX - endX > 50) {
-			console.log("swiped left");
 			setCloseSidebar(true);
 		}
 

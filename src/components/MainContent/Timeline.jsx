@@ -3,10 +3,6 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 export default function Timeline({ value, onChange }) {
-	// useEffect(() => {
-	// 	console.log(value);
-	// });
-
 	return (
 		<>
 			<div className="w-fit flex justify-center items-center mx-auto">

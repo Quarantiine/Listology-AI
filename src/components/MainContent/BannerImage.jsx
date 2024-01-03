@@ -41,8 +41,6 @@ export default function BannerImage({ user }) {
 }
 
 const TextContent = ({ user }) => {
-	// useEffect(() => console.log(user.photoURL));
-
 	return (
 		<>
 			<div className="absolute flex justify-center items-center z-10 w-full h-full">
