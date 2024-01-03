@@ -19,7 +19,6 @@ const navigatorReducer = (state, { type, payload }) => {
 
 export default function Settings() {
 	const { user } = useContext(UserCredentialCtx);
-	const { auth } = FirebaseApi();
 
 	const [navigatorState, navigatorDispatch] = useReducer(navigatorReducer, {
 		navigate: "Personal Info",

@@ -11,6 +11,7 @@ export default function PersonalInfoSection({ user }) {
 		useContext(StateCtx);
 	const { registration } = FirebaseApi();
 	const [uploadProfileImage, setUploadProfileImage] = useState();
+
 	const onDrop = useCallback((acceptedFiles) => {
 		const reader = new FileReader();
 
@@ -123,6 +124,7 @@ export default function PersonalInfoSection({ user }) {
 										Image size needs to be 1 MB or less
 									</p>
 								</div>
+
 								<div className="flex flex-col justify-center items-center gap-3 w-full">
 									<div
 										className="flex flex-col justify-center items-center gap-3 w-full"
