@@ -208,7 +208,7 @@ export default function MainContent() {
 
 																<Image
 																	className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
-																		todoTimelineDropdown ? "rotate-180" : ""
+																		todoTimelineDropdown && "rotate-180"
 																	}`}
 																	src={
 																		user.themeColor
@@ -309,7 +309,7 @@ export default function MainContent() {
 
 														<Image
 															className={`min-w-[20px] min-h-[20px] h-auto w-[20px] transition-all ${
-																importantTodosDropdown ? "rotate-180" : ""
+																importantTodosDropdown && "rotate-180"
 															}`}
 															src={
 																user.themeColor

@@ -150,7 +150,7 @@ export default function AllTodoFolders({
 				<button
 					onClick={!pin ? handleClickedTodoFolder : null}
 					className={`flex justify-start items-center gap-1 w-full text-start ${
-						pin ? "cursor-not-allowed" : ""
+						pin && "cursor-not-allowed"
 					}`}
 				>
 					{pin && (

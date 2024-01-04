@@ -649,7 +649,7 @@ export default function TodolistMainContent({
 										>
 											<Image
 												className={`w-auto h-[9px] ${
-													subSearchDropdown ? "rotate-180" : ""
+													subSearchDropdown && "rotate-180"
 												}`}
 												src={
 													user.themeColor
@@ -683,7 +683,7 @@ export default function TodolistMainContent({
 								>
 									<Image
 										className={`w-auto h-[9px] ${
-											subSearchDropdown ? "rotate-180" : ""
+											subSearchDropdown && "rotate-180"
 										}`}
 										src={
 											user.themeColor
@@ -762,7 +762,7 @@ export default function TodolistMainContent({
 
 					<div
 						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
-							todoSearchInputWidthCheck() ? "hidden" : ""
+							todoSearchInputWidthCheck() && "hidden"
 						}`}
 					>
 						<h1 className="text-2xl font-semibold line-clamp-1 flex justify-start items-center gap-2">

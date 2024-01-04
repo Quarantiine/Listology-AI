@@ -12,11 +12,11 @@
 }
 
 .base-btn {
-	@apply bg-[#0E51FF] text-white px-2 py-1 rounded-md cursor-pointer transition-all;
+	@apply bg-[#0E51FF] text-white px-2 py-1 rounded-md cursor-pointer hover:opacity-80 transition-all;
 }
 
 .text-btn {
-	@apply cursor-pointer transition-all;
+	@apply cursor-pointer hover:opacity-60 transition-all;
 }
 
 /* CSS */

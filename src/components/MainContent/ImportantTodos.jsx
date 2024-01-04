@@ -259,7 +259,7 @@ export default function ImportantTodos({ todolist }) {
 				}
 				title={todolist.todo}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
-					deletedTodo === todolist.todo ? "bg-[#ef2b2b51]" : ""
+					deletedTodo === todolist.todo && "bg-[#ef2b2b51]"
 				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
@@ -324,7 +324,7 @@ export default function ImportantTodos({ todolist }) {
 											target="_blank"
 											onClick={handleLinkDropdown}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed ? "line-through select-all" : ""
+												todolist.completed && "line-through select-all"
 											}`}
 										>
 											<span>Link</span>
@@ -332,7 +332,7 @@ export default function ImportantTodos({ todolist }) {
 										<button
 											onClick={handleTodoLocation}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed ? "line-through select-all" : ""
+												todolist.completed && "line-through select-all"
 											}`}
 										>
 											<span>Todo</span>
@@ -344,7 +344,7 @@ export default function ImportantTodos({ todolist }) {
 									onClick={handleLinkDropdown}
 									title={"Go to link"}
 									className={`text-btn w-full text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
-										todolist.completed ? "line-through select-all" : ""
+										todolist.completed && "line-through select-all"
 									}`}
 								>
 									<p className="w-full sm:w-[90%] line-clamp-1">
@@ -361,7 +361,7 @@ export default function ImportantTodos({ todolist }) {
 							<p
 								onClick={handleTodoLocation}
 								className={`text-btn w-full sm:w-[90%] line-clamp-1 ${
-									todolist.completed ? "line-through select-all" : ""
+									todolist.completed && "line-through select-all"
 								}`}
 							>
 								{todolist.todo}
@@ -481,9 +481,7 @@ export default function ImportantTodos({ todolist }) {
 												todolist.completed
 													? "cursor-not-allowed hover:bg-[#ccc]"
 													: "hover:bg-[#0E51FF] hover:text-white"
-											} ${
-												todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
-											}`}
+											} ${todolist.ignoreTodo && "bg-[#0e52ff6b] text-black"}`}
 										>
 											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
 										</button>

@@ -190,7 +190,7 @@ export default function SubTodos({
 							: "bg-[#eee]"
 						: ""
 				} ${closeSubTodos ? "h-0 overflow-hidden" : "px-2 py-1"} ${
-					deletedSubTodo === subTodo.todo ? "bg-[#ef2b2b51]" : ""
+					deletedSubTodo === subTodo.todo && "bg-[#ef2b2b51]"
 				}`}
 			>
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
@@ -295,10 +295,10 @@ export default function SubTodos({
 								onClick={handleLinkDropdown}
 								title={"Go to link"}
 								className={`text-btn w-full text-start no-underline line-clamp-1 flex flex-wrap items-start gap-1 ${
-									subTodo.completed ? "line-through select-all" : ""
+									subTodo.completed && "line-through select-all"
 								}`}
 							>
-								<p className={`${subTodo.completed ? "line-through" : ""}`}>
+								<p className={`${subTodo.completed && "line-through"}`}>
 									{subTodo.todo.replace(extractLink(), "")}{" "}
 									<span className="text-[#0E51FF]">
 										{shortenUrl(extractLink(), -30)

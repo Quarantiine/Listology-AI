@@ -356,7 +356,7 @@ export default function TodosContent({
 						>
 							<div
 								className={`bg-white w-[90%] h-[80%] sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll relative ${
-									todolist.completed ? "border-4 border-green-500" : ""
+									todolist.completed && "border-4 border-green-500"
 								}`}
 							>
 								{todolist.completed && (
@@ -463,11 +463,10 @@ export default function TodosContent({
 					openLinkDropdown ? null : setSubTodoButtonAppear(false)
 				}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors duration-300 ${
-					todolist.markImportant ? "border-r-4 border-[#0E51FF]" : ""
+					todolist.markImportant && "border-r-4 border-[#0E51FF]"
 				} ${
-					todolist.deletionIndicator
-						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
-						: ""
+					todolist.deletionIndicator &&
+					"bg-gradient-to-r from-transparent to-[#ef2b2b51]"
 				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
@@ -525,9 +524,7 @@ export default function TodosContent({
 					>
 						<div
 							className={`w-auto h-auto ${
-								todolist.deletionIndicator
-									? "cursor-not-allowed opacity-50"
-									: ""
+								todolist.deletionIndicator && "cursor-not-allowed opacity-50"
 							}`}
 						>
 							{user.themeColor ? (
@@ -609,7 +606,7 @@ export default function TodosContent({
 												setSubTodoButtonAppear(false);
 											}}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed ? "line-through select-all" : ""
+												todolist.completed && "line-through select-all"
 											}`}
 										>
 											<span>Link</span>
@@ -617,7 +614,7 @@ export default function TodosContent({
 										<button
 											onClick={handleEditTextActive}
 											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed ? "line-through select-all" : ""
+												todolist.completed && "line-through select-all"
 											}`}
 										>
 											<span>Edit</span>
@@ -629,7 +626,7 @@ export default function TodosContent({
 									onClick={handleLinkDropdown}
 									title={"Go to link"}
 									className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
-										todolist.completed ? "line-through select-all" : ""
+										todolist.completed && "line-through select-all"
 									} ${
 										subTodoButtonAppear || openLinkDropdown
 											? "translate-x-0"
@@ -650,7 +647,7 @@ export default function TodosContent({
 							<p
 								onClick={handleEditTextActive}
 								className={`text-btn w-full ${
-									todolist.completed ? "line-through select-all" : ""
+									todolist.completed && "line-through select-all"
 								} ${
 									subTodoButtonAppear || openLinkDropdown
 										? "translate-x-0"
@@ -781,9 +778,7 @@ export default function TodosContent({
 												todolist.completed
 													? "cursor-not-allowed hover:bg-[#ccc]"
 													: "hover:bg-[#0E51FF] hover:text-white"
-											} ${
-												todolist.ignoreTodo ? "bg-[#0e52ff6b] text-black" : ""
-											}`}
+											} ${todolist.ignoreTodo && "bg-[#0e52ff6b] text-black"}`}
 										>
 											{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
 										</button>
@@ -972,7 +967,7 @@ export default function TodosContent({
 						<p>{closeSubTodos ? "Show more" : "Close"}</p>
 						<Image
 							className={`w-[15px] h-auto text-btn ${
-								closeSubTodos ? "" : "rotate-180"
+								!closeSubTodos && "rotate-180"
 							}`}
 							src={
 								user.themeColor
