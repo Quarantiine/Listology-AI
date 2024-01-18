@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserCredentialCtx } from "../../pages";
 import Banner from "./Banner";
 import { createPortal } from "react-dom";

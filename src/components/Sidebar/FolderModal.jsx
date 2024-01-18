@@ -1,13 +1,6 @@
-import React, {
-	useContext,
-	useEffect,
-	useReducer,
-	useRef,
-	useState,
-} from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import Image from "next/image";
-import { StateCtx } from "../Layout";
 
 const reducer = (state, { type, payload }) => {
 	switch (type) {
@@ -28,7 +21,6 @@ export default function FolderModal({ handleFolderCreation }) {
 		folderDescription: "",
 	});
 	const { auth, folders } = FirebaseApi();
-	const { clickedFolder } = useContext(StateCtx);
 	const [openEmojiModal, setOpenEmojiModal] = useState(false);
 	const [errorMesg, setErrorMesg] = useState(false);
 	const errorMesgRef = useRef();

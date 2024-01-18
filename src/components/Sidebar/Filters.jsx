@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { StateCtx } from "../Layout";
 
 export default function Filters({ user }) {

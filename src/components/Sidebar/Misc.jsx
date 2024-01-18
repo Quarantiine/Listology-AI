@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
 import Image from "next/image";

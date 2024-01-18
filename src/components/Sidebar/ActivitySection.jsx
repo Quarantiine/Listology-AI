@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from "react";
-import FirebaseApi from "../../pages/api/firebaseApi";
+import React, { useContext } from "react";
 import { UserCredentialCtx } from "../../pages";
 
 export default function ActivitySection() {
-	const { auth, todoLists, todolistFolders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 
 	const activityCategories = [

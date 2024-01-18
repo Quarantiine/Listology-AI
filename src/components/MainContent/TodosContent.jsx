@@ -453,27 +453,16 @@ export default function TodosContent({
 			)}
 
 			<div
-				id={
-					todolist.ignoreTodo === false
-						? ""
-						: todolist.ignoreTodo && "ignore-todo"
-				}
+				id={`${
+					todolist.ignoreTodo === true && todolist.ignoreTodo && "ignore-todo"
+				}`}
 				onMouseOver={() => setSubTodoButtonAppear(true)}
-				onMouseLeave={() =>
-					openLinkDropdown ? null : setSubTodoButtonAppear(false)
-				}
-				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors duration-300 ${
-					todolist.markImportant && "border-r-4 border-[#0E51FF]"
-				} ${
-					todolist.deletionIndicator &&
-					"bg-gradient-to-r from-transparent to-[#ef2b2b51]"
-				} ${
-					todolist.ignoreTodo
-						? "bg-[#0e52ff1f] ignore-todo"
-						: todolist.favorited
-						? user.themeColor
-							? "bg-[#292929]"
-							: "bg-[#eee]"
+				onMouseLeave={() => !openLinkDropdown && setSubTodoButtonAppear(false)}
+				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
+					todolist.markImportant ? "border-r-4 border-[#0E51FF]" : ""
+				} ${todolist.ignoreTodo ? "bg-[#0e52ff26] ignore-todo" : ""} ${
+					todolist.deletionIndicator
+						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
 						: ""
 				}`}
 			>
@@ -517,7 +506,7 @@ export default function TodosContent({
 					)}
 
 					<button
-						className={`lg:pr-1 transition-all duration-300 ${
+						className={`lg:pr-1 ${
 							subTodoButtonAppear ? "opacity-100" : "opacity-100 lg:opacity-0"
 						}`}
 						onClick={todolist.deletionIndicator ? null : handleCreateSubTodo}
@@ -553,7 +542,7 @@ export default function TodosContent({
 						{!todolist.deletionIndicator &&
 						editTextActive &&
 						!todolist.completed ? (
-							<div className="flex justify-start items-center gap-2 w-full">
+							<div className="flex justify-between items-center gap-2 w-full">
 								<>
 									<textarea
 										ref={editTextActiveRef}
