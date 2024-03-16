@@ -22,7 +22,7 @@ export default function Providers() {
 
 	return (
 		<div className="mt-5 w-full h-auto flex justify-start items-start gap-2">
-			<button
+			{/* <button
 				onClick={handleGoogleSignIn}
 				className="flex justify-center items-center gap-2 border p-2 rounded-md"
 			>
@@ -33,7 +33,7 @@ export default function Providers() {
 					height={25}
 				/>
 				<h1>Continue with Google</h1>
-			</button>
+			</button> */}
 
 			{/* <button
 				onClick={handleFacebookSignIn}

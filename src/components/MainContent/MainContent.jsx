@@ -29,6 +29,9 @@ export default function MainContent() {
 	const [importantTodosDropdown, setImportantTodosDropdown] = useState(true);
 	const [todoTimelineDropdown, setTodoTimelineDropdown] = useState(true);
 	const [inputTxt, setInputTxt] = useState("");
+	const [showMoreDates, setShowMoreDates] = useState(6);
+	const [showMoreDateBtn, setShowMoreDateBtn] = useState(false);
+
 	const lengthOfSearchedFolders = todolistFolders.allTodoFolders
 		?.filter(
 			(value) =>
@@ -117,6 +120,55 @@ export default function MainContent() {
 				.map((folder) => folder.folderName)[0]
 		);
 	};
+
+	const handleShowMoreDates = () => {
+		if (
+			todoLists.allTodoLists
+				?.filter(
+					(todolist) =>
+						todolist.userID === auth.currentUser.uid &&
+						todolist.startDate &&
+						todolist.endDate &&
+						!todolist.completed
+				)
+				.map((todolist) => todolist).length !== showMoreDates
+		) {
+			setShowMoreDates((prevState) => prevState + 1);
+		}
+	};
+
+	const handleShowLessDates = () => {
+		setShowMoreDates(6);
+	};
+
+	useEffect(() => {
+		if (
+			todoLists.allTodoLists
+				?.filter(
+					(todolist) =>
+						todolist.userID === auth.currentUser.uid &&
+						todolist.startDate &&
+						todolist.endDate &&
+						!todolist.completed
+				)
+				.map((todolist) => todolist).length !== showMoreDates
+		) {
+			setShowMoreDateBtn(true);
+		} else {
+			setShowMoreDates(
+				todoLists.allTodoLists
+					?.filter(
+						(todolist) =>
+							todolist.userID === auth.currentUser.uid &&
+							todolist.startDate &&
+							todolist.endDate &&
+							!todolist.completed
+					)
+					.map((todolist) => todolist).length
+			);
+			setShowMoreDateBtn(false);
+		}
+	}, [showMoreDates]);
 
 	return (
 		<>
@@ -247,6 +299,8 @@ export default function MainContent() {
 																				todolist.endDate &&
 																				!todolist.completed
 																		)
+																		.sort((a, b) => a.startDate - b.startDate)
+																		.slice(0, showMoreDates)
 																		.map((todolist) => {
 																			const currentDate = new Date();
 																			const startDate = new Date(
@@ -276,6 +330,52 @@ export default function MainContent() {
 																			);
 																		})}
 																</div>
+															)}
+
+															{todoTimelineDropdown && (
+																<>
+																	{todoLists.allTodoLists
+																		?.filter(
+																			(todolist) =>
+																				todolist.userID ===
+																					auth.currentUser.uid &&
+																				todolist.startDate &&
+																				todolist.endDate &&
+																				!todolist.completed
+																		)
+																		.map((todolist) => todolist).length > 6 &&
+																		showMoreDateBtn && (
+																			<div className="flex justify-center items-center w-full">
+																				<button
+																					onClick={handleShowMoreDates}
+																					className="base-btn !w-[30%]"
+																				>
+																					Show More
+																				</button>
+																			</div>
+																		)}
+
+																	{todoLists.allTodoLists
+																		?.filter(
+																			(todolist) =>
+																				todolist.userID ===
+																					auth.currentUser.uid &&
+																				todolist.startDate &&
+																				todolist.endDate &&
+																				!todolist.completed
+																		)
+																		.map((todolist) => todolist).length ===
+																		showMoreDates && (
+																		<div className="flex justify-center items-center w-full">
+																			<button
+																				onClick={handleShowLessDates}
+																				className="base-btn !w-[30%]"
+																			>
+																				Show Less
+																			</button>
+																		</div>
+																	)}
+																</>
 															)}
 														</div>
 													)}
