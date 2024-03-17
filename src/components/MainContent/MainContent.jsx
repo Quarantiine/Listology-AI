@@ -348,7 +348,7 @@ export default function MainContent() {
 																			<div className="flex justify-center items-center w-full">
 																				<button
 																					onClick={handleShowMoreDates}
-																					className="base-btn !w-[30%]"
+																					className="base-btn w-full sm:!w-[30%]"
 																				>
 																					Show More
 																				</button>
@@ -369,7 +369,7 @@ export default function MainContent() {
 																		<div className="flex justify-center items-center w-full">
 																			<button
 																				onClick={handleShowLessDates}
-																				className="base-btn !w-[30%]"
+																				className="base-btn w-full sm:!w-[30%]"
 																			>
 																				Show Less
 																			</button>
