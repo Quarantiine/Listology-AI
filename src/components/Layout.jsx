@@ -128,8 +128,7 @@ export default function Layout({ children }) {
 	};
 
 	const handleCreateFolder = () => {
-		const folderDescriptionText =
-			"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quos nesciunt quas, fugiat aliquid nemo unde, sit labore assumenda asperiores a vero magnam iusto delectus cupiditate placeat consequatur nihil facere. Voluptates?";
+		const folderDescriptionText = "No Description";
 		todolistFolders.addingTodoFolder(
 			"",
 			"Untitled",

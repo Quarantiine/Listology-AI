@@ -1,5 +1,4 @@
 import React, { useContext, useReducer } from "react";
-import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import PersonalInfoSection from "./PersonalInfoSection";
 import ActivitySection from "./ActivitySection";

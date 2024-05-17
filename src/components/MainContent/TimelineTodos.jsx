@@ -283,13 +283,11 @@ export default function TimelineTodos({
 								: "text-gray-400"
 						}`}
 					>
-						<span className="font-bold">
-							Due
-							{differenceInEndHours <= -1 && (
-								<span className="italic"> Today</span>
-							)}
-							:
-						</span>{" "}
+						{differenceInEndHours <= -1 ? (
+							<span className="font-bold">Overdue: </span>
+						) : (
+							<span className="font-bold">Due: </span>
+						)}
 						{modifiedEndDate}
 					</p>
 				)}

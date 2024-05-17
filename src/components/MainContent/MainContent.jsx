@@ -300,6 +300,7 @@ export default function MainContent() {
 																				!todolist.completed
 																		)
 																		.sort((a, b) => a.startDate - b.startDate)
+																		.sort((a, b) => a.endDate - b.endDate)
 																		.slice(0, showMoreDates)
 																		.map((todolist) => {
 																			const currentDate = new Date();
@@ -365,16 +366,27 @@ export default function MainContent() {
 																				!todolist.completed
 																		)
 																		.map((todolist) => todolist).length ===
-																		showMoreDates && (
-																		<div className="flex justify-center items-center w-full">
-																			<button
-																				onClick={handleShowLessDates}
-																				className="base-btn w-full sm:!w-[50%] md:!w-[30%]"
-																			>
-																				Show Less
-																			</button>
-																		</div>
-																	)}
+																		showMoreDates &&
+																		todoLists.allTodoLists
+																			?.filter(
+																				(todolist) =>
+																					todolist.userID ===
+																						auth.currentUser.uid &&
+																					todolist.startDate &&
+																					todolist.endDate &&
+																					!todolist.completed
+																			)
+																			.map((todolist) => todolist).length >
+																			6 && (
+																			<div className="flex justify-center items-center w-full">
+																				<button
+																					onClick={handleShowLessDates}
+																					className="base-btn w-full sm:!w-[50%] md:!w-[30%]"
+																				>
+																					Show Less
+																				</button>
+																			</div>
+																		)}
 																</>
 															)}
 														</div>

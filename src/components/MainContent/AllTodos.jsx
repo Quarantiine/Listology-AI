@@ -92,6 +92,22 @@ export default function AllIgnoredTodos({
 						}
 					}
 				})}
+
+			{todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === todolistFolder.id &&
+						value.userID === auth.currentUser?.uid &&
+						value.completed === completedTodos &&
+						value.folderID === clickedTodoFolder &&
+						value.todo
+							.normalize("NFD")
+							.replace(/\p{Diacritic}/gu, "")
+							.toLowerCase()
+							.includes(todoSearchInput.toLowerCase())
+				)
+				?.map((todolist) => todolist).length < 1 &&
+				!completedTodos && <p className={`text-gray-400`}>No Todos Found</p>}
 		</>
 	);
 }

@@ -33,6 +33,7 @@ export default function ImportantTodos({ todolist }) {
 		setCompletedTodos,
 		setTodoSearchInput,
 		setOpenTodoSearchInput,
+		filterDispatch,
 	} = useContext(StateCtx);
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		todoDropdown: "",
@@ -226,12 +227,28 @@ export default function ImportantTodos({ todolist }) {
 	};
 
 	const handleTodoLocation = () => {
+		const timeStamp = () => {
+			let date = new Date();
+			return date;
+		};
+
 		setClickedFolder(todolist.mainFolder[0]);
 		setClickedTodoFolder(todolist.folderID);
 		setOpenMoreDropdown(false);
 		setCompletedTodos(false);
 		setTodoSearchInput(todolist.todo);
 		setOpenTodoSearchInput(true);
+
+		todolistFolders.updatingClickTimeStamp(todolist.folderID, timeStamp());
+
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: "filterCategories",
+				value: "All",
+				value2: "",
+			},
+		});
 	};
 
 	const handleRemoveDate = () => {
