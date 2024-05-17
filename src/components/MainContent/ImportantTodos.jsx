@@ -43,6 +43,8 @@ export default function ImportantTodos({ todolist }) {
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
+	const [hideCalendarPopUp, setHideCalendarPopUp] = useState(false);
+
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
@@ -172,7 +174,6 @@ export default function ImportantTodos({ todolist }) {
 	};
 
 	const createdTimeText = () => {
-		// TODO: Add time here
 		const timeMonths = [
 			"January",
 			"February",
@@ -253,6 +254,33 @@ export default function ImportantTodos({ todolist }) {
 
 	const handleRemoveDate = () => {
 		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
+	};
+
+	const textDate = () => {
+		const startDate = todolist.startDate.seconds * 1000;
+		const endDate = todolist.endDate.seconds * 1000;
+		const timeMonths = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
+		const modifiedStartDate = new Date(startDate);
+		const modifiedEndDate = new Date(endDate);
+		return `Start: ${
+			timeMonths[modifiedStartDate.getMonth()]
+		}, ${modifiedStartDate.getDate()} - End: ${
+			timeMonths[modifiedEndDate.getMonth()]
+		}, ${modifiedEndDate.getDate()}`;
 	};
 
 	return (
@@ -418,19 +446,31 @@ export default function ImportantTodos({ todolist }) {
 						{!editTextActive && deletionIntervals === 5000 && (
 							<div className="w-fit h-auto relative">
 								{todolist.startDate && todolist.endDate && (
-									<Image
-										className={`w-auto h-[20px] absolute top-1/2 -translate-y-1/2 opacity-20 ${
-											todolist.markImportant ? "-left-[20px]" : "left-24"
+									<div
+										className={`absolute top-1/2 -translate-y-1/2 ${
+											todolist.markImportant ? "-left-[25px]" : "left-24"
 										}`}
-										src={
-											user.themeColor
-												? "/icons/calendar_month_white.svg"
-												: "/icons/calendar_month_black.svg"
-										}
-										alt="favorite"
-										width={30}
-										height={30}
-									/>
+									>
+										{hideCalendarPopUp && (
+											<p className="absolute bottom-6 right-0 w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-full text-[12px] whitespace-nowrap">
+												{textDate()}
+											</p>
+										)}
+
+										<Image
+											onMouseLeave={() => setHideCalendarPopUp(false)}
+											onMouseEnter={() => setHideCalendarPopUp(true)}
+											className="w-auto h-[20px] opacity-20"
+											src={
+												user.themeColor
+													? "/icons/calendar_month_white.svg"
+													: "/icons/calendar_month_black.svg"
+											}
+											alt="favorite"
+											width={30}
+											height={30}
+										/>
+									</div>
 								)}
 
 								<button className="min-w-[25px] text-btn relative flex justify-center items-center">

@@ -178,7 +178,7 @@ export default function MainContent() {
 				}`}
 			>
 				<div className="main-content-overflow w-full h-full flex flex-col overflow-y-scroll justify-start items-center overflow-x-hidden mr-auto">
-					<Banner />
+					{!clickedTodoFolder && <Banner />}
 					<div
 						className={`flex flex-col justify-start items-center w-full ${
 							todolistFolders.allTodoFolders
@@ -583,8 +583,10 @@ export default function MainContent() {
 																</p>
 
 																<Image
-																	className={`min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer ${
-																		null ? "rotate-180" : "rotate-0"
+																	className={`min-h-[8px] max-h-[8px] w-auto cursor-default md:cursor-pointer ${
+																		openHiddenFoldersDropdown
+																			? "rotate-180"
+																			: "rotate-0"
 																	}`}
 																	src={
 																		user.themeColor
@@ -592,17 +594,17 @@ export default function MainContent() {
 																			: "/icons/arrow-black.svg"
 																	}
 																	alt="search"
-																	width={20}
-																	height={20}
+																	width={15}
+																	height={15}
 																/>
 															</div>
 
 															{openHiddenFoldersDropdown && (
 																<div
-																	className={`w-[200px] h-fit p-3 rounded-md absolute top-7 right-0 z-40 flex flex-col justify-start items-center bg-white text-black border shadow-md gap-1`}
+																	className={`w-[200px] h-[200px] overflow-x-hidden overflow-y-scroll main-content-overflow p-3 rounded-md absolute top-7 right-0 z-40 flex flex-col justify-start items-center bg-white text-black border shadow-md gap-1`}
 																>
 																	<div
-																		className={`flex flex-col gap-3 justify-start items-center ${
+																		className={`flex flex-col gap-2 justify-start items-center ${
 																			todolistFolders.allTodoFolders
 																				?.filter(
 																					(value) =>
@@ -643,9 +645,17 @@ export default function MainContent() {
 																							<React.Fragment
 																								key={todoFolder.id}
 																							>
-																								<div className="flex justify-between items-center gap-2 w-full">
+																								<div
+																									className={`flex justify-between items-center gap-2 w-full border rounded-md px-2 py-1 ${
+																										todoFolder.pin
+																											? "border-blue-500"
+																											: todoFolder.completed
+																											? "border-green-500"
+																											: "border-gray-100"
+																									}`}
+																								>
 																									<div
-																										className={`flex justify-center items-center gap-1`}
+																										className={`flex justify-center items-center gap-1 w-full`}
 																									>
 																										<button
 																											onClick={() =>
@@ -654,15 +664,19 @@ export default function MainContent() {
 																													todoFolder
 																												)
 																											}
-																											className={`text-sm text-start line-clamp-2 ${
+																											className={`text-sm text-start w-full ${
 																												todoFolder.pin
 																													? "cursor-not-allowed"
 																													: "hover:text-[#0E51FF]"
 																											}`}
 																										>
-																											{todoFolder.folderTitle}
+																											<p className="line-clamp-1 w-full">
+																												{todoFolder.folderTitle}
+																											</p>
 																										</button>
+																									</div>
 
+																									<div className="flex w-fit ml-auto justify-end items-center gap-1">
 																										{todoFolder.pin && (
 																											<Image
 																												className="w-auto min-h-[15px] max-h-[15px]"
@@ -674,26 +688,25 @@ export default function MainContent() {
 																												height={25}
 																											/>
 																										)}
-																									</div>
-
-																									<button
-																										onClick={() =>
-																											handleHideTodoFolder(
-																												todoFolder
-																											)
-																										}
-																										className="rotate-45"
-																									>
-																										<Image
-																											className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
-																											src={
-																												"/icons/plus-black.svg"
+																										<button
+																											onClick={() =>
+																												handleHideTodoFolder(
+																													todoFolder
+																												)
 																											}
-																											alt="add"
-																											width={30}
-																											height={30}
-																										/>
-																									</button>
+																											className="rotate-45"
+																										>
+																											<Image
+																												className="min-w-[15px] max-w-[15px] min-h-[15px] max-h-[15px]"
+																												src={
+																													"/icons/plus-black.svg"
+																												}
+																												alt="add"
+																												width={30}
+																												height={30}
+																											/>
+																										</button>
+																									</div>
 																								</div>
 																							</React.Fragment>
 																						);
@@ -705,13 +718,21 @@ export default function MainContent() {
 																	{!todolistFolders.allTodoFolders
 																		?.filter(
 																			(value) =>
-																				value.userID === auth.currentUser.uid
+																				value.userID === auth.currentUser.uid &&
+																				value.folderTitle
+																					.normalize("NFD")
+																					.replace(/\p{Diacritic}/gu, "")
+																					.toLowerCase()
+																					.includes(inputTxt.toLowerCase()) &&
+																				value.folderHidden === true
 																		)
 																		?.map(
 																			(todoFolder) => todoFolder.folderHidden
 																		)
 																		.includes(true) && (
-																		<p className={`text-sm text-[#aaa] w-full`}>
+																		<p
+																			className={`text-sm text-[#aaa] w-full px-2 py-1`}
+																		>
 																			No Hidden Folders
 																		</p>
 																	)}
@@ -737,130 +758,265 @@ export default function MainContent() {
 														</p>
 													)}
 
-													<div
-														className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
-															todolistFolders.allTodoFolders
-																?.filter(
-																	(value) =>
-																		(value.userID === auth.currentUser?.uid &&
-																			!value.folderHidden &&
-																			value.folderTitle
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase())) ||
-																		(value.userID === auth.currentUser?.uid &&
-																			!value.folderHidden &&
-																			value.folderName
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase()))
-																)
-																?.map((t) => t).length < 1
-																? "grid-cols-1"
-																: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-														}`}
-													>
-														{todolistFolders.allTodoFolders
-															?.filter(
-																(value) =>
-																	value.userID === auth.currentUser?.uid &&
-																	!value.folderHidden
-															)
-															?.map((todoFolder) => {
-																if (
-																	(todoFolder.userID ===
-																		auth.currentUser?.uid &&
-																		!todoFolder.folderHidden &&
-																		todoFolder.folderTitle
-																			.normalize("NFD")
-																			.replace(/\p{Diacritic}/gu, "")
-																			.toLowerCase()
-																			.includes(searchQuery.toLowerCase())) ||
-																	(todoFolder.userID ===
-																		auth.currentUser?.uid &&
-																		!todoFolder.folderHidden &&
-																		todoFolder.folderName
-																			.normalize("NFD")
-																			.replace(/\p{Diacritic}/gu, "")
-																			.toLowerCase()
-																			.includes(searchQuery.toLowerCase()))
-																) {
-																	return (
-																		<React.Fragment key={todoFolder.id}>
-																			<TodoFoldersDashboard
-																				todoFolder={todoFolder}
-																				user={user}
-																				setClickedTodoFolder={
-																					setClickedTodoFolder
-																				}
-																				setClickedFolder={setClickedFolder}
-																				auth={auth}
-																				searchQuery={searchQuery}
-																			/>
-																		</React.Fragment>
-																	);
-																}
-															})}
+													<div className="flex flex-col gap-6 w-full h-auto">
+														{searchQuery && (
+															<div
+																className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																	todolistFolders.allTodoFolders
+																		?.filter(
+																			(value) =>
+																				(value.userID ===
+																					auth.currentUser?.uid &&
+																					!value.folderHidden &&
+																					value.completed === false &&
+																					value.folderTitle
+																						.normalize("NFD")
+																						.replace(/\p{Diacritic}/gu, "")
+																						.toLowerCase()
+																						.includes(
+																							searchQuery.toLowerCase()
+																						)) ||
+																				(value.userID ===
+																					auth.currentUser?.uid &&
+																					!value.folderHidden &&
+																					value.folderName
+																						.normalize("NFD")
+																						.replace(/\p{Diacritic}/gu, "")
+																						.toLowerCase()
+																						.includes(
+																							searchQuery.toLowerCase()
+																						))
+																		)
+																		?.map((t) => t).length < 1
+																		? "grid-cols-1"
+																		: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+																}`}
+															>
+																{todolistFolders.allTodoFolders
+																	?.filter(
+																		(value) =>
+																			value.userID === auth.currentUser?.uid &&
+																			!value.folderHidden
+																	)
+																	?.map((todoFolder) => {
+																		if (
+																			(todoFolder.userID ===
+																				auth.currentUser?.uid &&
+																				!todoFolder.folderHidden &&
+																				todoFolder.folderTitle
+																					.normalize("NFD")
+																					.replace(/\p{Diacritic}/gu, "")
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)) ||
+																			(todoFolder.userID ===
+																				auth.currentUser?.uid &&
+																				!todoFolder.folderHidden &&
+																				todoFolder.folderName
+																					.normalize("NFD")
+																					.replace(/\p{Diacritic}/gu, "")
+																					.toLowerCase()
+																					.includes(searchQuery.toLowerCase()))
+																		) {
+																			return (
+																				<React.Fragment key={todoFolder.id}>
+																					<TodoFoldersDashboard
+																						todoFolder={todoFolder}
+																						user={user}
+																						setClickedTodoFolder={
+																							setClickedTodoFolder
+																						}
+																						setClickedFolder={setClickedFolder}
+																						auth={auth}
+																						searchQuery={searchQuery}
+																					/>
+																				</React.Fragment>
+																			);
+																		}
+																	})}
 
-														{todolistFolders.allTodoFolders
-															?.filter(
-																(value) =>
-																	(value.userID === auth.currentUser?.uid &&
-																		!value.folderHidden &&
-																		value.folderTitle
-																			.normalize("NFD")
-																			.replace(/\p{Diacritic}/gu, "")
-																			.toLowerCase()
-																			.includes(searchQuery.toLowerCase())) ||
-																	(value.userID === auth.currentUser?.uid &&
-																		!value.folderHidden &&
-																		value.folderName
-																			.normalize("NFD")
-																			.replace(/\p{Diacritic}/gu, "")
-																			.toLowerCase()
-																			.includes(searchQuery.toLowerCase()))
-															)
-															?.map((t) => t).length < 1 &&
-															todolistFolders.allTodoFolders
-																?.filter(
-																	(value) =>
-																		value.userID === auth.currentUser.uid
-																)
-																?.map((todoFolder) => !todoFolder.folderHidden)
-																.includes(true) && (
-																<div className="flex flex-col gap-4 justify-center items-center w-full pt-10">
-																	<svg
-																		width="50"
-																		height="50"
-																		viewBox="0 0 30 30"
-																		fill="none"
-																		xmlns="http://www.w3.org/2000/svg"
-																	>
-																		<path
-																			d="M0 29.0769H6.11918L24.1667 10.9815L18.0475 4.84613L0 22.9415V29.0769ZM3.26356 24.2994L18.0475 9.47631L19.5487 10.9815L4.7648 25.8047H3.26356V24.2994Z"
-																			fill={user.themeColor ? "#555" : "#aaa"}
-																		/>
-																		<path
-																			d="M24.6667 0.482758C24.0247 -0.160919 22.9877 -0.160919 22.3457 0.482758L19.3334 3.50309L25.5062 9.6923L28.5186 6.67197C29.1605 6.02829 29.1605 4.9885 28.5186 4.34482L24.6667 0.482758Z"
-																			fill={user.themeColor ? "#555" : "#aaa"}
-																		/>
-																	</svg>
-																	<p
-																		className={`text-lg ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-400"
+																{todolistFolders.allTodoFolders
+																	?.filter(
+																		(value) =>
+																			(value.userID === auth.currentUser?.uid &&
+																				!value.folderHidden &&
+																				value.folderTitle
+																					.normalize("NFD")
+																					.replace(/\p{Diacritic}/gu, "")
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)) ||
+																			(value.userID === auth.currentUser?.uid &&
+																				!value.folderHidden &&
+																				value.folderName
+																					.normalize("NFD")
+																					.replace(/\p{Diacritic}/gu, "")
+																					.toLowerCase()
+																					.includes(searchQuery.toLowerCase()))
+																	)
+																	?.map((t) => t).length < 1 &&
+																	todolistFolders.allTodoFolders
+																		?.filter(
+																			(value) =>
+																				value.userID === auth.currentUser.uid
+																		)
+																		?.map(
+																			(todoFolder) => !todoFolder.folderHidden
+																		)
+																		.includes(true) && (
+																		<div className="flex flex-col gap-4 justify-center items-center w-full pt-10">
+																			<svg
+																				width="50"
+																				height="50"
+																				viewBox="0 0 30 30"
+																				fill="none"
+																				xmlns="http://www.w3.org/2000/svg"
+																			>
+																				<path
+																					d="M0 29.0769H6.11918L24.1667 10.9815L18.0475 4.84613L0 22.9415V29.0769ZM3.26356 24.2994L18.0475 9.47631L19.5487 10.9815L4.7648 25.8047H3.26356V24.2994Z"
+																					fill={
+																						user.themeColor ? "#555" : "#aaa"
+																					}
+																				/>
+																				<path
+																					d="M24.6667 0.482758C24.0247 -0.160919 22.9877 -0.160919 22.3457 0.482758L19.3334 3.50309L25.5062 9.6923L28.5186 6.67197C29.1605 6.02829 29.1605 4.9885 28.5186 4.34482L24.6667 0.482758Z"
+																					fill={
+																						user.themeColor ? "#555" : "#aaa"
+																					}
+																				/>
+																			</svg>
+																			<p
+																				className={`text-lg ${
+																					user.themeColor
+																						? "text-[#555]"
+																						: "text-gray-400"
+																				}`}
+																			>
+																				No Folder Called:{" "}
+																				<span className="text-gray-600 italic">
+																					{searchQuery}
+																				</span>
+																			</p>
+																		</div>
+																	)}
+															</div>
+														)}
+
+														{!searchQuery && (
+															<>
+																<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
+																	<h1 className="text-lg text-gray-400">
+																		Uncompleted Folders
+																	</h1>
+
+																	<div
+																		className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																			todolistFolders.allTodoFolders
+																				?.filter(
+																					(value) =>
+																						value.userID ===
+																							auth.currentUser?.uid &&
+																						!value.folderHidden
+																				)
+																				?.map((t) => t).length < 1
+																				? "grid-cols-1"
+																				: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
 																		}`}
 																	>
-																		No Folder Called:{" "}
-																		<span className="text-gray-600 italic">
-																			{searchQuery}
-																		</span>
-																	</p>
+																		{todolistFolders.allTodoFolders
+																			?.filter(
+																				(value) =>
+																					value.userID ===
+																						auth.currentUser?.uid &&
+																					!value.folderHidden &&
+																					value.completed === false
+																			)
+																			?.map((todoFolder) => {
+																				if (
+																					todoFolder.userID ===
+																						auth.currentUser?.uid &&
+																					!todoFolder.folderHidden &&
+																					todoFolder.folderTitle
+																				) {
+																					return (
+																						<React.Fragment key={todoFolder.id}>
+																							<TodoFoldersDashboard
+																								todoFolder={todoFolder}
+																								user={user}
+																								setClickedTodoFolder={
+																									setClickedTodoFolder
+																								}
+																								setClickedFolder={
+																									setClickedFolder
+																								}
+																								auth={auth}
+																								searchQuery={searchQuery}
+																							/>
+																						</React.Fragment>
+																					);
+																				}
+																			})}
+																	</div>
 																</div>
-															)}
+
+																<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
+																	<h1 className="text-lg text-gray-400">
+																		Completed Folders
+																	</h1>
+
+																	<div
+																		className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																			todolistFolders.allTodoFolders
+																				?.filter(
+																					(value) =>
+																						value.userID ===
+																							auth.currentUser?.uid &&
+																						!value.folderHidden &&
+																						value.completed === true
+																				)
+																				?.map((t) => t).length < 1
+																				? "grid-cols-1"
+																				: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+																		}`}
+																	>
+																		{todolistFolders.allTodoFolders
+																			?.filter(
+																				(value) =>
+																					value.userID ===
+																						auth.currentUser?.uid &&
+																					!value.folderHidden &&
+																					value.completed === true
+																			)
+																			?.map((todoFolder) => {
+																				if (
+																					todoFolder.userID ===
+																						auth.currentUser?.uid &&
+																					!todoFolder.folderHidden
+																				) {
+																					return (
+																						<React.Fragment key={todoFolder.id}>
+																							<TodoFoldersDashboard
+																								todoFolder={todoFolder}
+																								user={user}
+																								setClickedTodoFolder={
+																									setClickedTodoFolder
+																								}
+																								setClickedFolder={
+																									setClickedFolder
+																								}
+																								auth={auth}
+																								searchQuery={searchQuery}
+																							/>
+																						</React.Fragment>
+																					);
+																				}
+																			})}
+																	</div>
+																</div>
+															</>
+														)}
 													</div>
 												</div>
 											</div>

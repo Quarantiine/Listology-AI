@@ -606,7 +606,7 @@ const BeforeRemovingPinModal = ({
 					<div className="w-full h-fit flex flex-col justify-center items-center gap-2 mt-1">
 						<div className="flex justify-center items-center gap-1">
 							<Image
-								className="w-auto min-h-[20px] max-h-[20px] text-btn"
+								className="w-auto min-h-[20px] max-h-[20px]"
 								src={"/icons/info.svg"}
 								alt="trash"
 								width={30}

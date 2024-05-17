@@ -137,6 +137,7 @@ export default function TodolistMainContent({
 
 	const handleSubSearchBarDropdown = () => {
 		setSubSearchDropdown(!subSearchDropdown);
+		setSubTodoSearchInput("");
 	};
 
 	const handleTransferTodoFolderDropdown = (e) => {
@@ -199,7 +200,8 @@ export default function TodolistMainContent({
 
 	const handleOpenTodoSearchInput = () => {
 		setOpenTodoSearchInput(!openTodoSearchInput);
-
+		setTodoSearchInput("");
+		setSubTodoSearchInput("");
 		if (openTodoSearchInput) setSubSearchDropdown(false);
 	};
 
@@ -331,6 +333,28 @@ export default function TodolistMainContent({
 	};
 
 	const handleCopyAll = () => {
+		const todosLength = todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID &&
+					auth.currentUser.uid &&
+					todolistFolder.id === value.folderID &&
+					!value.completed &&
+					!value.ignoreTodo
+			)
+			?.map((todolist) => todolist).length;
+
+		const completedTodosLength = todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID &&
+					auth.currentUser.uid &&
+					todolistFolder.id === value.folderID &&
+					value.completed &&
+					!value.ignoreTodo
+			)
+			?.map((todolist) => todolist).length;
+
 		const todos = completedTodos
 			? todoLists.allTodoLists
 					?.filter(
@@ -341,7 +365,7 @@ export default function TodolistMainContent({
 							value.completed &&
 							!value.ignoreTodo
 					)
-					?.map((todolist) => ` ${todolist.todo}\n\n`)
+					?.map((todolist) => ` - ${todolist.todo}`)
 			: todoLists.allTodoLists
 					?.filter(
 						(value) =>
@@ -351,13 +375,15 @@ export default function TodolistMainContent({
 							!value.completed &&
 							!value.ignoreTodo
 					)
-					?.map((todolist) => ` ${todolist.todo}\n\n`);
+					?.map((todolist) => ` - ${todolist.todo}`);
 
 		completedTodos
 			? navigator.clipboard.writeText(
-					`Completed To-dos ------\n\n ${todos.toString()}`
+					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`
 			  )
-			: navigator.clipboard.writeText(`${todos.toString()}`);
+			: navigator.clipboard.writeText(
+					`To-dos (${todosLength}):\n\n ${todos.toString()}`
+			  );
 	};
 
 	return (
@@ -624,7 +650,11 @@ export default function TodolistMainContent({
 								<>
 									{todoSearchInput.length > 0 && (
 										<button
-											onClick={() => setTodoSearchInput("")}
+											onClick={() => {
+												setTodoSearchInput("");
+												setSubTodoSearchInput("");
+												setSubSearchDropdown(false);
+											}}
 											className="text-[14px] base-btn !bg-red-500"
 										>
 											Clear
@@ -707,6 +737,7 @@ export default function TodolistMainContent({
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 									}`}
 								/>
+
 								<div
 									className={`flex justify-center items-center absolute top-1/2 -translate-y-1/2 w-7 h-7 rounded-r-md ${
 										user.themeColor ? "bg-[#444]" : "bg-[#ddd]"
@@ -1101,23 +1132,22 @@ export default function TodolistMainContent({
 					</>
 
 					{/* No Todos */}
-					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser?.uid)
-						?.map(
-							(todolist) =>
-								todolist.folderID === clickedTodoFolder &&
-								todolist.completed === false
+					{todoLists.allTodoLists
+						?.filter(
+							(value) =>
+								value.folderID === todolistFolder.id &&
+								value.userID === auth.currentUser?.uid &&
+								value.completed === completedTodos &&
+								value.folderID === clickedTodoFolder &&
+								value.todo
+									.normalize("NFD")
+									.replace(/\p{Diacritic}/gu, "")
+									.toLowerCase()
+									.includes(todoSearchInput.toLowerCase())
 						)
-						.includes(true) &&
-						!completedTodos &&
-						filterState.filterCategories === "All" && (
-							<div className="flex flex-col justify-start items-start gap-3 w-full">
-								<p
-									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
-								>
-									No Todos
-								</p>
-							</div>
+						?.map((todolist) => todolist).length < 1 &&
+						!completedTodos && (
+							<p className={`text-gray-400`}>No Todos Found</p>
 						)}
 
 					{/* No Completed Todos */}
@@ -1126,7 +1156,12 @@ export default function TodolistMainContent({
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
-								todolist.completed === true
+								todolist.completed === true &&
+								todolist.todo
+									.normalize("NFD")
+									.replace(/\p{Diacritic}/gu, "")
+									.toLowerCase()
+									.includes(todoSearchInput.toLowerCase())
 						)
 						.includes(true) &&
 						completedTodos && (

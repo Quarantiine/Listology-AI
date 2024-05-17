@@ -51,6 +51,8 @@ export default function TodosContent({
 	const [timelineDate, setTimelineDate] = useState(new Date());
 	const [timelineDate2, setTimelineDate2] = useState(new Date());
 	const [openTimelineModal, setOpenTimelineModal] = useState(false);
+	const [hideCalendarPopUp, setHideCalendarPopUp] = useState(false);
+
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
@@ -346,6 +348,33 @@ export default function TodosContent({
 		todoLists.updatingTodoCompletionDates(todolist.id, "", "");
 	};
 
+	const textDate = () => {
+		const startDate = todolist.startDate.seconds * 1000;
+		const endDate = todolist.endDate.seconds * 1000;
+		const timeMonths = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
+		const modifiedStartDate = new Date(startDate);
+		const modifiedEndDate = new Date(endDate);
+		return `Start: ${
+			timeMonths[modifiedStartDate.getMonth()]
+		}, ${modifiedStartDate.getDate()} - End: ${
+			timeMonths[modifiedEndDate.getMonth()]
+		}, ${modifiedEndDate.getDate()}`;
+	};
+
 	return (
 		<div className="flex flex-col w-full relative">
 			{createPortal(
@@ -355,7 +384,7 @@ export default function TodosContent({
 							className={`flex justify-center items-center text-center w-full h-full fixed bg-[rgba(0,0,0,0.7)] z-[60]`}
 						>
 							<div
-								className={`bg-white w-[90%] h-[80%] sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll relative ${
+								className={`bg-white w-[90%] h-fit sm:w-fit p-10 rounded-md timeline flex flex-col gap-5 justify-start items-start sm:items-center overflow-scroll relative ${
 									todolist.completed && "border-4 border-green-500"
 								}`}
 							>
@@ -364,78 +393,82 @@ export default function TodosContent({
 										Completed Todo
 									</h1>
 								)}
-								<div className="flex flex-col justify-center items-center gap-4 w-full">
-									<h1 className="text-2xl font-semibold">
-										{nextTimeline ? "Set End Time" : "Set Start Time"}
-									</h1>
+
+								<div className="flex flex-col justify-center items-center gap-3 w-full">
+									<div className="flex flex-col justify-center items-center w-full">
+										<h1 className="text-sm text-gray-400 font-semibold">
+											{todolist.mainFolder[0]}
+										</h1>
+										<h1 className="text-2xl font-semibold">
+											{nextTimeline ? "Set End Time" : "Set Start Time"}
+										</h1>
+									</div>
 
 									{todolist.startDate && todolist.endDate && (
 										<div className="flex flex-col justify-center items-center gap-1">
 											<>
 												<div className="flex flex-col justify-center items-center">
-													<p className="text-lg font-semibold">
-														Completion Date:
+													<p className="font-semibold">
+														Start:{" "}
+														<span className="font-normal">
+															{fixedTimelineDateTxt()}
+														</span>
 													</p>
-													<div className="flex flex-col justify-center items-center">
-														<p className="font-semibold">
-															Start:{" "}
-															<span className="font-normal">
-																{fixedTimelineDateTxt()}
-															</span>
-														</p>
-														<p className="font-semibold">
-															End:{" "}
-															<span className="font-normal">
-																{fixedTimelineDateTxt2()}
-															</span>
-														</p>
-													</div>
+													<p className="font-semibold">
+														End:{" "}
+														<span className="font-normal">
+															{fixedTimelineDateTxt2()}
+														</span>
+													</p>
 												</div>
-
-												<button
-													onClick={handleRemoveCompletionTodoTime}
-													className="base-btn !bg-red-500 w-full"
-												>
-													Remove Date
-												</button>
 											</>
 										</div>
 									)}
 
+									<div className="flex flex-col gap-2 justify-center items-center w-full">
+										{todolist.startDate && todolist.endDate && (
+											<button
+												onClick={handleRemoveCompletionTodoTime}
+												className="base-btn !bg-red-500 w-full"
+											>
+												Remove Date
+											</button>
+										)}
+
+										{nextTimeline ? (
+											<>
+												<button
+													onClick={() => setNextTimeline(false)}
+													className="border border-[#0E51FF] text-[#0E51FF] px-2 py-1 rounded-md cursor-pointer hover:opacity-80 transition-all w-full"
+												>
+													Back
+												</button>
+												<button
+													onClick={handleCompletionTodoTime}
+													className="base-btn w-full"
+												>
+													Set Date
+												</button>
+											</>
+										) : (
+											<button
+												onClick={() => setNextTimeline(true)}
+												className="base-btn w-full"
+											>
+												Next
+											</button>
+										)}
+									</div>
+								</div>
+
+								<div className="flex justify-center items-center flex-col w-full h-auto">
+									<p className="text-sm text-gray-400">Set date below</p>
 									<p>
 										<span className="text-lg font-semibold">Date Set:</span>{" "}
 										{nextTimeline
 											? timelineDateTxt(timelineDate2)
 											: timelineDateTxt(timelineDate)}
 									</p>
-
-									{nextTimeline ? (
-										<>
-											<button
-												onClick={() => setNextTimeline(false)}
-												className="border border-[#0E51FF] text-[#0E51FF] px-2 py-1 rounded-md cursor-pointer hover:opacity-80 transition-all w-full"
-											>
-												Back
-											</button>
-											<button
-												onClick={handleCompletionTodoTime}
-												className="base-btn w-full"
-											>
-												Set Date
-											</button>
-										</>
-									) : (
-										<button
-											onClick={() => setNextTimeline(true)}
-											className="base-btn w-full"
-										>
-											Next
-										</button>
-									)}
-								</div>
-
-								<div className="flex justify-center items-center flex-col w-full h-auto">
-									<p className="text-sm text-gray-400">Set date below</p>
 									{nextTimeline ? (
 										<Timeline
 											value={timelineDate2}
@@ -684,19 +717,31 @@ export default function TodosContent({
 						{!editTextActive && !todolist.deletionIndicator && (
 							<div className="w-fit h-auto relative flex justify-center items-center">
 								{todolist.startDate && todolist.endDate && (
-									<Image
-										className={`w-auto h-[20px] absolute top-1/2 -translate-y-1/2 opacity-20 ${
+									<div
+										className={`absolute top-1/2 -translate-y-1/2 w-full ${
 											todolist.markImportant ? "left-[105px]" : "left-24"
 										}`}
-										src={
-											user.themeColor
-												? "/icons/calendar_month_white.svg"
-												: "/icons/calendar_month_black.svg"
-										}
-										alt="favorite"
-										width={30}
-										height={30}
-									/>
+									>
+										{hideCalendarPopUp && (
+											<p className="absolute bottom-6 right-0 w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-full text-[12px] whitespace-nowrap">
+												{textDate()}
+											</p>
+										)}
+
+										<Image
+											onMouseLeave={() => setHideCalendarPopUp(false)}
+											onMouseEnter={() => setHideCalendarPopUp(true)}
+											className="w-auto h-[20px] opacity-20"
+											src={
+												user.themeColor
+													? "/icons/calendar_month_white.svg"
+													: "/icons/calendar_month_black.svg"
+											}
+											alt="favorite"
+											width={30}
+											height={30}
+										/>
+									</div>
 								)}
 
 								<button className="min-w-[25px] text-btn relative flex justify-center items-center">

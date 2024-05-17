@@ -96,7 +96,7 @@ export default function Misc({ user, handleNavigator }) {
 					<button onClick={handleSigningOut} className="base-btn mb-3">
 						Logout
 					</button>
-					<div className="flex justify-between items-center gap-2">
+					{/* <div className="flex justify-between items-center gap-2">
 						<p
 							className={`line-clamp-1 ${
 								user.themeColor ? "text-white" : "text-black"
@@ -113,7 +113,7 @@ export default function Misc({ user, handleNavigator }) {
 								height={30}
 							/>
 						)}
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</>
