@@ -420,9 +420,7 @@ export default function FirebaseApi() {
 			await addDoc(colRefTodoFolders, {
 				folderEmoji: folderEmoji || "",
 				folderTitle: folderTitle,
-				folderDescription:
-					folderDescription ||
-					"Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.",
+				folderDescription: folderDescription || "No Description",
 				folderName: folderName,
 				completed: false,
 				userID: auth.currentUser?.uid,

@@ -22,13 +22,6 @@ export default function BannerImage({ user }) {
 					fill
 					priority="true"
 				/>
-				{/* <div
-					className={`bg-gradient-to-l from-transparent ${
-						!user.themeColor
-							? "via-[rgba(255,255,255,0.5)] to-gray-100"
-							: "via-[rgba(0,0,0,0.5)] to-[#111]"
-					} absolute top-0 left-0 transition-colors duration-300 w-full h-full`}
-				></div> */}
 				{!user.profileImage && <Fallback user={user} />}
 			</div>
 			{user.bannerSize && (
@@ -82,7 +75,7 @@ const Fallback = ({ user }) => {
 	return (
 		<>
 			<div
-				className={`transition-all duration-500 w-full animate-pulse ${
+				className={`transition-all duration-500 w-full ${
 					user.bannerSize ? "min-h-[0px]" : "min-h-[230px]"
 				} ${user.themeColor ? "bg-[#333]" : "bg-gray-300"}`}
 			></div>

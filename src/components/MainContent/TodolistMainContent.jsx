@@ -1132,22 +1132,30 @@ export default function TodolistMainContent({
 					</>
 
 					{/* No Todos */}
-					{todoLists.allTodoLists
-						?.filter(
-							(value) =>
-								value.folderID === todolistFolder.id &&
-								value.userID === auth.currentUser?.uid &&
-								value.completed === completedTodos &&
-								value.folderID === clickedTodoFolder &&
-								value.todo
-									.normalize("NFD")
-									.replace(/\p{Diacritic}/gu, "")
-									.toLowerCase()
-									.includes(todoSearchInput.toLowerCase())
-						)
-						?.map((todolist) => todolist).length < 1 &&
+					{filterState.filterCategories !== "Favorites" &&
+						filterState.filterCategories.value !== "Difficulty" &&
+						todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.folderID === todolistFolder.id &&
+									value.userID === auth.currentUser?.uid &&
+									value.completed === completedTodos &&
+									value.folderID === clickedTodoFolder &&
+									value.todo
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(todoSearchInput.toLowerCase())
+							)
+							?.map((todolist) => todolist).length < 1 &&
 						!completedTodos && (
-							<p className={`text-gray-400`}>No Todos Found</p>
+							<p
+								className={`${
+									user.themeColor ? "text-[#555]" : "text-gray-400"
+								}`}
+							>
+								No Todos Found
+							</p>
 						)}
 
 					{/* No Completed Todos */}

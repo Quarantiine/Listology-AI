@@ -910,6 +910,25 @@ export default function MainContent() {
 																	<h1 className="text-lg text-gray-400">
 																		Uncompleted Folders
 																	</h1>
+																	{todolistFolders.allTodoFolders
+																		?.filter(
+																			(value) =>
+																				value.userID ===
+																					auth.currentUser?.uid &&
+																				!value.folderHidden &&
+																				value.completed === false
+																		)
+																		?.map((value) => value).length < 1 && (
+																		<p
+																			className={`${
+																				user.themeColor
+																					? "text-[#555]"
+																					: "text-gray-400"
+																			}`}
+																		>
+																			No Folder Todos
+																		</p>
+																	)}
 
 																	<div
 																		className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
@@ -961,14 +980,35 @@ export default function MainContent() {
 																	</div>
 																</div>
 
-																<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
-																	<h1 className="text-lg text-gray-400">
-																		Completed Folders
-																	</h1>
+																{todolistFolders.allTodoFolders
+																	?.filter(
+																		(value) =>
+																			value.userID === auth.currentUser?.uid &&
+																			!value.folderHidden &&
+																			value.completed === true
+																	)
+																	?.map((value) => value).length > 0 && (
+																	<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
+																		<h1 className="text-lg text-gray-400">
+																			Completed Folders
+																		</h1>
 
-																	<div
-																		className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
-																			todolistFolders.allTodoFolders
+																		<div
+																			className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																				todolistFolders.allTodoFolders
+																					?.filter(
+																						(value) =>
+																							value.userID ===
+																								auth.currentUser?.uid &&
+																							!value.folderHidden &&
+																							value.completed === true
+																					)
+																					?.map((t) => t).length < 1
+																					? "grid-cols-1"
+																					: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+																			}`}
+																		>
+																			{todolistFolders.allTodoFolders
 																				?.filter(
 																					(value) =>
 																						value.userID ===
@@ -976,45 +1016,35 @@ export default function MainContent() {
 																						!value.folderHidden &&
 																						value.completed === true
 																				)
-																				?.map((t) => t).length < 1
-																				? "grid-cols-1"
-																				: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
-																		}`}
-																	>
-																		{todolistFolders.allTodoFolders
-																			?.filter(
-																				(value) =>
-																					value.userID ===
-																						auth.currentUser?.uid &&
-																					!value.folderHidden &&
-																					value.completed === true
-																			)
-																			?.map((todoFolder) => {
-																				if (
-																					todoFolder.userID ===
-																						auth.currentUser?.uid &&
-																					!todoFolder.folderHidden
-																				) {
-																					return (
-																						<React.Fragment key={todoFolder.id}>
-																							<TodoFoldersDashboard
-																								todoFolder={todoFolder}
-																								user={user}
-																								setClickedTodoFolder={
-																									setClickedTodoFolder
-																								}
-																								setClickedFolder={
-																									setClickedFolder
-																								}
-																								auth={auth}
-																								searchQuery={searchQuery}
-																							/>
-																						</React.Fragment>
-																					);
-																				}
-																			})}
+																				?.map((todoFolder) => {
+																					if (
+																						todoFolder.userID ===
+																							auth.currentUser?.uid &&
+																						!todoFolder.folderHidden
+																					) {
+																						return (
+																							<React.Fragment
+																								key={todoFolder.id}
+																							>
+																								<TodoFoldersDashboard
+																									todoFolder={todoFolder}
+																									user={user}
+																									setClickedTodoFolder={
+																										setClickedTodoFolder
+																									}
+																									setClickedFolder={
+																										setClickedFolder
+																									}
+																									auth={auth}
+																									searchQuery={searchQuery}
+																								/>
+																							</React.Fragment>
+																						);
+																					}
+																				})}
+																		</div>
 																	</div>
-																</div>
+																)}
 															</>
 														)}
 													</div>
