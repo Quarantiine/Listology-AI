@@ -31,10 +31,12 @@ export default function SubTodos({
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
 	const [deletedSubTodo, setDeletedSubTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
+
 	const deleteDelay = useRef();
+	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
 	const editTextActiveRef = useRef();
-	const deleteDelayInterval = 5000;
+	const todoIndicator = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -87,20 +89,39 @@ export default function SubTodos({
 		}, 1000);
 	};
 
+	// const handleDeleteTodo = () => {
+	// 	setDeletedSubTodo(subTodo.todo);
+	// 	clearTimeout(deleteDelay.current);
+
+	// 	handleDeletionInterval();
+
+	// 	deleteDelay.current = setTimeout(() => {
+	// 		clearInterval(deletionSetInterval.current);
+	// 		setDeletedSubTodo("");
+	// 		0todoLists.deletingSubTodo(subTodo.id);
+	// 	}, deleteDelayInterval);
+	// };
+
 	const handleDeleteTodo = () => {
-		setDeletedSubTodo(subTodo.todo);
+		todoIndicator.current = subTodo.todo;
+
+		todoLists.updatingSubTodoDeletionIndicator(
+			subTodo.id,
+			todoIndicator.current ? true : false
+		);
 		clearTimeout(deleteDelay.current);
 
 		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
 			clearInterval(deletionSetInterval.current);
-			setDeletedSubTodo("");
 			todoLists.deletingSubTodo(subTodo.id);
 		}, deleteDelayInterval);
 	};
 
 	const handleCancelDeletion = () => {
+		todoIndicator.current = "";
+		todoLists.updatingSubTodoDeletionIndicator(subTodo.id, false);
 		setDeletedSubTodo("");
 		setDeletionIntervals(5000);
 		clearInterval(deletionSetInterval.current);
@@ -190,7 +211,9 @@ export default function SubTodos({
 							: "bg-[#eee]"
 						: ""
 				} ${closeSubTodos ? "h-0 overflow-hidden" : "px-2 py-1"} ${
-					deletedSubTodo === subTodo.todo && "bg-[#ef2b2b51]"
+					subTodo.deletionIndicator
+						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
+						: ""
 				}`}
 			>
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
@@ -323,7 +346,7 @@ export default function SubTodos({
 				</div>
 
 				<div className="flex w-[100px] justify-end items-center gap-3 ml-auto">
-					{deletedSubTodo === subTodo.todo && (
+					{/* {deletedSubTodo === subTodo.todo && (
 						<>
 							<p className="text-lg">
 								{deletionIntervals.toString().replace("000", "")}
@@ -331,6 +354,37 @@ export default function SubTodos({
 							<button
 								onClick={handleCancelDeletion}
 								className="flex justify-center items-center"
+							>
+								{user.themeColor ? (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-white.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								) : (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-black.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								)}
+							</button>
+						</>
+					)} */}
+					{subTodo.deletionIndicator && deletionIntervals === 5000 && (
+						<p className="text-white text-sm">Deleting...</p>
+					)}
+
+					{subTodo.deletionIndicator && deletionIntervals !== 5000 && (
+						<>
+							<p>{deletionIntervals.toString().replace("000", "")}</p>
+							<button
+								onClick={handleCancelDeletion}
+								className="flex justify-center items-center rounded-full"
 							>
 								{user.themeColor ? (
 									<Image
@@ -441,10 +495,23 @@ export default function SubTodos({
 							</button>
 						)}
 					</>
-					<Image
+
+					{/* <Image
 						onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
 						className={`w-auto h-[18px] ${
 							deletionIntervals !== 5000
+								? "cursor-not-allowed opacity-50"
+								: "text-btn"
+						}`}
+						src={"/icons/trash.svg"}
+						alt="trash"
+						width={20}
+						height={20}
+					/> */}
+					<Image
+						onClick={subTodo.deletionIndicator ? null : handleDeleteTodo}
+						className={`w-auto h-[18px] ${
+							subTodo.deletionIndicator
 								? "cursor-not-allowed opacity-50"
 								: "text-btn"
 						}`}

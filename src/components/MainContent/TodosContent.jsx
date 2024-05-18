@@ -964,6 +964,7 @@ export default function TodosContent({
 								)}
 							</>
 						)}
+
 						<Image
 							onClick={todolist.deletionIndicator ? null : handleDeleteTodo}
 							className={`w-auto h-[18px] ${
