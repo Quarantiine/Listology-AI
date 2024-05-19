@@ -14,6 +14,7 @@ import Link from "next/link";
 import shortenUrl from "shorten-url";
 import { createPortal } from "react-dom";
 import Timeline from "../MainContent/Timeline";
+import DateTimeline from "./DateTimeline";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -287,6 +288,8 @@ export default function TodosContent({
 		}
 	};
 
+	// Calendar Section
+
 	const handleOpenTimelineModal = () => {
 		setOpenTimelineModal(!openTimelineModal);
 		setOpenMoreDropdown(false);
@@ -317,7 +320,33 @@ export default function TodosContent({
 		const day = date?.getDate();
 		const month = date?.getMonth();
 		const year = date?.getFullYear();
-		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${year || "Year"}`;
+
+		const startDate = todolist.startDate.seconds * 1000;
+
+		function millisecondsToTime() {
+			const modifiedDate = new Date(startDate);
+
+			const hour =
+				modifiedDate.getHours() >= 12
+					? Math.abs(modifiedDate.getHours() - 12)
+					: modifiedDate.getHours();
+
+			const minutes = modifiedDate.getMinutes();
+
+			const isPM = modifiedDate.getHours() >= 12 ? false : true;
+
+			const formattedHours = hour.toString().padStart(2, "0");
+			const formattedMinutes = minutes.toString().padStart(2, "0");
+
+			// Return formatted time with AM/PM
+			return `${formattedHours}:${formattedMinutes} ${isPM ? "AM" : "PM"}`;
+		}
+
+		const startDateTime = millisecondsToTime();
+
+		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${
+			year || "Year"
+		}, ${startDateTime || "Time"}`;
 	};
 
 	const fixedTimelineDateTxt2 = () => {
@@ -326,7 +355,33 @@ export default function TodosContent({
 		const day = date?.getDate();
 		const month = date?.getMonth();
 		const year = date?.getFullYear();
-		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${year || "Year"}`;
+
+		const endDate = todolist.endDate.seconds * 1000;
+
+		function millisecondsToTime() {
+			const modifiedDate = new Date(endDate);
+
+			const hour =
+				modifiedDate.getHours() >= 12
+					? Math.abs(modifiedDate.getHours() - 12)
+					: modifiedDate.getHours();
+
+			const minutes = modifiedDate.getMinutes();
+
+			const isPM = modifiedDate.getHours() >= 12 ? false : true;
+
+			const formattedHours = hour.toString().padStart(2, "0");
+			const formattedMinutes = minutes.toString().padStart(2, "0");
+
+			// Return formatted time with AM/PM
+			return `${formattedHours}:${formattedMinutes} ${isPM ? "AM" : "PM"}`;
+		}
+
+		const endDateTime = millisecondsToTime();
+
+		return `${timeMonths[month] || "Month"} ${day || "Day"}, ${
+			year || "Year"
+		}, ${endDateTime || "Time"}`;
 	};
 
 	const handleCompletionTodoTime = () => {
@@ -334,8 +389,7 @@ export default function TodosContent({
 			todoLists.updatingTodoCompletionDates(
 				todolist.id,
 				timelineDate,
-				timelineDate2,
-				true
+				timelineDate2
 			);
 			setOpenTimelineModal(false);
 			setTimelineDate(new Date());
@@ -351,6 +405,7 @@ export default function TodosContent({
 	const textDate = () => {
 		const startDate = todolist.startDate.seconds * 1000;
 		const endDate = todolist.endDate.seconds * 1000;
+
 		const timeMonths = [
 			"January",
 			"February",
@@ -368,11 +423,34 @@ export default function TodosContent({
 
 		const modifiedStartDate = new Date(startDate);
 		const modifiedEndDate = new Date(endDate);
+
+		function millisecondsToTime(date) {
+			const modifiedDate = new Date(date);
+
+			const hour =
+				modifiedDate.getHours() >= 12
+					? Math.abs(modifiedDate.getHours() - 12)
+					: modifiedDate.getHours();
+
+			const minutes = modifiedDate.getMinutes();
+
+			const isPM = modifiedDate.getHours() >= 12 ? false : true;
+
+			const formattedHours = hour.toString().padStart(2, "0");
+			const formattedMinutes = minutes.toString().padStart(2, "0");
+
+			// Return formatted time with AM/PM
+			return `${formattedHours}:${formattedMinutes} ${isPM ? "AM" : "PM"}`;
+		}
+
+		const startDateTime = millisecondsToTime(startDate);
+		const endDateTime = millisecondsToTime(endDate);
+
 		return `Start: ${
 			timeMonths[modifiedStartDate.getMonth()]
-		}, ${modifiedStartDate.getDate()} - End: ${
+		}, ${modifiedStartDate.getDate()}, ${startDateTime} - End: ${
 			timeMonths[modifiedEndDate.getMonth()]
-		}, ${modifiedEndDate.getDate()}`;
+		}, ${modifiedEndDate.getDate()}, ${endDateTime}`;
 	};
 
 	return (
@@ -470,7 +548,7 @@ export default function TodosContent({
 											: timelineDateTxt(timelineDate)}
 									</p>
 									{nextTimeline ? (
-										<Timeline
+										<DateTimeline
 											value={timelineDate2}
 											onChange={setTimelineDate2}
 										/>
@@ -723,7 +801,7 @@ export default function TodosContent({
 										}`}
 									>
 										{hideCalendarPopUp && (
-											<p className="absolute bottom-6 right-0 w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-full text-[12px] whitespace-nowrap">
+											<p className="absolute bottom-6 right-0 w-[170px] sm:w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-md sm:rounded-full text-[12px] sm:whitespace-nowrap">
 												{textDate()}
 											</p>
 										)}

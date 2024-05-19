@@ -583,7 +583,7 @@ export default function MainContent() {
 																</p>
 
 																<Image
-																	className={`min-h-[8px] max-h-[8px] w-auto cursor-default md:cursor-pointer ${
+																	className={`min-h-[8px] max-h-[8px] h-auto w-auto cursor-default md:cursor-pointer ${
 																		openHiddenFoldersDropdown
 																			? "rotate-180"
 																			: "rotate-0"
@@ -601,7 +601,7 @@ export default function MainContent() {
 
 															{openHiddenFoldersDropdown && (
 																<div
-																	className={`w-[200px] h-[200px] overflow-x-hidden overflow-y-scroll main-content-overflow p-3 rounded-md absolute top-7 right-0 z-40 flex flex-col justify-start items-center bg-white text-black border shadow-md gap-1`}
+																	className={`w-[200px] max-h-[250px] overflow-x-hidden overflow-y-scroll main-content-overflow p-3 rounded-md absolute top-7 right-0 z-40 flex flex-col justify-start items-center bg-white text-black border shadow-md gap-1`}
 																>
 																	<div
 																		className={`flex flex-col gap-2 justify-start items-center ${

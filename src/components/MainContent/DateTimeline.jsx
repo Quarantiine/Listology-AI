@@ -6,7 +6,7 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
-export default function Timeline({ value, onChange }) {
+export default function DateTimeline({ value, onChange }) {
 	return (
 		<>
 			<div className="w-fit flex flex-col justify-center items-center mx-auto">

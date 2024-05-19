@@ -46,9 +46,11 @@ export default function TimelineTodos({
 	const [deletedTodo, setDeletedTodo] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
+
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
+	const todoIndicator = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -80,14 +82,18 @@ export default function TimelineTodos({
 	};
 
 	const handleDeleteTodo = () => {
-		setDeletedTodo(todolist.todo);
+		todoIndicator.current = todolist.todo;
+
+		todoLists.updatingDeletionIndicator(
+			todolist.id,
+			todoIndicator.current ? true : false
+		);
 		clearTimeout(deleteDelay.current);
 
 		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
 			clearInterval(deletionSetInterval.current);
-			setDeletedTodo("");
 			todoLists.deletingTodolist(todolist.id);
 
 			todoLists.allSubTodos
@@ -101,7 +107,8 @@ export default function TimelineTodos({
 	};
 
 	const handleCancelDeletion = () => {
-		setDeletedTodo("");
+		todoIndicator.current = "";
+		todoLists.updatingDeletionIndicator(todolist.id, false);
 		setDeletionIntervals(5000);
 		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
@@ -268,28 +275,44 @@ export default function TimelineTodos({
 				)}
 
 				{startDateTime.getTime() < currentDateTime && (
-					<p
-						className={`text-sm ${
-							differenceInEndHours >= 1
-								? "text-yellow-500"
-								: user.themeColor
-								? "text-[#888]"
-								: "text-gray-400"
-						} ${
-							differenceInEndHours <= -1
-								? "text-red-500"
-								: user.themeColor
-								? "text-[#888]"
-								: "text-gray-400"
-						}`}
-					>
+					<div className="text-sm flex justify-start items-center gap-3">
+						<p
+							className={`${
+								differenceInEndHours >= -1
+									? "text-yellow-500"
+									: user.themeColor
+									? "text-[#888]"
+									: "text-gray-400"
+							} ${
+								differenceInEndHours <= -1
+									? "text-red-500"
+									: user.themeColor
+									? "text-[#888]"
+									: "text-gray-400"
+							}`}
+						>
+							{differenceInEndHours <= -1 ? (
+								<span className="font-bold">Overdue: </span>
+							) : (
+								<span className="font-bold">Due: </span>
+							)}
+							{modifiedEndDate}
+						</p>
+
 						{differenceInEndHours <= -1 ? (
-							<span className="font-bold">Overdue: </span>
+							""
+						) : differenceInEndHours < 24 ? (
+							<p>
+								Hours Left (
+								{Math.round(differenceInEndHours) < 1
+									? "< 1h"
+									: Math.round(differenceInEndHours)}
+								)
+							</p>
 						) : (
-							<span className="font-bold">Due: </span>
+							<p>Days Left ({Math.round(differenceInEndHours / 24)})</p>
 						)}
-						{modifiedEndDate}
-					</p>
+					</div>
 				)}
 			</div>
 
@@ -301,7 +324,9 @@ export default function TimelineTodos({
 				}
 				title={todolist.todo}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
-					deletedTodo === todolist.todo && "bg-[#ef2b2b51]"
+					todolist.deletionIndicator
+						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
+						: ""
 				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
@@ -412,7 +437,11 @@ export default function TimelineTodos({
 					</div>
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
-						{deletedTodo === todolist.todo && (
+						{todolist.deletionIndicator && deletionIntervals === 5000 && (
+							<p className="text-white text-sm">Deleting...</p>
+						)}
+
+						{todolist.deletionIndicator && deletionIntervals !== 5000 && (
 							<>
 								<p>{deletionIntervals.toString().replace("000", "")}</p>
 								<button

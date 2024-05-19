@@ -48,6 +48,7 @@ export default function ImportantTodos({ todolist }) {
 	const deleteDelay = useRef();
 	const deleteDelayInterval = 5000;
 	const deletionSetInterval = useRef();
+	const todoIndicator = useRef();
 	const linkPattern = /(https?:\/\/[^\s]+)/;
 
 	useEffect(() => {
@@ -79,14 +80,18 @@ export default function ImportantTodos({ todolist }) {
 	};
 
 	const handleDeleteTodo = () => {
-		setDeletedTodo(todolist.todo);
+		todoIndicator.current = todolist.todo;
+
+		todoLists.updatingDeletionIndicator(
+			todolist.id,
+			todoIndicator.current ? true : false
+		);
 		clearTimeout(deleteDelay.current);
 
 		handleDeletionInterval();
 
 		deleteDelay.current = setTimeout(() => {
 			clearInterval(deletionSetInterval.current);
-			setDeletedTodo("");
 			todoLists.deletingTodolist(todolist.id);
 
 			todoLists.allSubTodos
@@ -100,7 +105,8 @@ export default function ImportantTodos({ todolist }) {
 	};
 
 	const handleCancelDeletion = () => {
-		setDeletedTodo("");
+		todoIndicator.current = "";
+		todoLists.updatingDeletionIndicator(todolist.id, false);
 		setDeletionIntervals(5000);
 		clearInterval(deletionSetInterval.current);
 		clearTimeout(deleteDelay.current);
@@ -259,6 +265,7 @@ export default function ImportantTodos({ todolist }) {
 	const textDate = () => {
 		const startDate = todolist.startDate.seconds * 1000;
 		const endDate = todolist.endDate.seconds * 1000;
+
 		const timeMonths = [
 			"January",
 			"February",
@@ -276,11 +283,34 @@ export default function ImportantTodos({ todolist }) {
 
 		const modifiedStartDate = new Date(startDate);
 		const modifiedEndDate = new Date(endDate);
+
+		function millisecondsToTime(date) {
+			const modifiedDate = new Date(date);
+
+			const hour =
+				modifiedDate.getHours() >= 12
+					? Math.abs(modifiedDate.getHours() - 12)
+					: modifiedDate.getHours();
+
+			const minutes = modifiedDate.getMinutes();
+
+			const isPM = modifiedDate.getHours() >= 12 ? false : true;
+
+			const formattedHours = hour.toString().padStart(2, "0");
+			const formattedMinutes = minutes.toString().padStart(2, "0");
+
+			// Return formatted time with AM/PM
+			return `${formattedHours}:${formattedMinutes} ${isPM ? "AM" : "PM"}`;
+		}
+
+		const startDateTime = millisecondsToTime(startDate);
+		const endDateTime = millisecondsToTime(endDate);
+
 		return `Start: ${
 			timeMonths[modifiedStartDate.getMonth()]
-		}, ${modifiedStartDate.getDate()} - End: ${
+		}, ${modifiedStartDate.getDate()}, ${startDateTime} - End: ${
 			timeMonths[modifiedEndDate.getMonth()]
-		}, ${modifiedEndDate.getDate()}`;
+		}, ${modifiedEndDate.getDate()}, ${endDateTime}`;
 	};
 
 	return (
@@ -304,7 +334,9 @@ export default function ImportantTodos({ todolist }) {
 				}
 				title={todolist.todo}
 				className={`flex justify-start items-center gap-3 w-full rounded-lg px-2 py-1 relative transition-colors ${
-					deletedTodo === todolist.todo && "bg-[#ef2b2b51]"
+					todolist.deletionIndicator
+						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
+						: ""
 				} ${
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
@@ -415,7 +447,11 @@ export default function ImportantTodos({ todolist }) {
 					</div>
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
-						{deletedTodo === todolist.todo && (
+						{todolist.deletionIndicator && deletionIntervals === 5000 && (
+							<p className="text-white text-sm">Deleting...</p>
+						)}
+
+						{todolist.deletionIndicator && deletionIntervals !== 5000 && (
 							<>
 								<p>{deletionIntervals.toString().replace("000", "")}</p>
 								<button
@@ -452,7 +488,7 @@ export default function ImportantTodos({ todolist }) {
 										}`}
 									>
 										{hideCalendarPopUp && (
-											<p className="absolute bottom-6 right-0 w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-full text-[12px] whitespace-nowrap">
+											<p className="absolute bottom-6 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-0 w-[170px] sm:w-fit h-fit bg-white text-black shadow-lg px-3 py-1 rounded-md sm:rounded-full text-[12px] sm:whitespace-nowrap">
 												{textDate()}
 											</p>
 										)}
