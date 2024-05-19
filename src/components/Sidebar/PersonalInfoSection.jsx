@@ -164,6 +164,10 @@ export default function PersonalInfoSection({ user }) {
 				)}
 
 			<div className="w-full h-full flex flex-col gap-7 relative">
+				<h1 className="text-2xl text-gray-400 font-medium">
+					Personal Information
+				</h1>
+
 				<div className="w-full h-auto relative">
 					<div className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 left-5 z-10">
 						{user.profileImage ? (

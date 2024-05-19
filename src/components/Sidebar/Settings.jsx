@@ -2,6 +2,7 @@ import React, { useContext, useReducer } from "react";
 import { UserCredentialCtx } from "../../pages";
 import PersonalInfoSection from "./PersonalInfoSection";
 import ActivitySection from "./ActivitySection";
+import DeleteAccount from "./DeleteAccount";
 
 const navigatorReducer = (state, { type, payload }) => {
 	switch (type) {
@@ -44,7 +45,7 @@ export default function Settings() {
 					<h1 className="text-2xl font-semibold">Settings</h1>
 					<div className="flex flex-col sm:flex-row justify-between items-start gap-10 pb-16">
 						<div
-							className={`sm:min-w-[160px] sm:h-[400px] sm:max-h-[400px] rounded-md sticky -top-10 flex flex-row sm:flex-col justify-center items-center sm:justify-start sm:items-start px-4 py-3 gap-2 sm:gap-1 z-40 ${
+							className={`w-full sm:w-[200px] h-[80px] sm:h-[400px] sm:max-h-[400px] rounded-md sticky -top-10 flex flex-row sm:flex-col justify-start item-center px-4 py-3 gap-2 sm:gap-1 z-40 overflow-x-scroll overflow-y-hidden settings-overflow ${
 								user.themeColor
 									? "bg-[#333] border border-[#555]"
 									: "bg-[#eee] border"
@@ -52,7 +53,7 @@ export default function Settings() {
 						>
 							<button
 								onClick={(e) => handleNavigation(e.target.textContent)}
-								className={`transition-all px-2 py-1 w-full text-start ${
+								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
 									navigatorState.navigate === "Personal Info"
 										? "base-bg text-white rounded-md"
 										: ""
@@ -63,7 +64,7 @@ export default function Settings() {
 
 							{/* <button
 								onClick={(e) => handleNavigation(e.target.textContent)}
-								className={`transition-all px-2 py-1 w-full text-start ${
+								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
 									navigatorState.navigate === "Activity"
 										? "base-bg text-white rounded-md"
 										: ""
@@ -71,6 +72,17 @@ export default function Settings() {
 							>
 								Activity
 							</button> */}
+
+							<button
+								onClick={(e) => handleNavigation(e.target.textContent)}
+								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
+									navigatorState.navigate === "Delete Account"
+										? "base-bg text-white rounded-md"
+										: ""
+								}`}
+							>
+								Delete Account
+							</button>
 						</div>
 
 						<div className="w-full h-full">
@@ -83,6 +95,12 @@ export default function Settings() {
 							{navigatorState.navigate === "Activity" && (
 								<>
 									<ActivitySection />
+								</>
+							)}
+
+							{navigatorState.navigate === "Delete Account" && (
+								<>
+									<DeleteAccount />
 								</>
 							)}
 						</div>

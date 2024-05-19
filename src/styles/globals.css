@@ -55,3 +55,7 @@
 .filter-second-overflow::-webkit-scrollbar {
 	width: 0px;
 }
+
+.settings-overflow::-webkit-scrollbar {
+	height: 0px;
+}

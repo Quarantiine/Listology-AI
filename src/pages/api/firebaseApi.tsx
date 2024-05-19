@@ -32,6 +32,7 @@ import {
 	AuthProvider,
 	TwitterAuthProvider,
 	updateEmail,
+	deleteUser,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -363,6 +364,16 @@ export default function FirebaseApi() {
 				profileImage: profileImage,
 			});
 		};
+
+		deletingProfile = async () => {
+			const user = auth.currentUser;
+			await deleteUser(user);
+		};
+
+		deletingRegistrationInfo = async (id: string) => {
+			const docRef = doc(colRefRegistration, id);
+			await deleteDoc(docRef);
+		};
 	}
 	const RS = new RegistrationSystem();
 	const signingUp = RS.signingUp;
@@ -378,6 +389,8 @@ export default function FirebaseApi() {
 	const twitterProvider = RS.twitterProvider;
 	const updatingUserEmail = RS.updatingUserEmail;
 	const updatingProfileImage = RS.updatingProfileImage;
+	const deletingProfile = RS.deletingProfile;
+	const deletingRegistrationInfo = RS.deletingRegistrationInfo;
 
 	class FolderSystem {
 		constructor() {}
@@ -720,6 +733,8 @@ export default function FirebaseApi() {
 			twitterProvider,
 			updatingUserEmail,
 			updatingProfileImage,
+			deletingProfile,
+			deletingRegistrationInfo,
 		},
 
 		folders: {
@@ -764,7 +779,7 @@ export default function FirebaseApi() {
 			updatingMarkAsImportant,
 			updatingTodoCompletionDates,
 			updatingDeletionIndicator,
-			updatingSubTodoDeletionIndicator
+			updatingSubTodoDeletionIndicator,
 		},
 	};
 }
