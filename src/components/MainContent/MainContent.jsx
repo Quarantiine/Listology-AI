@@ -926,7 +926,7 @@ export default function MainContent() {
 																					: "text-gray-400"
 																			}`}
 																		>
-																			No Folder Todos
+																			No Todo Folders
 																		</p>
 																	)}
 

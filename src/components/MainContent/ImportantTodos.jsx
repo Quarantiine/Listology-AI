@@ -308,9 +308,9 @@ export default function ImportantTodos({ todolist }) {
 
 		return `Start: ${
 			timeMonths[modifiedStartDate.getMonth()]
-		}, ${modifiedStartDate.getDate()}, ${startDateTime} - End: ${
+		} ${modifiedStartDate.getDate()}, ${startDateTime} - End: ${
 			timeMonths[modifiedEndDate.getMonth()]
-		}, ${modifiedEndDate.getDate()}, ${endDateTime}`;
+		} ${modifiedEndDate.getDate()}, ${endDateTime}`;
 	};
 
 	return (
