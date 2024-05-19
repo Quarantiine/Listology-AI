@@ -124,7 +124,7 @@ export default function SigningIn({ handleRegistrationChange }) {
 							</button>
 						</div>
 					</div>
-					<Providers />
+					{/* <Providers /> */}
 					<div className="flex flex-col justify-start items-start gap-2 mt-2">
 						<button
 							onClick={handleRegistrationChange}

@@ -98,7 +98,7 @@ const SigningUp = ({
 						</div>
 					</div>
 				</div>
-				<Providers />
+				{/* <Providers /> */}
 				<p
 					onClick={handleRegistrationChange}
 					className="base-col cursor-pointer"
