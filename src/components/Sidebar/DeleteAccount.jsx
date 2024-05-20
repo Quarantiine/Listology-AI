@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FirebaseAPI from "../../pages/api/firebaseApi.tsx";
 import { createPortal } from "react-dom";
+import { StateCtx } from "../Layout.jsx";
 
 export default function DeleteAccount() {
 	const { auth, registration, folders, todolistFolders, todoLists } =
 		FirebaseAPI();
+	const { navDispatch } = useContext(StateCtx);
+
 	const [confirmDeletion, setConfirmDeletion] = useState(false);
 
 	const handleConfirmDeletion = () => {
@@ -34,9 +37,21 @@ export default function DeleteAccount() {
 			.filter((value) => auth.currentUser?.uid === value.userID)
 			?.map((user) => registration.deletingRegistrationInfo(user.id));
 
-		setTimeout(() => {
+		if (
+			registration.allusers
+				.filter((value) => auth.currentUser?.uid === value.userID)
+				?.map((user) => user).length < 1
+		) {
+			navDispatch({
+				type: "sidebar-navigation-link",
+				payload: {
+					key: "navigatorLink",
+					value: "Dashboard",
+				},
+			});
+
 			registration.deletingProfile();
-		}, 3000);
+		}
 	};
 
 	useEffect(() => {

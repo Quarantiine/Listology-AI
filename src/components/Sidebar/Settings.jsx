@@ -73,7 +73,7 @@ export default function Settings() {
 								Activity
 							</button> */}
 
-							<button
+							{/* <button
 								onClick={(e) => handleNavigation(e.target.textContent)}
 								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
 									navigatorState.navigate === "Delete Account"
@@ -82,7 +82,7 @@ export default function Settings() {
 								}`}
 							>
 								Delete Account
-							</button>
+							</button> */}
 						</div>
 
 						<div className="w-full h-full">

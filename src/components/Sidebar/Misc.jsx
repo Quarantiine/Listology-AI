@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
-import Image from "next/image";
 
 export default function Misc({ user, handleNavigator }) {
 	const { registration } = FirebaseApi();
