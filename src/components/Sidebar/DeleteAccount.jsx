@@ -34,7 +34,9 @@ export default function DeleteAccount() {
 			.filter((value) => auth.currentUser?.uid === value.userID)
 			?.map((user) => registration.deletingRegistrationInfo(user.id));
 
-		registration.deletingProfile();
+		setTimeout(() => {
+			registration.deletingProfile();
+		}, 3000);
 	};
 
 	useEffect(() => {
