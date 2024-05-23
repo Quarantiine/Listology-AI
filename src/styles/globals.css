@@ -15,6 +15,10 @@
 	@apply bg-[#0E51FF] text-white px-2 py-1 rounded-md cursor-pointer hover:opacity-80;
 }
 
+.inverse-base-btn {
+	@apply border border-[#0E51FF] text-[#0E51FF] px-2 py-1 rounded-md cursor-pointer hover:opacity-80;
+}
+
 .text-btn {
 	@apply cursor-pointer hover:opacity-60;
 }
@@ -58,4 +62,14 @@
 
 .settings-overflow::-webkit-scrollbar {
 	height: 0px;
+}
+
+.calendar-overflow::-webkit-scrollbar {
+	height: 5px;
+}
+.calendar-overflow::-webkit-scrollbar-thumb {
+	background-color: #777;
+}
+.calendar-overflow::-webkit-scrollbar-track {
+	background-color: #eee;
 }
