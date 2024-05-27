@@ -188,7 +188,7 @@ export default function TodolistSidebarModal({ setOpenTodolistSidebarModal }) {
 						className="base-btn w-full"
 						type="submit"
 					>
-						Create Todo Folder
+						Create To-do Folder
 					</button>
 				</form>
 			</div>

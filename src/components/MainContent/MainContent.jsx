@@ -51,6 +51,7 @@ export default function MainContent() {
 						.includes(searchQuery.toLowerCase()))
 		)
 		?.map((t) => t).length;
+
 	const timeMonths = [
 		"January",
 		"February",
@@ -243,7 +244,7 @@ export default function MainContent() {
 																}`}
 															>
 																<h1 className="text-2xl font-semibold">
-																	Todo Timeline:{" "}
+																	To-do Timeline:{" "}
 																	{
 																		todoLists.allTodoLists
 																			?.filter(
@@ -550,7 +551,7 @@ export default function MainContent() {
 															type="search"
 															name="search"
 															autoComplete="off"
-															placeholder="Search by todo and main folders"
+															placeholder="Search by to-do and main folders"
 															ref={searchQueryRef}
 															onChange={(e) => setSearchQuery(e.target.value)}
 															value={searchQuery}
@@ -560,7 +561,7 @@ export default function MainContent() {
 													<div className="flex justify-between items-center gap-2 w-full">
 														<div className="flex justify-center items-center gap-1">
 															<h1 className="text-2xl font-semibold">
-																Todo Folders:
+																To-do Folders:
 															</h1>
 															<h1 className="text-2xl font-semibold">
 																{lengthOfSearchedFolders}
@@ -754,7 +755,7 @@ export default function MainContent() {
 																	: "text-gray-400"
 															}`}
 														>
-															You have hidden Todo Folders
+															You have hidden To-do Folders
 														</p>
 													)}
 
@@ -926,7 +927,7 @@ export default function MainContent() {
 																					: "text-gray-400"
 																			}`}
 																		>
-																			No Todo Folders
+																			No To-do Folders
 																		</p>
 																	)}
 
@@ -1080,7 +1081,7 @@ export default function MainContent() {
 														user.themeColor ? "text-[#555]" : "text-[#aaa]"
 													}`}
 												>
-													<p>You Have no Todo Folders</p>
+													<p>You Have no To-do Folders</p>
 													{folders.allFolders
 														?.filter(
 															(folder) =>
@@ -1091,7 +1092,7 @@ export default function MainContent() {
 															onClick={handleCreateTodoFolder}
 															className="base-btn"
 														>
-															Create Todo Folder
+															Create To-do Folder
 														</button>
 													) : (
 														<button

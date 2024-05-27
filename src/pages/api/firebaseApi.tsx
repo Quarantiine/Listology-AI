@@ -530,7 +530,7 @@ export default function FirebaseApi() {
 
 		addingTodos = async (folderID: string, mainFolder: string) => {
 			await addDoc(colRefTodoLists, {
-				todo: "Untitled Todo Text",
+				todo: "Untitled To-do Text",
 				mainFolder,
 				folderID: folderID,
 				favorited: false,
@@ -545,6 +545,7 @@ export default function FirebaseApi() {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 			await updateDoc(docRef, {
 				todo: todo,
+				createdTime: serverTimestamp(),
 			});
 		};
 
@@ -584,7 +585,7 @@ export default function FirebaseApi() {
 					createdTime: serverTimestamp(),
 				});
 			} catch (err) {
-				console.log(`Sub Todo Error | ${err.message}`);
+				console.log(`Sub To-do Error | ${err.message}`);
 			}
 		};
 

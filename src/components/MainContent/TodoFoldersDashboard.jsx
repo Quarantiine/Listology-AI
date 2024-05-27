@@ -319,7 +319,7 @@ export default function TodoFoldersDashboard({
 										user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
 									}`}
 								>
-									All Ignored Todos
+									All Ignored To-dos
 								</p>
 							)
 						) : (
@@ -328,7 +328,7 @@ export default function TodoFoldersDashboard({
 									user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
 								}`}
 							>
-								No Todos
+								No To-dos
 							</p>
 						)}
 					</>

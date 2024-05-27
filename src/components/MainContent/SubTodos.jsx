@@ -439,23 +439,6 @@ export default function SubTodos({
 										>
 											Copy Text
 										</button>
-
-										{/* <button
-											onClick={(e) =>
-												handleMoreDispatch("todoDropdown", e.target.textContent)
-											}
-											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-t-md"
-										>
-											Todo Difficulty
-										</button>
-										<button
-											onClick={(e) =>
-												handleMoreDispatch("todoDropdown", e.target.textContent)
-											}
-											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full"
-										>
-											Time Created
-										</button> */}
 									</div>
 								)}
 							</div>

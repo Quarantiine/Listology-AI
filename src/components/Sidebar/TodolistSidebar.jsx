@@ -76,7 +76,7 @@ export default function TodolistSidebar() {
 				<div className="flex justify-between items-start gap-2 w-full">
 					<div className="flex flex-col justify-start items-start">
 						<>
-							<h1 className="text-2xl font-semibold">Todo Folders</h1>
+							<h1 className="text-2xl font-semibold">To-do Folders</h1>
 							{folders.allFolders
 								?.filter(
 									(value) =>
@@ -172,53 +172,95 @@ export default function TodolistSidebar() {
 					createPortal(
 						<>
 							<div className="fixed top-0 left-0 w-full h-fit py-3 flex justify-center items-center text-white bg-red-500 z-50">
-								<p>Deleted Todo Folders: {todoFolderDeletionIndicatorNumber}</p>
+								<p>
+									Deleted To-do Folders: {todoFolderDeletionIndicatorNumber}
+								</p>
 							</div>
 						</>,
 						document.body
 					)}
 				<div className="todo-list-folders-overflow flex flex-col justify-start items-start gap-1 w-full overflow-y-scroll overflow-x-hidden">
 					{todolistFolders.allTodoFolders
-						?.map((value) => value.userID === auth.currentUser?.uid)
-						.includes(true)
-						? todolistFolders.allTodoFolders
-								.filter(
-									(value) =>
-										value.userID === auth.currentUser?.uid &&
-										value.folderName === clickedFolder
-								)
-								?.map((todoFolder, index) => {
-									if (todoFolder.userID === auth.currentUser?.uid) {
-										if (
-											todoFolder.folderTitle
-												.normalize("NFD")
-												.replace(/\p{Diacritic}/gu, "")
-												.toLowerCase()
-												.includes(searchQuery.toLowerCase())
-										) {
-											return (
-												<AllTodoFolders
-													key={todoFolder.id}
-													todolistFolders={todolistFolders}
-													todoFolder={todoFolder}
-													user={user}
-													index={index}
-													setClickedTodoFolder={setClickedTodoFolder}
-													todoFolderDeletionIndicator={
-														todoFolderDeletionIndicator
-													}
-													setTodoFolderDeletionIndicator={
-														setTodoFolderDeletionIndicator
-													}
-													todoFolderDeletionRef={todoFolderDeletionRef}
-													handleDeletionIndicator={handleDeletionIndicator}
-													pin={todoFolder.pin}
-												/>
-											);
-										}
+						?.filter(
+							(value) =>
+								value.userID === auth.currentUser?.uid &&
+								value.folderName === clickedFolder
+						)
+						?.map(
+							(todolistFolder) => todolistFolder.userID === auth.currentUser.uid
+						)
+						.includes(true) &&
+						todolistFolders.allTodoFolders
+							.filter(
+								(value) =>
+									value.userID === auth.currentUser?.uid &&
+									value.folderName === clickedFolder
+							)
+							?.map((todoFolder, index) => {
+								if (todoFolder.userID === auth.currentUser?.uid) {
+									if (
+										todoFolder.folderTitle
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+									) {
+										return (
+											<AllTodoFolders
+												key={todoFolder.id}
+												todolistFolders={todolistFolders}
+												todoFolder={todoFolder}
+												user={user}
+												index={index}
+												setClickedTodoFolder={setClickedTodoFolder}
+												todoFolderDeletionIndicator={
+													todoFolderDeletionIndicator
+												}
+												setTodoFolderDeletionIndicator={
+													setTodoFolderDeletionIndicator
+												}
+												todoFolderDeletionRef={todoFolderDeletionRef}
+												handleDeletionIndicator={handleDeletionIndicator}
+												pin={todoFolder.pin}
+											/>
+										);
 									}
-								})
-						: null}
+								}
+							})}
+
+					{todolistFolders.allTodoFolders
+						?.filter(
+							(value) =>
+								value.userID === auth.currentUser?.uid &&
+								value.folderName === clickedFolder
+						)
+						?.map(
+							(todolistFolder) => todolistFolder.userID === auth.currentUser.uid
+						)
+						.includes(true) &&
+						todolistFolders.allTodoFolders
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser?.uid &&
+									value.folderName === clickedFolder &&
+									value.folderTitle
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(searchQuery.toLowerCase())
+							)
+							?.map((todolistFolder) => todolistFolder).length < 1 && (
+							<>
+								<p
+									className={`${
+										user.themeColor ? "text-gray-400" : "text-gray-500"
+									}`}
+								>
+									No To-do Folders
+								</p>
+							</>
+						)}
+
 					{!todolistFolders.allTodoFolders
 						?.slice(0)
 						?.filter((value) => value.userID === auth.currentUser?.uid)
@@ -273,12 +315,13 @@ const TodoListFolderSearchBar = ({ user, searchQuery, setSearchQuery }) => {
 					)}
 				</>
 				<input
-					className={`w-full pl-10 pr-2 py-1 rounded-md outline-none ${
+					className={`w-full pl-10 pr-2 py-1 rounded-md outline-none placeholder:text-sm ${
 						user.themeColor ? "bg-[#333] text-white" : "bg-[#eee] text-black"
 					}`}
 					type="search"
 					name="search"
 					onChange={(e) => setSearchQuery(e.target.value)}
+					placeholder="Search To-do List Folders"
 					value={searchQuery}
 				/>
 			</div>

@@ -133,7 +133,7 @@ export default function AllTodoFolders({
 					createPortal(
 						<>
 							<div className="fixed top-0 left-0 w-full h-fit py-3 flex justify-center items-center text-white bg-green-500 z-50">
-								<p>Completed Todo Folder: {todoFolder.folderTitle}</p>
+								<p>Completed To-do Folder: {todoFolder.folderTitle}</p>
 							</div>
 						</>,
 						document.body
@@ -240,7 +240,7 @@ const TodolistFolderWarningModal = ({
 			<div className="z-50 text-black flex justify-center items-center fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)]">
 				<div className="todo-folders-deletion-warning todolist-sidebar w-fit h-fit p-5 rounded-md bg-white text-center flex flex-col gap-3">
 					<div className="flex flex-col justify-center items-center">
-						<h1 className="text-2xl font-semibold">Deleting Todo Folder:</h1>
+						<h1 className="text-2xl font-semibold">Deleting To-do Folder:</h1>
 						<h1 className="text-lg font-light italic">
 							{todoFolder.folderTitle}
 						</h1>

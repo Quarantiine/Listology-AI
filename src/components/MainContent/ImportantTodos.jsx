@@ -551,7 +551,7 @@ export default function ImportantTodos({ todolist }) {
 													: "hover:bg-[#0E51FF] hover:text-white"
 											}`}
 										>
-											Todo Difficulty
+											To-do Difficulty
 										</button>
 
 										<button

@@ -5,12 +5,12 @@ export default function ActivitySection() {
 	const { user } = useContext(UserCredentialCtx);
 
 	const activityCategories = [
-		{ title: "Total Todos Completed", value: 234 },
-		{ title: "Total Todos Created", value: 234 },
-		{ title: "Total Todos Deleted", value: 234 },
-		{ title: "Total Sub Todos Completed", value: 234 },
-		{ title: "Total Sub Todos Created", value: 234 },
-		{ title: "Total Sub Todos Deleted", value: 234 },
+		{ title: "Total To-dos Completed", value: 234 },
+		{ title: "Total To-dos Created", value: 234 },
+		{ title: "Total To-dos Deleted", value: 234 },
+		{ title: "Total Sub To-dos Completed", value: 234 },
+		{ title: "Total Sub To-dos Created", value: 234 },
+		{ title: "Total Sub To-dos Deleted", value: 234 },
 		{ title: "Total Folders Completed", value: 234 },
 		{ title: "Total Folders Created", value: 234 },
 		{ title: "Total Folders Deleted", value: 234 },

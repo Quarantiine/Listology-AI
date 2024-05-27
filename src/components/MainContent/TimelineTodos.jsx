@@ -29,7 +29,7 @@ export default function TimelineTodos({
 	modifiedEndDate,
 	modifiedStartDate,
 }) {
-	const { auth, todoLists } = FirebaseApi();
+	const { auth, todoLists, todolistFolders } = FirebaseApi();
 	const { user } = useContext(UserCredentialCtx);
 	const {
 		setClickedFolder,
@@ -37,6 +37,7 @@ export default function TimelineTodos({
 		setCompletedTodos,
 		setTodoSearchInput,
 		setOpenTodoSearchInput,
+		filterDispatch,
 	} = useContext(StateCtx);
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		todoDropdown: "",
@@ -237,12 +238,28 @@ export default function TimelineTodos({
 	};
 
 	const handleTodoLocation = () => {
+		const timeStamp = () => {
+			let date = new Date();
+			return date;
+		};
+
 		setClickedFolder(todolist.mainFolder[0]);
 		setClickedTodoFolder(todolist.folderID);
 		setOpenMoreDropdown(false);
 		setCompletedTodos(false);
 		setTodoSearchInput(todolist.todo);
 		setOpenTodoSearchInput(true);
+
+		todolistFolders.updatingClickTimeStamp(todolist.folderID, timeStamp());
+
+		filterDispatch({
+			type: "filter-category",
+			payload: {
+				key: "filterCategories",
+				value: "All",
+				value2: "",
+			},
+		});
 	};
 
 	const handleRemoveDate = () => {
@@ -513,7 +530,7 @@ export default function TimelineTodos({
 													: "hover:bg-[#0E51FF] hover:text-white"
 											}`}
 										>
-											Todo Difficulty
+											To-do Difficulty
 										</button>
 
 										<button
@@ -541,7 +558,7 @@ export default function TimelineTodos({
 													todolist.ignoreTodo && "bg-[#0e52ff6b] text-black"
 												}`}
 											>
-												{todolist.ignoreTodo ? "Undo Ignore" : "Ignore Todo"}
+												{todolist.ignoreTodo ? "Undo Ignore" : "Ignore To-do"}
 											</button>
 										)}
 

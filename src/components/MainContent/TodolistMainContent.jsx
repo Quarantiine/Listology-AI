@@ -433,7 +433,7 @@ export default function TodolistMainContent({
 											{openTransferDropdown && (
 												<div className="transfer-dropdown absolute top-6 left-0 min-w-[144px] h-fit px-3 py-2 bg-white rounded-md border z-10 text-sm flex flex-col justify-center items-start gap-2">
 													<h1 className="font-bold max-w-[100%] w-44">
-														Transfer Todo Folder to:
+														Transfer To-do Folder to:
 													</h1>
 													<div className="flex flex-col justify-center items-start gap-0">
 														<p className="text-sm text-[#aaa] font-semibold">
@@ -665,7 +665,7 @@ export default function TodolistMainContent({
 											type="text"
 											onChange={(e) => setTodoSearchInput(e.target.value)}
 											value={todoSearchInput}
-											placeholder="Search Todos"
+											placeholder="Search To-dos"
 											className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
 												user.themeColor
 													? "bg-[#333] border-[#555]"
@@ -701,7 +701,7 @@ export default function TodolistMainContent({
 								<input
 									type="text"
 									onChange={(e) => setTodoSearchInput(e.target.value)}
-									placeholder="Search Todos"
+									placeholder="Search To-dos"
 									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 									}`}
@@ -732,7 +732,7 @@ export default function TodolistMainContent({
 								<input
 									type="text"
 									onChange={(e) => setSubTodoSearchInput(e.target.value)}
-									placeholder="Search Sub Todos"
+									placeholder="Search Sub To-dos"
 									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 									}`}
@@ -751,12 +751,12 @@ export default function TodolistMainContent({
 						onClick={handleAddingTodos}
 						className={`base-btn w-full md:w-auto md:min-w-[130px] flex justify-center items-center gap-3`}
 					>
-						<h1 className={`text-white`}>Add Todo</h1>
+						<h1 className={`text-white`}>Add To-do</h1>
 						<div className="flex justify-center items-center relative">
 							<Image
 								className="w-auto h-[20px]"
 								src={"/icons/plus-white.svg"}
-								alt="add todo"
+								alt="add to-do"
 								width={20}
 								height={20}
 							/>
@@ -775,7 +775,7 @@ export default function TodolistMainContent({
 								: "text-btn bg-[#0E51FF] text-white"
 						}`}
 					>
-						<p>Completed Todos</p>
+						<p>Completed To-dos</p>
 						{completedTodos && (
 							<Image
 								className="min-w-[15px] min-h-[15px] rotate-[45deg]"
@@ -798,11 +798,11 @@ export default function TodolistMainContent({
 					>
 						<h1 className="text-2xl font-semibold line-clamp-1 flex justify-start items-center gap-2">
 							<span>
-								{totalTodos()} {totalTodos() === 1 ? "Todo" : "Todos"}
+								{totalTodos()} {totalTodos() === 1 ? "To-do" : "To-dos"}
 							</span>
 						</h1>
 						<h3 className="text-[12px] font-light line-clamp-1">
-							{totalSubTodos()} Sub Todos
+							{totalSubTodos()} Sub To-dos
 						</h3>
 					</div>
 				</div>
@@ -824,7 +824,7 @@ export default function TodolistMainContent({
 											<h1 className="text-2xl font-semibold">
 												Are you sure you want to delete?
 											</h1>
-											<p>Your completed todo category will be gone forever</p>
+											<p>Your completed to-do category will be gone forever</p>
 										</div>
 										<div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full">
 											<button
@@ -904,7 +904,7 @@ export default function TodolistMainContent({
 													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 												}`}
 											>
-												Copy All Todos
+												Copy All To-dos
 											</button>
 									  )
 									: todoLists.allTodoLists
@@ -922,7 +922,7 @@ export default function TodolistMainContent({
 													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 												}`}
 											>
-												Copy All Todos
+												Copy All To-dos
 											</button>
 									  )}
 
@@ -976,7 +976,7 @@ export default function TodolistMainContent({
 														user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
 													}`}
 												>
-													No Todos Completed
+													No To-dos Completed
 												</p>
 											</>
 										)}
@@ -1037,7 +1037,7 @@ export default function TodolistMainContent({
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
 								>
-									No Todos
+									No To-dos
 								</p>
 							</div>
 						)}
@@ -1057,7 +1057,7 @@ export default function TodolistMainContent({
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
 								>
-									No Favorited Todos
+									No Favorited To-dos
 								</p>
 							</div>
 						)}
@@ -1081,7 +1081,7 @@ export default function TodolistMainContent({
 											user.themeColor ? "text-[#555]" : "text-gray-400"
 										}
 									>
-										No Easy Todos
+										No Easy To-dos
 									</p>
 								</div>
 							)}
@@ -1125,13 +1125,13 @@ export default function TodolistMainContent({
 											user.themeColor ? "text-[#555]" : "text-gray-400"
 										}
 									>
-										No Hard Todos
+										No Hard To-dos
 									</p>
 								</div>
 							)}
 					</>
 
-					{/* No Todos */}
+					{/* No To-dos */}
 					{filterState.filterCategories !== "Favorites" &&
 						filterState.filterCategories.value !== "Difficulty" &&
 						todoLists.allTodoLists
@@ -1154,7 +1154,7 @@ export default function TodolistMainContent({
 									user.themeColor ? "text-[#555]" : "text-gray-400"
 								}`}
 							>
-								No Todos Found
+								No To-dos Found
 							</p>
 						)}
 
@@ -1177,7 +1177,7 @@ export default function TodolistMainContent({
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
 								>
-									No Completed Todos
+									No Completed To-dos
 								</p>
 							</div>
 						)}
