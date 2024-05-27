@@ -519,16 +519,14 @@ export default function TimelineTodos({
 											onClick={(e) =>
 												todolist.ignoreTodo
 													? null
-													: handleMoreDispatch(
-															"todoDropdown",
-															e.target.textContent
-													  )
+													: handleMoreDispatch("todoDropdown", e.target.name)
 											}
 											className={`px-2 py-1  w-full ${
 												todolist.ignoreTodo
 													? "hover:bg-[#ccc] cursor-not-allowed"
 													: "hover:bg-[#0E51FF] hover:text-white"
 											}`}
+											name="Todo Difficulty"
 										>
 											To-do Difficulty
 										</button>
