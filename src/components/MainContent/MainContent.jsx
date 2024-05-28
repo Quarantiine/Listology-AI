@@ -171,6 +171,46 @@ export default function MainContent() {
 		}
 	}, [showMoreDates]);
 
+	useEffect(() => {
+		const completionPercentage =
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === clickedTodoFolder &&
+						value.userID === auth.currentUser?.uid &&
+						value.completed === true &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length /
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === clickedTodoFolder &&
+						value.userID === auth.currentUser?.uid &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length;
+
+		if (completionPercentage >= 1) {
+			todolistFolders.updatingCompletion(clickedTodoFolder, true);
+			todolistFolders.allTodoFolders
+				.filter(
+					(value) =>
+						value.userID === auth.currentUser.uid &&
+						value.id === clickedTodoFolder
+				)
+				.map((todoFolder) => todoFolder.pinned)
+				.includes(true) &&
+				todolistFolders.updatingPinnedIndicator(clickedTodoFolder, false);
+		}
+
+		if (completionPercentage < 1) {
+			todolistFolders.updatingCompletion(clickedTodoFolder, false);
+		}
+	}, [todolistFolders, clickedTodoFolder]);
+
+	// console.log(clickedTodoFolder);
+
 	return (
 		<>
 			<div
@@ -895,7 +935,7 @@ export default function MainContent() {
 																						: "text-gray-400"
 																				}`}
 																			>
-																				No Folder Called:{" "}
+																				No To-do Folder Called:{" "}
 																				<span className="text-gray-600 italic">
 																					{searchQuery}
 																				</span>
@@ -907,17 +947,88 @@ export default function MainContent() {
 
 														{!searchQuery && (
 															<>
+																{todolistFolders.allTodoFolders
+																	?.filter(
+																		(value) =>
+																			value.userID === auth.currentUser?.uid &&
+																			!value.folderHidden &&
+																			value.pinned &&
+																			value.completed === false
+																	)
+																	?.map((value) => value).length > 0 && (
+																	<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
+																		<h1 className="text-lg text-gray-400">
+																			Pinned To-do Folders
+																		</h1>
+
+																		<div
+																			className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																				todolistFolders.allTodoFolders
+																					?.filter(
+																						(value) =>
+																							value.userID ===
+																								auth.currentUser?.uid &&
+																							!value.folderHidden &&
+																							value.pinned &&
+																							value.completed === false
+																					)
+																					?.map((t) => t).length < 1
+																					? "grid-cols-1"
+																					: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+																			}`}
+																		>
+																			{todolistFolders.allTodoFolders
+																				?.filter(
+																					(value) =>
+																						value.userID ===
+																							auth.currentUser?.uid &&
+																						!value.folderHidden &&
+																						value.pinned &&
+																						value.completed === false
+																				)
+																				?.map((todoFolder) => {
+																					if (
+																						todoFolder.userID ===
+																							auth.currentUser?.uid &&
+																						!todoFolder.folderHidden
+																					) {
+																						return (
+																							<React.Fragment
+																								key={todoFolder.id}
+																							>
+																								<TodoFoldersDashboard
+																									todoFolder={todoFolder}
+																									user={user}
+																									setClickedTodoFolder={
+																										setClickedTodoFolder
+																									}
+																									setClickedFolder={
+																										setClickedFolder
+																									}
+																									auth={auth}
+																									searchQuery={searchQuery}
+																								/>
+																							</React.Fragment>
+																						);
+																					}
+																				})}
+																		</div>
+																	</div>
+																)}
+
 																<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
 																	<h1 className="text-lg text-gray-400">
-																		Uncompleted Folders
+																		Uncompleted To-do Folders
 																	</h1>
+
 																	{todolistFolders.allTodoFolders
 																		?.filter(
 																			(value) =>
 																				value.userID ===
 																					auth.currentUser?.uid &&
 																				!value.folderHidden &&
-																				value.completed === false
+																				value.completed === false &&
+																				!value.pinned
 																		)
 																		?.map((value) => value).length < 1 && (
 																		<p
@@ -938,7 +1049,9 @@ export default function MainContent() {
 																					(value) =>
 																						value.userID ===
 																							auth.currentUser?.uid &&
-																						!value.folderHidden
+																						!value.folderHidden &&
+																						value.completed === false &&
+																						!value.pinned
 																				)
 																				?.map((t) => t).length < 1
 																				? "grid-cols-1"
@@ -951,7 +1064,8 @@ export default function MainContent() {
 																					value.userID ===
 																						auth.currentUser?.uid &&
 																					!value.folderHidden &&
-																					value.completed === false
+																					value.completed === false &&
+																					!value.pinned
 																			)
 																			?.map((todoFolder) => {
 																				if (
@@ -986,12 +1100,13 @@ export default function MainContent() {
 																		(value) =>
 																			value.userID === auth.currentUser?.uid &&
 																			!value.folderHidden &&
-																			value.completed === true
+																			value.completed === true &&
+																			!value.pinned
 																	)
 																	?.map((value) => value).length > 0 && (
 																	<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
 																		<h1 className="text-lg text-gray-400">
-																			Completed Folders
+																			Completed To-do Folders
 																		</h1>
 
 																		<div
@@ -1002,7 +1117,8 @@ export default function MainContent() {
 																							value.userID ===
 																								auth.currentUser?.uid &&
 																							!value.folderHidden &&
-																							value.completed === true
+																							value.completed === true &&
+																							!value.pinned
 																					)
 																					?.map((t) => t).length < 1
 																					? "grid-cols-1"
@@ -1015,7 +1131,8 @@ export default function MainContent() {
 																						value.userID ===
 																							auth.currentUser?.uid &&
 																						!value.folderHidden &&
-																						value.completed === true
+																						value.completed === true &&
+																						!value.pinned
 																				)
 																				?.map((todoFolder) => {
 																					if (

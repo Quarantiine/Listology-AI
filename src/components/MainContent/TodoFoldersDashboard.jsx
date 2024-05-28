@@ -113,7 +113,7 @@ export default function TodoFoldersDashboard({
 		clearTimeout(removePinIndicator.current);
 		todolistFolders.removePin(todoFolder.id);
 
-		setRemovedPinMesg("Pin Removed Successfully from: ");
+		setRemovedPinMesg("Code Removed Successfully from: ");
 
 		removePinIndicator.current = setTimeout(() => {
 			setRemovedPinMesg("");
@@ -155,14 +155,39 @@ export default function TodoFoldersDashboard({
 	};
 
 	useEffect(() => {
-		if (totalCompletionPercentage() >= 1) {
+		const completionPercentage =
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === todoFolder.id &&
+						value.userID === auth.currentUser?.uid &&
+						value.completed === true &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length /
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.folderID === todoFolder.id &&
+						value.userID === auth.currentUser?.uid &&
+						!value.ignoreTodo
+				)
+				?.map((todo) => todo).length;
+
+		if (completionPercentage >= 1) {
 			todolistFolders.updatingCompletion(todoFolder.id, true);
+			todoFolder.pinned &&
+				todolistFolders.updatingPinnedIndicator(todoFolder.id, false);
 		}
 
-		if (totalCompletionPercentage() < 1) {
+		if (completionPercentage < 1) {
 			todolistFolders.updatingCompletion(todoFolder.id, false);
 		}
-	}, [todoFolder, todolistFolders]);
+	}, [todoFolder.completed, todolistFolders, todoFolder.pinned]);
+
+	const handlePinTodoFolder = () => {
+		todolistFolders.updatingPinnedIndicator(todoFolder.id, !todoFolder.pinned);
+	};
 
 	return (
 		<div
@@ -352,20 +377,13 @@ export default function TodoFoldersDashboard({
 						height={30}
 					/>
 					{openMoreModal && (
-						<div className="more-modal absolute top-7 left-0 w-24 h-fit rounded-md overflow-hidden border bg-white text-black text-sm z-10 flex flex-col gap-1 text-start">
-							{todoFolder.pin ? (
+						<div className="more-modal absolute top-7 left-0 w-28 h-fit rounded-md overflow-hidden border bg-white text-black text-sm z-10 flex flex-col gap-1 text-start">
+							{!todoFolder.completed && (
 								<p
-									onClick={handleBeforeRemovingPin}
+									onClick={handlePinTodoFolder}
 									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
 								>
-									Remove Pin
-								</p>
-							) : (
-								<p
-									onClick={handleAddPinModal}
-									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
-								>
-									Add a pin
+									{todoFolder.pinned ? "Unpin" : "Pin to top"}
 								</p>
 							)}
 							<p
@@ -374,6 +392,21 @@ export default function TodoFoldersDashboard({
 							>
 								{todoFolder.folderHidden ? "Show" : "Hide"}
 							</p>
+							{todoFolder.pin ? (
+								<p
+									onClick={handleBeforeRemovingPin}
+									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+								>
+									Remove Code
+								</p>
+							) : (
+								<p
+									onClick={handleAddPinModal}
+									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+								>
+									Add a Code
+								</p>
+							)}
 						</div>
 					)}
 				</button>
@@ -452,7 +485,7 @@ const UnlockingTodoFolderPin = ({
 		if (todoFolder.pin === pin) {
 			handleEnteringTodoFolder();
 		} else {
-			setPinErrorMesg("Wrong Pin");
+			setPinErrorMesg("Wrong Code");
 
 			checkPinRef.current = setTimeout(() => {
 				setPinErrorMesg("");
@@ -493,7 +526,7 @@ const UnlockingTodoFolderPin = ({
 						</div>
 					)}
 					<div className="w-full flex flex-col justify-center items-center gap-1">
-						<h1 className="text-2xl font-semibold">Enter Pin for:</h1>
+						<h1 className="text-2xl font-semibold">Enter Code for:</h1>
 						<h3 className={`text-lg text-[#999]`}>
 							Folder: {todoFolder.folderTitle}
 						</h3>
@@ -527,7 +560,7 @@ const UnlockingTodoFolderPin = ({
 						</button>
 						{showInfo && (
 							<ul className="info-modal-2 absolute top-8 right-0 pl-6 pr-4 py-2 w-fit h-fit rounded-md border bg-white text-black text-sm z-10 flex flex-col justify-center items-center gap-1 list-disc">
-								<li>Pin must be 4 numbers</li>
+								<li>Code must be 4 numbers</li>
 							</ul>
 						)}
 					</form>
@@ -629,7 +662,7 @@ const BeforeRemovingPinModal = ({
 							className="p-1 rounded-md w-full text-white bg-red-500"
 							onClick={handleEmailCheck}
 						>
-							Remove Pin
+							Remove Code
 						</button>
 						<button
 							className="p-1 rounded-md w-full text-white bg-[#0E51FF]"
@@ -712,7 +745,7 @@ const TodoListAddingPinMode = ({
 		if (pin.length == 4 && !checkPin) {
 			todolistFolders.updatingPin(todoFolder.id, pin);
 
-			setPinAddedMesg("Pin Added Successfully to: ");
+			setPinAddedMesg("Code Added Successfully to: ");
 			pinAddedIndicator.current = setTimeout(() => {
 				setPinAddedMesg("");
 			}, 5000);
@@ -764,7 +797,7 @@ const TodoListAddingPinMode = ({
 						</div>
 					)}
 					<div className="w-full flex flex-col justify-center items-center gap-1">
-						<h1 className="text-2xl font-semibold">Add a Pin to:</h1>
+						<h1 className="text-2xl font-semibold">Add a Code to:</h1>
 						<h3 className="text-xl italic">{todoFolder.folderTitle}</h3>
 					</div>
 					<div className="flex justify-center items-center gap-2 relative">
@@ -795,7 +828,7 @@ const TodoListAddingPinMode = ({
 						</button>
 						{showInfo && (
 							<ul className="info-modal absolute top-8 right-0 pl-6 pr-4 py-2 w-fit h-fit rounded-md border bg-white text-black text-sm z-10 flex flex-col justify-center items-center gap-1 list-disc">
-								<li>Pin must be 4 numbers</li>
+								<li>Code must be 4 numbers</li>
 							</ul>
 						)}
 					</div>

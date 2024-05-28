@@ -511,6 +511,13 @@ export default function FirebaseApi() {
 				createdTime: clickTimeStamp,
 			});
 		};
+
+		updatingPinnedIndicator = async (id: string, pinned: boolean) => {
+			const docRef = doc(colRefTodoFolders, id);
+			await updateDoc(docRef, {
+				pinned: pinned || false,
+			});
+		};
 	}
 	const TLFS = new TodolistFolderSystem();
 	const addingTodoFolder = TLFS.addingTodoFolder;
@@ -524,6 +531,7 @@ export default function FirebaseApi() {
 	const removePin = TLFS.removePin;
 	const hideFolder = TLFS.hideFolder;
 	const updatingClickTimeStamp = TLFS.updatingClickTimeStamp;
+	const updatingPinnedIndicator = TLFS.updatingPinnedIndicator;
 
 	class TodoListSystem {
 		constructor() {}
@@ -752,6 +760,7 @@ export default function FirebaseApi() {
 			updatingFolderEmoji,
 			updatingCompletion,
 			updatingClickTimeStamp,
+			updatingPinnedIndicator,
 			deletingTodoFolder,
 			addingTodoFolder,
 			allTodoFolders,
