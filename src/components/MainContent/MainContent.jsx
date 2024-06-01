@@ -261,6 +261,14 @@ export default function MainContent() {
 											})
 									) : (
 										<>
+											<div>
+												Lorem ipsum dolor sit amet consectetur adipisicing elit.
+												Expedita vitae quam dignissimos architecto provident
+												quis eos, quas asperiores molestias quaerat soluta
+												cumque iure, natus minus obcaecati in error nihil
+												molestiae?
+											</div>
+
 											<div
 												className={`flex flex-col justify-start items-start w-full transition-all gap-5`}
 											>
