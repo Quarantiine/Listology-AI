@@ -89,19 +89,6 @@ export default function SubTodos({
 		}, 1000);
 	};
 
-	// const handleDeleteTodo = () => {
-	// 	setDeletedSubTodo(subTodo.todo);
-	// 	clearTimeout(deleteDelay.current);
-
-	// 	handleDeletionInterval();
-
-	// 	deleteDelay.current = setTimeout(() => {
-	// 		clearInterval(deletionSetInterval.current);
-	// 		setDeletedSubTodo("");
-	// 		0todoLists.deletingSubTodo(subTodo.id);
-	// 	}, deleteDelayInterval);
-	// };
-
 	const handleDeleteTodo = () => {
 		todoIndicator.current = subTodo.todo;
 
@@ -214,29 +201,31 @@ export default function SubTodos({
 					subTodo.deletionIndicator
 						? "bg-gradient-to-r from-transparent to-[#ef2b2b51]"
 						: ""
-				}`}
+				} ${todolist.ignoreTodo && "pl-3"}`}
 			>
 				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">
-					<button
-						className="min-w-[18px] max-w-[18px]"
-						onClick={handleCompletedTodo}
-					>
-						<Image
-							className="w-auto h-[20px]"
-							src={
-								subTodo.completed || todolist.completed
-									? "/icons/completed-todo.svg"
-									: user.themeColor
-									? "/icons/checkbox-empty-white.svg"
-									: "/icons/checkbox-empty-black.svg"
-							}
-							alt="checkbox"
-							width={25}
-							height={25}
-						/>
-					</button>
+					{!todolist.ignoreTodo && (
+						<button
+							className={`min-w-[18px] max-w-[18px]`}
+							onClick={handleCompletedTodo}
+						>
+							<Image
+								className={`w-auto h-[20px]`}
+								src={
+									subTodo.completed || todolist.completed
+										? "/icons/completed-todo.svg"
+										: user.themeColor
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
+								}
+								alt="checkbox"
+								width={25}
+								height={25}
+							/>
+						</button>
+					)}
 
 					{openLinkDropdown && extractLink() && (
 						<>

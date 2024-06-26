@@ -104,8 +104,10 @@ export default function MainContent() {
 	};
 
 	const handleClickHiddenFolder = (todoFolder) => {
+		const date = new Date()
 		setClickedFolder(todoFolder.folderName);
 		setClickedTodoFolder(todoFolder.id);
+		todolistFolders.updatingClickTimeStamp(todoFolder.id, date)
 	};
 
 	const handleImportantTodoDropDown = () => {

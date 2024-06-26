@@ -37,7 +37,7 @@ export default function Misc({ user, handleNavigator }) {
 				} ${
 					navState.navigatorLink === "Settings"
 						? "mb-auto h-full"
-						: "mt-auto border-t-2"
+						: "border-t-2"
 				}`}
 			>
 				<div
@@ -95,24 +95,6 @@ export default function Misc({ user, handleNavigator }) {
 					<button onClick={handleSigningOut} className="base-btn mb-3">
 						Logout
 					</button>
-					{/* <div className="flex justify-between items-center gap-2">
-						<p
-							className={`line-clamp-1 ${
-								user.themeColor ? "text-white" : "text-black"
-							}`}
-						>
-							{user.username}
-						</p>
-						{user.profileImage && (
-							<Image
-								className="min-w-[25px] max-w-[25px]  min-h-[25px] max-h-[25px] rounded-full object-cover object-center"
-								src={user.profileImage}
-								alt="undo"
-								width={30}
-								height={30}
-							/>
-						)}
-					</div> */}
 				</div>
 			</div>
 		</>

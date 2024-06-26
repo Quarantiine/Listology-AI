@@ -377,12 +377,24 @@ export default function TodolistMainContent({
 					)
 					?.map((todolist) => ` - ${todolist.todo}`);
 
+		const ignoredTodos = todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.userID &&
+					auth.currentUser.uid &&
+					todolistFolder.id === value.folderID &&
+					value.ignoreTodo
+			)
+			?.map((todolist) => ` - ${todolist.todo}`);
+
 		completedTodos
 			? navigator.clipboard.writeText(
 					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`
 			  )
 			: navigator.clipboard.writeText(
-					`To-dos (${todosLength}):\n\n ${todos.toString()}`
+					`To-dos (${todosLength}):\n\n ${todos.toString()} \n\nIgnored Todos (${
+						ignoredTodos.length
+					}):\n\n ${ignoredTodos.toString()}`
 			  );
 	};
 

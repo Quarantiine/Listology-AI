@@ -17,7 +17,7 @@ export default function Folders({ handleCloseSidebar }) {
 		<>
 			{navState.navigatorLink !== "Settings" && (
 				<div
-					className={`border-t-2 transition-colors duration-300 py-4 folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-5 ${
+					className={`transition-colors duration-300 py-4 folders-overflow w-full relative overflow-y-scroll overflow-x-hidden flex flex-col gap-5 ${
 						user.themeColor
 							? "border-[#333] text-white"
 							: "border-gray-200 text-black"

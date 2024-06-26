@@ -1,4 +1,6 @@
 {
 	"cSpell.words": ["favorited", "Listology"],
-	"reactSnippets.settings.prettierEnabled": true
+	"reactSnippets.settings.prettierEnabled": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }

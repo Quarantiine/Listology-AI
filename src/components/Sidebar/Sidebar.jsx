@@ -5,6 +5,7 @@ import Folders from "./Folders";
 import TodolistSidebar from "./TodolistSidebar";
 import Misc from "./Misc";
 import Image from "next/image";
+import SavedLinks from "./SavedLinks";
 
 export default function Sidebar({ navState, navDispatch }) {
 	const { user } = useContext(UserCredentialCtx);
@@ -83,6 +84,8 @@ export default function Sidebar({ navState, navDispatch }) {
 							</button>
 						</div>
 					)}
+
+					{navState.navigatorLink !== "Settings" && <SavedLinks user={user} />}
 
 					<Misc user={user} handleNavigator={handleNavigator} />
 				</div>

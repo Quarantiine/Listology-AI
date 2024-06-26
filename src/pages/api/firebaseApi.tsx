@@ -81,6 +81,12 @@ const queSubTodoLists: Query = query(
 	orderBy("createdTime")
 );
 
+const colRefPersonalURLs: CollectionReference = collection(db, "urls", "");
+const quePersonalURLs: Query = query(
+	colRefPersonalURLs,
+	orderBy("createdTime")
+);
+
 // ==================
 
 export default function FirebaseApi() {
@@ -95,6 +101,7 @@ export default function FirebaseApi() {
 	const [allFolders, setAllFolders] = useState<any>();
 	const [allTodoFolders, setAllTodoFolders] = useState<any>();
 	const [allSubTodos, setAllSubTodos] = useState<any>();
+	const [allPersonalURLs, setPersonalURLs] = useState<any>();
 
 	// Registration System ======
 	useEffect(() => {
@@ -164,6 +171,21 @@ export default function FirebaseApi() {
 
 			ss.docs.map((doc) => {
 				subTodos.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+		});
+	}, []);
+
+	// Personal URL System ======
+	useEffect(() => {
+		onSnapshot(quePersonalURLs, (ss) => {
+			const personalURLs: any = [];
+			setPersonalURLs(personalURLs);
+
+			ss.docs.map((doc) => {
+				personalURLs.unshift({
 					...doc.data(),
 					id: doc.id,
 				});
@@ -723,6 +745,28 @@ export default function FirebaseApi() {
 	const updatingDeletionIndicator = TLS.updatingDeletionIndicator;
 	const updatingSubTodoDeletionIndicator = TLS.updatingSubTodoDeletionIndicator;
 
+	class PersonalURLsSystem {
+		constructor() {}
+
+		addURL = async (url: string, title: string) => {
+			addDoc(colRefPersonalURLs, {
+				url: url,
+				title: title,
+				uid: auth.currentUser.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		deleteURL = async (id: string) => {
+			const docRef = doc(colRefPersonalURLs, id);
+			await deleteDoc(docRef);
+		};
+	}
+
+	const PURLsS = new PersonalURLsSystem();
+	const addURL = PURLsS.addURL;
+	const deleteURL = PURLsS.deleteURL;
+
 	return {
 		auth,
 		registration: {
@@ -790,6 +834,12 @@ export default function FirebaseApi() {
 			updatingTodoCompletionDates,
 			updatingDeletionIndicator,
 			updatingSubTodoDeletionIndicator,
+		},
+
+		personalURLsSystem: {
+			allPersonalURLs,
+			addURL,
+			deleteURL,
 		},
 	};
 }
