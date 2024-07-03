@@ -203,7 +203,7 @@ export default function SubTodos({
 						: ""
 				} ${todolist.ignoreTodo && "pl-3"}`}
 			>
-				<div className={`absolute top-0 left-0 w-1 h-full bg-[#0E51FF]`} />
+				<div className={`absolute top-0 -left-1 w-1 h-full text-3xl`}>•</div>
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">
 					{!todolist.ignoreTodo && (
