@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import Image from "next/image";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -45,6 +51,7 @@ export default function TodolistMainContent({
 	const [subTodoSearchInput, setSubTodoSearchInput] = useState("");
 	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
 	const [deleteCompletedTodo, setDeleteCompletedTodo] = useState(false);
+	const [deletionLoad, setDeletionLoad] = useState(false);
 	const windowWidthCheckRef = useRef();
 
 	const handleWindowWidth = () => {
@@ -76,7 +83,8 @@ export default function TodolistMainContent({
 		};
 
 		document.addEventListener("mousedown", closeEmojiDropdown);
-		return () => document.removeEventListener("mousedown", closeEmojiDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeEmojiDropdown);
 	}, [editFolderEmoji]);
 
 	const handleActivateFolderTitleEdit = (e) => {
@@ -87,7 +95,10 @@ export default function TodolistMainContent({
 	const handleFolderTitleEdit = (e) => {
 		e.preventDefault();
 		if (editFolderTitle.length > 0) {
-			todolistFolders.updatingFolderTitle(todolistFolder.id, editFolderTitle);
+			todolistFolders.updatingFolderTitle(
+				todolistFolder.id,
+				editFolderTitle,
+			);
 			setEditFolderTitleMode(false);
 			setEditFolderTitle("");
 		}
@@ -112,7 +123,7 @@ export default function TodolistMainContent({
 		if (editFolderDescription) {
 			todolistFolders.updatingFolderDescription(
 				todolistFolder.id,
-				editFolderDescription
+				editFolderDescription,
 			);
 			setEditFolderDescriptionMode(false);
 			setEditFolderDescription("");
@@ -128,10 +139,10 @@ export default function TodolistMainContent({
 				?.filter(
 					(value) =>
 						value.folderName === clickedFolder &&
-						value.userID === auth.currentUser?.uid
+						value.userID === auth.currentUser?.uid,
 				)
 				.slice(0, 1)
-				?.map((folder) => folder.folderName)
+				?.map((folder) => folder.folderName),
 		);
 	};
 
@@ -169,19 +180,21 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
-					value.folderID === clickedTodoFolder
+					value.folderID === clickedTodoFolder,
 			)
-			?.map((todo) => todoLists.updatingTodoMainFolder(todo.id, [folderName]));
+			?.map((todo) =>
+				todoLists.updatingTodoMainFolder(todo.id, [folderName]),
+			);
 
 		todoLists.allSubTodos
 			?.filter(
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
-					value.folderID === clickedTodoFolder
+					value.folderID === clickedTodoFolder,
 			)
 			?.map((subTodo) =>
-				todoLists.updatingSubTodoMainFolder(subTodo.id, [folderName])
+				todoLists.updatingSubTodoMainFolder(subTodo.id, [folderName]),
 			);
 	};
 
@@ -211,7 +224,7 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID == auth.currentUser?.uid &&
 					value.completed === true &&
-					value.folderID === clickedTodoFolder
+					value.folderID === clickedTodoFolder,
 			)
 			.map((todos) => {
 				todoLists.allSubTodos
@@ -219,15 +232,31 @@ export default function TodolistMainContent({
 						(value) =>
 							value.todoID === todos.id &&
 							value.folderID === clickedTodoFolder &&
-							auth.currentUser?.uid === value.userID
+							auth.currentUser?.uid === value.userID,
 					)
 					?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
 				return todoLists.deletingTodolist(todos.id);
 			});
 
-		setDeleteCompletedTodo(false);
+		setDeletionLoad(true);
 	};
+
+	useEffect(() => {
+		if (
+			todoLists.allTodoLists
+				?.filter(
+					(value) =>
+						value.userID == auth.currentUser?.uid &&
+						value.completed === true &&
+						value.folderID === clickedTodoFolder,
+				)
+				?.map((todos) => todos) < 1
+		) {
+			setDeleteCompletedTodo(false);
+			setDeletionLoad(false);
+		}
+	});
 
 	const handleDeleteCompletedTodo = () => {
 		setDeleteCompletedTodo(!deleteCompletedTodo);
@@ -265,7 +294,7 @@ export default function TodolistMainContent({
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
 						value.folderID === clickedTodoFolder &&
-						value.completed === true
+						value.completed === true,
 				)
 				?.map((todo) => todo).length
 		}/${
@@ -274,7 +303,7 @@ export default function TodolistMainContent({
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
 						value.folderID === clickedTodoFolder &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todo) => todo).length
 		}`;
@@ -285,7 +314,7 @@ export default function TodolistMainContent({
 			?.filter(
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
-					value.folderID === clickedTodoFolder
+					value.folderID === clickedTodoFolder,
 			)
 			.map((subTodo) => subTodo).length;
 	};
@@ -316,7 +345,7 @@ export default function TodolistMainContent({
 						value.folderID === clickedTodoFolder &&
 						value.mainFolder[0] === clickedFolder &&
 						value.completed &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todolist) => todolist).length /
 			todoLists.allTodoLists
@@ -325,7 +354,7 @@ export default function TodolistMainContent({
 						value.userID === auth.currentUser.uid &&
 						value.folderID === clickedTodoFolder &&
 						value.mainFolder[0] === clickedFolder &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todolist) => todolist).length;
 
@@ -340,7 +369,7 @@ export default function TodolistMainContent({
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
 					!value.completed &&
-					!value.ignoreTodo
+					!value.ignoreTodo,
 			)
 			?.map((todolist) => todolist).length;
 
@@ -351,7 +380,7 @@ export default function TodolistMainContent({
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
 					value.completed &&
-					!value.ignoreTodo
+					!value.ignoreTodo,
 			)
 			?.map((todolist) => todolist).length;
 
@@ -363,7 +392,7 @@ export default function TodolistMainContent({
 							auth.currentUser.uid &&
 							todolistFolder.id === value.folderID &&
 							value.completed &&
-							!value.ignoreTodo
+							!value.ignoreTodo,
 					)
 					?.map((todolist) => ` - ${todolist.todo}`)
 			: todoLists.allTodoLists
@@ -373,7 +402,7 @@ export default function TodolistMainContent({
 							auth.currentUser.uid &&
 							todolistFolder.id === value.folderID &&
 							!value.completed &&
-							!value.ignoreTodo
+							!value.ignoreTodo,
 					)
 					?.map((todolist) => ` - ${todolist.todo}`);
 
@@ -383,19 +412,19 @@ export default function TodolistMainContent({
 					value.userID &&
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
-					value.ignoreTodo
+					value.ignoreTodo,
 			)
 			?.map((todolist) => ` - ${todolist.todo}`);
 
 		completedTodos
 			? navigator.clipboard.writeText(
-					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`
-			  )
+					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`,
+				)
 			: navigator.clipboard.writeText(
 					`To-dos (${todosLength}):\n\n ${todos.toString()} \n\nIgnored Todos (${
 						ignoredTodos.length
-					}):\n\n ${ignoredTodos.toString()}`
-			  );
+					}):\n\n ${ignoredTodos.toString()}`,
+				);
 	};
 
 	return (
@@ -436,16 +465,22 @@ export default function TodolistMainContent({
 								{folders.allFolders
 									?.filter(
 										(value) =>
-											value.folderName === clickedFolder &&
-											value.userID === auth.currentUser?.uid
+											value.folderName ===
+												clickedFolder &&
+											value.userID ===
+												auth.currentUser?.uid,
 									)
 									.slice(0, 1)
 									?.map((folder) => (
-										<div className="relative text-black" key={folder.id}>
+										<div
+											className="relative text-black"
+											key={folder.id}
+										>
 											{openTransferDropdown && (
 												<div className="transfer-dropdown absolute top-6 left-0 min-w-[144px] h-fit px-3 py-2 bg-white rounded-md border z-10 text-sm flex flex-col justify-center items-start gap-2">
 													<h1 className="font-bold max-w-[100%] w-44">
-														Transfer To-do Folder to:
+														Transfer To-do Folder
+														to:
 													</h1>
 													<div className="flex flex-col justify-center items-start gap-0">
 														<p className="text-sm text-[#aaa] font-semibold">
@@ -454,26 +489,40 @@ export default function TodolistMainContent({
 														{folders.allFolders
 															.filter(
 																(value) =>
-																	value.folderName !== folder.folderName &&
-																	value.userID === auth.currentUser?.uid
+																	value.folderName !==
+																		folder.folderName &&
+																	value.userID ===
+																		auth
+																			.currentUser
+																			?.uid,
 															)
 															.map((folders) => {
 																return (
-																	<React.Fragment key={folders.id}>
+																	<React.Fragment
+																		key={
+																			folders.id
+																		}
+																	>
 																		<button
 																			className="text-btn text-start flex justify-start items-start"
-																			onClick={(e) => {
+																			onClick={(
+																				e,
+																			) => {
 																				handleTransferTodoFolder(
 																					e,
-																					folders.folderName
+																					folders.folderName,
 																				);
 																			}}
 																		>
 																			<p
 																				className="line-clamp-1"
-																				title={folders.folderName}
+																				title={
+																					folders.folderName
+																				}
 																			>
-																				{folders.folderName}
+																				{
+																					folders.folderName
+																				}
 																			</p>
 																		</button>
 																	</React.Fragment>
@@ -483,24 +532,36 @@ export default function TodolistMainContent({
 														{folders.allFolders
 															.filter(
 																(value) =>
-																	value.userID === auth.currentUser?.uid &&
-																	value.folderName !== folder.folderName
+																	value.userID ===
+																		auth
+																			.currentUser
+																			?.uid &&
+																	value.folderName !==
+																		folder.folderName,
 															)
-															.map((folders) => folders).length < 1 && (
+															.map(
+																(folders) =>
+																	folders,
+															).length < 1 && (
 															<p className="text-[#bbb]">
-																No Folders to Transfer
+																No Folders to
+																Transfer
 															</p>
 														)}
 													</div>
 												</div>
 											)}
 											<div
-												onClick={handleTransferTodoFolderDropdown}
+												onClick={
+													handleTransferTodoFolderDropdown
+												}
 												className="transfer-dropdown text-btn flex justify-center items-center gap-2 relative"
 											>
 												<h3
 													className={`text-sm ${
-														user.themeColor ? "text-[#555]" : "text-gray-400"
+														user.themeColor
+															? "text-[#555]"
+															: "text-gray-400"
 													}`}
 												>
 													Transfer
@@ -516,14 +577,22 @@ export default function TodolistMainContent({
 													? "text-white bg-[#333]"
 													: "text-black bg-gray-200"
 											}`}
-											onChange={(e) => setEditFolderTitle(e.target.value)}
+											onChange={(e) =>
+												setEditFolderTitle(
+													e.target.value,
+												)
+											}
 											type="text"
 											name="folder-title"
-											placeholder={todolistFolder.folderTitle}
+											placeholder={
+												todolistFolder.folderTitle
+											}
 										/>
 									) : (
 										<h1
-											onClick={handleActivateFolderTitleEdit}
+											onClick={
+												handleActivateFolderTitleEdit
+											}
 											title={todolistFolder.folderTitle}
 											className="text-2xl font-semibold line-clamp-2 text-btn"
 										>
@@ -541,7 +610,9 @@ export default function TodolistMainContent({
 												change
 											</button>
 											<button
-												onClick={handleActivateFolderTitleEdit}
+												onClick={
+													handleActivateFolderTitleEdit
+												}
 												className="base-btn !bg-red-500"
 											>
 												cancel
@@ -556,12 +627,13 @@ export default function TodolistMainContent({
 								<>
 									<div className="widow-width-warning fixed top-0 left-0 w-full h-fit px-2 py-3 flex justify-center items-center text-white bg-yellow-600 z-50 text-center">
 										<p>
-											{user.username}, you can only add emojis on devices with a
-											width of {'"455"'} or higher
+											{user.username}, you can only add
+											emojis on devices with a width of{" "}
+											{'"455"'} or higher
 										</p>
 									</div>
 								</>,
-								document.body
+								document.body,
 							)}
 						{!editFolderTitleMode && (
 							<div className="relative">
@@ -582,7 +654,12 @@ export default function TodolistMainContent({
 								</button>
 								{editFolderEmoji && (
 									<div className="emoji-dropdown absolute top-[56px] right-0 z-10">
-										<Picker data={data} onEmojiSelect={handleFolderEmojiEdit} />
+										<Picker
+											data={data}
+											onEmojiSelect={
+												handleFolderEmojiEdit
+											}
+										/>
 									</div>
 								)}
 							</div>
@@ -596,7 +673,9 @@ export default function TodolistMainContent({
 										? "text-white bg-[#333]"
 										: "text-black bg-gray-200"
 								}`}
-								onChange={(e) => setEditFolderDescription(e.target.value)}
+								onChange={(e) =>
+									setEditFolderDescription(e.target.value)
+								}
 								type="text"
 								name="folder-description"
 								placeholder={todolistFolder.folderDescription}
@@ -609,7 +688,9 @@ export default function TodolistMainContent({
 									change
 								</button>
 								<button
-									onClick={handleActivateFolderDescriptionEdit}
+									onClick={
+										handleActivateFolderDescriptionEdit
+									}
 									className="base-btn !bg-red-500"
 								>
 									cancel
@@ -675,7 +756,11 @@ export default function TodolistMainContent({
 									<div className="hidden md:flex justify-center items-center gap-1 relative h-fit w-full">
 										<input
 											type="text"
-											onChange={(e) => setTodoSearchInput(e.target.value)}
+											onChange={(e) =>
+												setTodoSearchInput(
+													e.target.value,
+												)
+											}
 											value={todoSearchInput}
 											placeholder="Search To-dos"
 											className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
@@ -691,7 +776,8 @@ export default function TodolistMainContent({
 										>
 											<Image
 												className={`w-auto h-[9px] ${
-													subSearchDropdown && "rotate-180"
+													subSearchDropdown &&
+													"rotate-180"
 												}`}
 												src={
 													user.themeColor
@@ -712,10 +798,14 @@ export default function TodolistMainContent({
 							>
 								<input
 									type="text"
-									onChange={(e) => setTodoSearchInput(e.target.value)}
+									onChange={(e) =>
+										setTodoSearchInput(e.target.value)
+									}
 									placeholder="Search To-dos"
 									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
-										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+										user.themeColor
+											? "bg-[#333] border-[#555]"
+											: "bg-[#eee]"
 									}`}
 								/>
 
@@ -743,16 +833,22 @@ export default function TodolistMainContent({
 							<div className="flex z-10 justify-end items-center gap-2 w-full absolute top-9 left-0">
 								<input
 									type="text"
-									onChange={(e) => setSubTodoSearchInput(e.target.value)}
+									onChange={(e) =>
+										setSubTodoSearchInput(e.target.value)
+									}
 									placeholder="Search Sub To-dos"
 									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
-										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
+										user.themeColor
+											? "bg-[#333] border-[#555]"
+											: "bg-[#eee]"
 									}`}
 								/>
 
 								<div
 									className={`flex justify-center items-center absolute top-1/2 -translate-y-1/2 w-7 h-7 rounded-r-md ${
-										user.themeColor ? "bg-[#444]" : "bg-[#ddd]"
+										user.themeColor
+											? "bg-[#444]"
+											: "bg-[#ddd]"
 									}`}
 								></div>
 							</div>
@@ -783,8 +879,8 @@ export default function TodolistMainContent({
 									? "border border-[#0E51FF] text-white"
 									: "text-btn bg-[#0E51FF] text-white"
 								: completedTodos
-								? "border border-[#0E51FF] text-[#0E51FF]"
-								: "text-btn bg-[#0E51FF] text-white"
+									? "border border-[#0E51FF] text-[#0E51FF]"
+									: "text-btn bg-[#0E51FF] text-white"
 						}`}
 					>
 						<p>Completed To-dos</p>
@@ -810,7 +906,8 @@ export default function TodolistMainContent({
 					>
 						<h1 className="text-2xl font-semibold line-clamp-1 flex justify-start items-center gap-2">
 							<span>
-								{totalTodos()} {totalTodos() === 1 ? "To-do" : "To-dos"}
+								{totalTodos()}{" "}
+								{totalTodos() === 1 ? "To-do" : "To-dos"}
 							</span>
 						</h1>
 						<h3 className="text-[12px] font-light line-clamp-1">
@@ -830,31 +927,54 @@ export default function TodolistMainContent({
 
 						{deleteCompletedTodo &&
 							createPortal(
-								<div className="bg-[rgba(0,0,0,0.7)] z-50 flex justify-center items-center w-full h-full top-0 left-0 absolute text-center px-10">
+								<div className="delete-completed-todos bg-[rgba(0,0,0,0.7)] z-50 flex justify-center items-center w-full h-full top-0 left-0 absolute text-center px-10">
 									<div className="delete-completed-todos w-fit h-fit p-6 bg-white rounded-md flex flex-col justify-center items-center gap-3">
+										{deletionLoad && (
+											<p className="text-white bg-red-500 px-2 py-1 rounded-lg w-full text-center">
+												Deleting Todos...Please Wait
+											</p>
+										)}
 										<div className="flex flex-col justify-center items-center gap-2">
 											<h1 className="text-2xl font-semibold">
 												Are you sure you want to delete?
 											</h1>
-											<p>Your completed to-do category will be gone forever</p>
+											<p>
+												Your completed to-do category
+												will be gone forever
+											</p>
 										</div>
 										<div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full">
-											<button
-												onClick={handleDeleteAll}
-												className="px-2 py-1 rounded-md bg-red-500 w-full text-white"
-											>
-												Delete All
-											</button>
-											<button
-												onClick={handleDeleteCompletedTodo}
-												className="px-2 py-1 rounded-md bg-[#0E51FF] w-full text-white"
-											>
-												Cancel
-											</button>
+											{deletionLoad ? (
+												<button className="px-2 py-1 rounded-md !bg-gray-500 cursor-not-allowed w-full text-white">
+													Delete All
+												</button>
+											) : (
+												<button
+													onClick={handleDeleteAll}
+													className="px-2 py-1 rounded-md bg-red-500 w-full text-white"
+												>
+													Delete All
+												</button>
+											)}
+
+											{deletionLoad ? (
+												<button className="px-2 py-1 rounded-md !bg-gray-500 w-full text-white cursor-not-allowed">
+													Cancel
+												</button>
+											) : (
+												<button
+													onClick={
+														handleDeleteCompletedTodo
+													}
+													className="px-2 py-1 rounded-md bg-[#0E51FF] w-full text-white"
+												>
+													Cancel
+												</button>
+											)}
 										</div>
 									</div>
 								</div>,
-								document.body
+								document.body,
 							)}
 					</>
 				)}
@@ -868,14 +988,18 @@ export default function TodolistMainContent({
 								<div className="flex justify-start items-center gap-1">
 									<p
 										className={`text-lg font-semibold ${
-											user.themeColor ? "text-[#555]" : "text-gray-400"
+											user.themeColor
+												? "text-[#555]"
+												: "text-gray-400"
 										}`}
 									>
 										{filterState.filterCategories.value}:
 									</p>
 									<p
 										className={`text-lg font-semibold ${
-											user.themeColor ? "text-[#555]" : "text-gray-400"
+											user.themeColor
+												? "text-[#555]"
+												: "text-gray-400"
 										}`}
 									>
 										{filterState.filterCategories.value2}
@@ -894,7 +1018,9 @@ export default function TodolistMainContent({
 							<div className="w-full flex justify-start items-center gap-2">
 								<p
 									className={`text-xl font-semibold ${
-										user.themeColor ? "text-[#555]" : "text-gray-400"
+										user.themeColor
+											? "text-[#555]"
+											: "text-gray-400"
 									}`}
 								>
 									{filterState.filterCategories}
@@ -906,46 +1032,57 @@ export default function TodolistMainContent({
 												(value) =>
 													value.userID &&
 													auth.currentUser.uid &&
-													todolistFolder.id === value.folderID &&
-													value.completed
+													todolistFolder.id ===
+														value.folderID &&
+													value.completed,
 											)
-											?.map((todolist) => todolist).length > 1 && (
+											?.map((todolist) => todolist)
+											.length > 1 && (
 											<button
 												onClick={handleCopyAll}
 												className={`text-btn text-sm ${
-													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
+													user.themeColor
+														? "text-[#999]"
+														: "text-[#a9a9a9]"
 												}`}
 											>
 												Copy All To-dos
 											</button>
-									  )
+										)
 									: todoLists.allTodoLists
 											?.filter(
 												(value) =>
 													value.userID &&
 													auth.currentUser.uid &&
-													todolistFolder.id === value.folderID &&
-													!value.completed
+													todolistFolder.id ===
+														value.folderID &&
+													!value.completed,
 											)
-											?.map((todolist) => todolist).length > 1 && (
+											?.map((todolist) => todolist)
+											.length > 1 && (
 											<button
 												onClick={handleCopyAll}
 												className={`text-btn text-sm ${
-													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
+													user.themeColor
+														? "text-[#999]"
+														: "text-[#a9a9a9]"
 												}`}
 											>
 												Copy All To-dos
 											</button>
-									  )}
+										)}
 
 								{filterState.filterCategories === "All" && (
 									<>
 										{totalCompletionPercentage() ? (
 											<>
-												{totalCompletionPercentage() >= 1 ? (
+												{totalCompletionPercentage() >=
+												1 ? (
 													<p
 														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+															user.themeColor
+																? "text-[#666]"
+																: "text-[#9CA3AF]"
 														}`}
 													>
 														{totalCompletionPercentage()
@@ -959,7 +1096,9 @@ export default function TodolistMainContent({
 														.includes("0") ? (
 													<p
 														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+															user.themeColor
+																? "text-[#666]"
+																: "text-[#9CA3AF]"
 														}`}
 													>
 														{totalCompletionPercentage()
@@ -970,7 +1109,9 @@ export default function TodolistMainContent({
 												) : (
 													<p
 														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+															user.themeColor
+																? "text-[#666]"
+																: "text-[#9CA3AF]"
 														}`}
 													>
 														{totalCompletionPercentage()
@@ -985,7 +1126,9 @@ export default function TodolistMainContent({
 											<>
 												<p
 													className={`text-base font-normal ml-auto ${
-														user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+														user.themeColor
+															? "text-[#666]"
+															: "text-[#9CA3AF]"
 													}`}
 												>
 													No To-dos Completed
@@ -1034,12 +1177,14 @@ export default function TodolistMainContent({
 
 					{/* Difficulty Main */}
 					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser?.uid)
+						?.filter(
+							(value) => value.userID === auth.currentUser?.uid,
+						)
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
 								todolist.completed === false &&
-								!todolist.ignoreTodo
+								!todolist.ignoreTodo,
 						)
 						.includes(true) &&
 						!completedTodos &&
@@ -1047,7 +1192,11 @@ export default function TodolistMainContent({
 						filterState.filterCategories.value2 === "" && (
 							<div className="flex flex-col justify-start items-start gap-3 w-full">
 								<p
-									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+									className={
+										user.themeColor
+											? "text-[#555]"
+											: "text-gray-400"
+									}
 								>
 									No To-dos
 								</p>
@@ -1056,18 +1205,24 @@ export default function TodolistMainContent({
 
 					{/* Favorites */}
 					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser?.uid)
+						?.filter(
+							(value) => value.userID === auth.currentUser?.uid,
+						)
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
 								todolist.favorited === true &&
-								todolist.completed === false
+								todolist.completed === false,
 						)
 						.includes(true) &&
 						filterState.filterCategories === "Favorites" && (
 							<div className="flex flex-col justify-start items-start gap-3 w-full">
 								<p
-									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+									className={
+										user.themeColor
+											? "text-[#555]"
+											: "text-gray-400"
+									}
 								>
 									No Favorited To-dos
 								</p>
@@ -1077,20 +1232,26 @@ export default function TodolistMainContent({
 					<>
 						{/* Difficulties */}
 						{!todoLists.allTodoLists
-							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser?.uid,
+							)
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
 									todolist.difficulty === "Easy" &&
-									todolist.completed === false
+									todolist.completed === false,
 							)
 							.includes(true) &&
-							filterState.filterCategories.value === "Difficulty" &&
+							filterState.filterCategories.value ===
+								"Difficulty" &&
 							filterState.filterCategories.value2 === "Easy" && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={
-											user.themeColor ? "text-[#555]" : "text-gray-400"
+											user.themeColor
+												? "text-[#555]"
+												: "text-gray-400"
 										}
 									>
 										No Easy To-dos
@@ -1099,20 +1260,27 @@ export default function TodolistMainContent({
 							)}
 
 						{!todoLists.allTodoLists
-							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser?.uid,
+							)
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
 									todolist.difficulty === "Intermediate" &&
-									todolist.completed === false
+									todolist.completed === false,
 							)
 							.includes(true) &&
-							filterState.filterCategories.value === "Difficulty" &&
-							filterState.filterCategories.value2 === "Intermediate" && (
+							filterState.filterCategories.value ===
+								"Difficulty" &&
+							filterState.filterCategories.value2 ===
+								"Intermediate" && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={
-											user.themeColor ? "text-[#555]" : "text-gray-400"
+											user.themeColor
+												? "text-[#555]"
+												: "text-gray-400"
 										}
 									>
 										No Intermediate Todos
@@ -1121,20 +1289,26 @@ export default function TodolistMainContent({
 							)}
 
 						{!todoLists.allTodoLists
-							?.filter((value) => value.userID === auth.currentUser?.uid)
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser?.uid,
+							)
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
 									todolist.difficulty === "Hard" &&
-									todolist.completed === false
+									todolist.completed === false,
 							)
 							.includes(true) &&
-							filterState.filterCategories.value === "Difficulty" &&
+							filterState.filterCategories.value ===
+								"Difficulty" &&
 							filterState.filterCategories.value2 === "Hard" && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={
-											user.themeColor ? "text-[#555]" : "text-gray-400"
+											user.themeColor
+												? "text-[#555]"
+												: "text-gray-400"
 										}
 									>
 										No Hard To-dos
@@ -1157,13 +1331,17 @@ export default function TodolistMainContent({
 										.normalize("NFD")
 										.replace(/\p{Diacritic}/gu, "")
 										.toLowerCase()
-										.includes(todoSearchInput.toLowerCase())
+										.includes(
+											todoSearchInput.toLowerCase(),
+										),
 							)
 							?.map((todolist) => todolist).length < 1 &&
 						!completedTodos && (
 							<p
 								className={`${
-									user.themeColor ? "text-[#555]" : "text-gray-400"
+									user.themeColor
+										? "text-[#555]"
+										: "text-gray-400"
 								}`}
 							>
 								No To-dos Found
@@ -1172,7 +1350,9 @@ export default function TodolistMainContent({
 
 					{/* No Completed Todos */}
 					{!todoLists.allTodoLists
-						?.filter((value) => value.userID === auth.currentUser?.uid)
+						?.filter(
+							(value) => value.userID === auth.currentUser?.uid,
+						)
 						?.map(
 							(todolist) =>
 								todolist.folderID === clickedTodoFolder &&
@@ -1181,13 +1361,17 @@ export default function TodolistMainContent({
 									.normalize("NFD")
 									.replace(/\p{Diacritic}/gu, "")
 									.toLowerCase()
-									.includes(todoSearchInput.toLowerCase())
+									.includes(todoSearchInput.toLowerCase()),
 						)
 						.includes(true) &&
 						completedTodos && (
 							<div className="flex flex-col justify-start items-start gap-3 w-full">
 								<p
-									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
+									className={
+										user.themeColor
+											? "text-[#555]"
+											: "text-gray-400"
+									}
 								>
 									No Completed To-dos
 								</p>

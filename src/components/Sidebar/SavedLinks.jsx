@@ -42,7 +42,8 @@ export default function SavedLinks({ user }) {
 		};
 
 		document.addEventListener("mousedown", closeSaveLinkModal);
-		return () => document.removeEventListener("mousedown", closeSaveLinkModal);
+		return () =>
+			document.removeEventListener("mousedown", closeSaveLinkModal);
 	}, []);
 
 	const handleURL = (e) => {
@@ -100,9 +101,13 @@ export default function SavedLinks({ user }) {
 
 									<div className="flex flex-col justify-center items-start w-full">
 										<div className="flex justify-between items-center gap-1 w-full">
-											<h1 className="text-lg font-bold">Add URL</h1>
+											<h1 className="text-lg font-bold">
+												Add URL
+											</h1>
 											<button
-												onClick={handleOpenSaveLinkModal}
+												onClick={
+													handleOpenSaveLinkModal
+												}
 												className="saved-links-modal text-btn"
 											>
 												<Image
@@ -115,7 +120,9 @@ export default function SavedLinks({ user }) {
 											</button>
 										</div>
 
-										<p className="text-sm text-gray-500">Must be a valid URL</p>
+										<p className="text-sm text-gray-500">
+											Must be a valid URL
+										</p>
 									</div>
 
 									<form className="flex flex-col gap-2 justify-center items-center w-full">
@@ -124,7 +131,9 @@ export default function SavedLinks({ user }) {
 											placeholder="Google"
 											type="text"
 											name="title"
-											onChange={(e) => setURLTitle(e.target.value)}
+											onChange={(e) =>
+												setURLTitle(e.target.value)
+											}
 										/>
 
 										<input
@@ -132,17 +141,22 @@ export default function SavedLinks({ user }) {
 											placeholder="https://google.com"
 											type="url"
 											name="link"
-											onChange={(e) => setURLText(e.target.value)}
+											onChange={(e) =>
+												setURLText(e.target.value)
+											}
 										/>
 
-										<button className="base-btn w-full" onClick={handleURL}>
+										<button
+											className="base-btn w-full"
+											onClick={handleURL}
+										>
 											Add URL
 										</button>
 									</form>
 								</div>
 							</div>
 						</>,
-						document.body
+						document.body,
 					)}
 
 				{openSavedLinks && (
@@ -152,7 +166,7 @@ export default function SavedLinks({ user }) {
 
 							<button
 								onClick={handleOpenSaveLinkModal}
-								className="saved-links-modal text-btn"
+								className="saved-links-modal text-btn hidden sm:block"
 							>
 								<Image
 									className="rotate-45"
@@ -168,16 +182,26 @@ export default function SavedLinks({ user }) {
 
 						<div className="flex flex-col justify-center items-start mt-2">
 							{personalURLsSystem.allPersonalURLs
-								.filter((value) => value.uid === auth.currentUser.uid)
-								.map((personalURL) => personalURL).length > 0 ? (
+								.filter(
+									(value) =>
+										value.uid === auth.currentUser.uid,
+								)
+								.map((personalURL) => personalURL).length >
+							0 ? (
 								<>
 									{personalURLsSystem.allPersonalURLs
-										.filter((value) => value.uid === auth.currentUser.uid)
+										.filter(
+											(value) =>
+												value.uid ===
+												auth.currentUser.uid,
+										)
 										.map((personalURL) => {
 											return (
 												<URLDeletionSystem
 													key={personalURL.id}
-													personalURLsSystem={personalURLsSystem}
+													personalURLsSystem={
+														personalURLsSystem
+													}
 													personalURL={personalURL}
 												/>
 											);
