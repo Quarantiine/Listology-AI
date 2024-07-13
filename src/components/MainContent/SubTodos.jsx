@@ -144,8 +144,7 @@ export default function SubTodos({
 		};
 
 		document.addEventListener("mousedown", closeLinkDropdown);
-		return () =>
-			document.removeEventListener("mousedown", closeLinkDropdown);
+		return () => document.removeEventListener("mousedown", closeLinkDropdown);
 	}, []);
 
 	const handleMoreDispatch = (key, value) => {
@@ -187,8 +186,7 @@ export default function SubTodos({
 		};
 
 		document.addEventListener("mousedown", closeMoreDropdown);
-		return () =>
-			document.removeEventListener("mousedown", closeMoreDropdown);
+		return () => document.removeEventListener("mousedown", closeMoreDropdown);
 	}, []);
 
 	const copyTodoText = () => {
@@ -197,7 +195,7 @@ export default function SubTodos({
 	};
 
 	const handleIgnoreSubTodo = useCallback(() => {
-		if (subTodo.completed === true) {
+		if (subTodo.completed === true && todolist.ignoreTodo) {
 			todoLists.updatingSubTodoCompleted(subTodo.id, false);
 		}
 	}, [todolist.ignoreTodo]);
@@ -219,11 +217,7 @@ export default function SubTodos({
 				} ${todolist.ignoreTodo && "pl-3"}`}
 			>
 				{todolist.ignoreTodo && (
-					<div
-						className={`absolute top-0 -left-1 w-1 h-full text-3xl`}
-					>
-						•
-					</div>
+					<div className={`absolute top-0 -left-1 w-1 h-full text-3xl`}>•</div>
 				)}
 
 				<div className="w-full h-auto flex justify-start items-center gap-3">
@@ -311,10 +305,7 @@ export default function SubTodos({
 								placeholder={subTodo.todo}
 							/>
 							<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-								<button
-									onClick={handleChangeEditText}
-									className="base-btn"
-								>
+								<button onClick={handleChangeEditText} className="base-btn">
 									change
 								</button>
 								<button
@@ -331,13 +322,10 @@ export default function SubTodos({
 								onClick={handleLinkDropdown}
 								title={"Go to link"}
 								className={`text-btn w-full text-start no-underline line-clamp-1 flex flex-wrap items-start gap-1 ${
-									subTodo.completed &&
-									"line-through select-all"
+									subTodo.completed && "line-through select-all"
 								}`}
 							>
-								<p
-									className={`${subTodo.completed && "line-through"}`}
-								>
+								<p className={`${subTodo.completed && "line-through"}`}>
 									{subTodo.todo.replace(extractLink(), "")}{" "}
 									<span className="text-[#0E51FF]">
 										{shortenUrl(extractLink(), -30)
@@ -391,43 +379,37 @@ export default function SubTodos({
 							</button>
 						</>
 					)} */}
-					{subTodo.deletionIndicator &&
-						deletionIntervals === 5000 && (
-							<p className="text-white text-sm">Deleting...</p>
-						)}
+					{subTodo.deletionIndicator && deletionIntervals === 5000 && (
+						<p className="text-white text-sm">Deleting...</p>
+					)}
 
-					{subTodo.deletionIndicator &&
-						deletionIntervals !== 5000 && (
-							<>
-								<p>
-									{deletionIntervals
-										.toString()
-										.replace("000", "")}
-								</p>
-								<button
-									onClick={handleCancelDeletion}
-									className="flex justify-center items-center rounded-full"
-								>
-									{user.themeColor ? (
-										<Image
-											className="min-w-[25px] min-h-[25px]"
-											src={"/icons/undo-white.svg"}
-											alt="undo"
-											width={30}
-											height={30}
-										/>
-									) : (
-										<Image
-											className="min-w-[25px] min-h-[25px]"
-											src={"/icons/undo-black.svg"}
-											alt="undo"
-											width={30}
-											height={30}
-										/>
-									)}
-								</button>
-							</>
-						)}
+					{subTodo.deletionIndicator && deletionIntervals !== 5000 && (
+						<>
+							<p>{deletionIntervals.toString().replace("000", "")}</p>
+							<button
+								onClick={handleCancelDeletion}
+								className="flex justify-center items-center rounded-full"
+							>
+								{user.themeColor ? (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-white.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								) : (
+									<Image
+										className="min-w-[25px] min-h-[25px]"
+										src={"/icons/undo-black.svg"}
+										alt="undo"
+										width={30}
+										height={30}
+									/>
+								)}
+							</button>
+						</>
+					)}
 
 					<>
 						{!editTextActive && deletionIntervals === 5000 && (
@@ -454,10 +436,7 @@ export default function SubTodos({
 									>
 										<button
 											onClick={() => {
-												handleMoreDispatch(
-													"todoDropdown",
-													"",
-												);
+												handleMoreDispatch("todoDropdown", "");
 												copyTodoText();
 											}}
 											className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white w-full rounded-md"
@@ -517,9 +496,7 @@ export default function SubTodos({
 						height={20}
 					/> */}
 					<Image
-						onClick={
-							subTodo.deletionIndicator ? null : handleDeleteTodo
-						}
+						onClick={subTodo.deletionIndicator ? null : handleDeleteTodo}
 						className={`w-auto h-[18px] ${
 							subTodo.deletionIndicator
 								? "cursor-not-allowed opacity-50"
