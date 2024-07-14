@@ -8,6 +8,7 @@ import React, {
 	useState,
 } from "react";
 import shortenUrl from "shorten-url";
+import GeminiAPI from "../../pages/api/geminiApi";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -28,6 +29,7 @@ export default function SubTodos({
 	todoLists,
 	closeSubTodos,
 }) {
+	const { todoLoading, grammaticallyFixedTodo } = GeminiAPI();
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		subTodoDropdown: "",
 	});
@@ -68,11 +70,14 @@ export default function SubTodos({
 		}, 10);
 	};
 
-	const handleChangeEditText = () => {
+	const handleChangeEditText = async () => {
 		if (subTodoText) {
 			setSubTodoText("");
 			setEditTextActive(false);
-			todoLists.updatingSubTodoEdit(subTodo.id, subTodoText);
+			todoLists.updatingSubTodoEdit(
+				subTodo.id,
+				await grammaticallyFixedTodo(subTodoText),
+			);
 		}
 	};
 
@@ -275,110 +280,94 @@ export default function SubTodos({
 						</>
 					)}
 
-					{!deletedSubTodo &&
-					editTextActive &&
-					!subTodo.completed &&
-					!todolist.completed ? (
-						<div className="flex justify-start items-center gap-2 w-full">
-							<textarea
-								ref={editTextActiveRef}
-								onChange={(e) => setSubTodoText(e.target.value)}
-								onKeyDown={handleKeyedChangeEditText}
-								className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
-									user.themeColor
-										? "text-white bg-[#333]"
-										: "text-black bg-gray-200"
-								}`}
-								type="text"
-								placeholder={subTodo.todo}
-							/>
-							<input
-								ref={editTextActiveRef}
-								onChange={(e) => setSubTodoText(e.target.value)}
-								onKeyDown={handleKeyedChangeEditText}
-								className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
-									user.themeColor
-										? "text-white bg-[#333]"
-										: "text-black bg-gray-200"
-								}`}
-								type="text"
-								placeholder={subTodo.todo}
-							/>
-							<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-								<button onClick={handleChangeEditText} className="base-btn">
-									change
-								</button>
-								<button
-									onClick={handleEditTextActive}
-									className="base-btn !bg-red-500"
-								>
-									cancel
-								</button>
-							</div>
-						</div>
-					) : linkPattern.test(subTodo.todo) ? (
+					{!todoLoading ? (
 						<>
-							<button
-								onClick={handleLinkDropdown}
-								title={"Go to link"}
-								className={`text-btn w-full text-start no-underline line-clamp-1 flex flex-wrap items-start gap-1 ${
-									subTodo.completed && "line-through select-all"
-								}`}
-							>
-								<p className={`${subTodo.completed && "line-through"}`}>
-									{subTodo.todo.replace(extractLink(), "")}{" "}
-									<span className="text-[#0E51FF]">
-										{shortenUrl(extractLink(), -30)
-											.replace("", "(Link)")
-											.slice(0, 6)}
-									</span>
+							{!deletedSubTodo &&
+							editTextActive &&
+							!subTodo.completed &&
+							!todolist.completed ? (
+								<div className="flex justify-start items-center gap-2 w-full">
+									<textarea
+										ref={editTextActiveRef}
+										onChange={(e) => setSubTodoText(e.target.value)}
+										onKeyDown={handleKeyedChangeEditText}
+										className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
+											user.themeColor
+												? "text-white bg-[#333]"
+												: "text-black bg-gray-200"
+										}`}
+										type="text"
+										placeholder={subTodo.todo}
+									/>
+									<input
+										ref={editTextActiveRef}
+										onChange={(e) => setSubTodoText(e.target.value)}
+										onKeyDown={handleKeyedChangeEditText}
+										className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
+											user.themeColor
+												? "text-white bg-[#333]"
+												: "text-black bg-gray-200"
+										}`}
+										type="text"
+										placeholder={subTodo.todo}
+									/>
+									<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
+										<button onClick={handleChangeEditText} className="base-btn">
+											change
+										</button>
+										<button
+											onClick={handleEditTextActive}
+											className="base-btn !bg-red-500"
+										>
+											cancel
+										</button>
+									</div>
+								</div>
+							) : linkPattern.test(subTodo.todo) ? (
+								<>
+									<button
+										onClick={handleLinkDropdown}
+										title={"Go to link"}
+										className={`text-btn w-full text-start no-underline line-clamp-1 flex flex-wrap items-start gap-1 ${
+											subTodo.completed && "line-through select-all"
+										}`}
+									>
+										<p className={`${subTodo.completed && "line-through"}`}>
+											{subTodo.todo.replace(extractLink(), "")}{" "}
+											<span className="text-[#0E51FF]">
+												{shortenUrl(extractLink(), -30)
+													.replace("", "(Link)")
+													.slice(0, 6)}
+											</span>
+										</p>
+									</button>
+								</>
+							) : (
+								<p
+									onClick={handleEditTextActive}
+									className={`text-btn w-full ${
+										subTodo.completed || todolist.completed
+											? "line-through select-all"
+											: ""
+									}`}
+								>
+									{subTodo.todo}
 								</p>
-							</button>
+							)}
 						</>
 					) : (
 						<p
-							onClick={handleEditTextActive}
-							className={`text-btn w-full ${
-								subTodo.completed || todolist.completed
-									? "line-through select-all"
-									: ""
+							className={`w-full ${user.themeColor ? "text-[#999]" : "text-gray-500"} ${
+								subTodo.completed ||
+								(todolist.completed && "line-through select-all")
 							}`}
 						>
-							{subTodo.todo}
+							Loading Todo...
 						</p>
 					)}
 				</div>
 
 				<div className="flex w-[100px] justify-end items-center gap-3 ml-auto">
-					{/* {deletedSubTodo === subTodo.todo && (
-						<>
-							<p className="text-lg">
-								{deletionIntervals.toString().replace("000", "")}
-							</p>
-							<button
-								onClick={handleCancelDeletion}
-								className="flex justify-center items-center"
-							>
-								{user.themeColor ? (
-									<Image
-										className="min-w-[25px] min-h-[25px]"
-										src={"/icons/undo-white.svg"}
-										alt="undo"
-										width={30}
-										height={30}
-									/>
-								) : (
-									<Image
-										className="min-w-[25px] min-h-[25px]"
-										src={"/icons/undo-black.svg"}
-										alt="undo"
-										width={30}
-										height={30}
-									/>
-								)}
-							</button>
-						</>
-					)} */}
 					{subTodo.deletionIndicator && deletionIntervals === 5000 && (
 						<p className="text-white text-sm">Deleting...</p>
 					)}
@@ -482,19 +471,6 @@ export default function SubTodos({
 							</button>
 						)}
 					</>
-
-					{/* <Image
-						onClick={deletionIntervals !== 5000 ? null : handleDeleteTodo}
-						className={`w-auto h-[18px] ${
-							deletionIntervals !== 5000
-								? "cursor-not-allowed opacity-50"
-								: "text-btn"
-						}`}
-						src={"/icons/trash.svg"}
-						alt="trash"
-						width={20}
-						height={20}
-					/> */}
 					<Image
 						onClick={subTodo.deletionIndicator ? null : handleDeleteTodo}
 						className={`w-auto h-[18px] ${

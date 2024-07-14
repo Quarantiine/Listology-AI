@@ -84,7 +84,7 @@ export default function ImportantTodos({ todolist }) {
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false
+			todoIndicator.current ? true : false,
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -98,7 +98,7 @@ export default function ImportantTodos({ todolist }) {
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID
+						auth.currentUser?.uid === value.userID,
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -217,7 +217,7 @@ export default function ImportantTodos({ todolist }) {
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -321,7 +321,7 @@ export default function ImportantTodos({ todolist }) {
 						?.filter(
 							(value) =>
 								value.userID === auth.currentUser?.uid &&
-								value.id === todolist.folderID
+								value.id === todolist.folderID,
 						)
 						.map((todoListFolder) => todoListFolder.folderTitle)[0]
 				}
@@ -341,10 +341,10 @@ export default function ImportantTodos({ todolist }) {
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
-						? user.themeColor
-							? "bg-[#292929]"
-							: "bg-[#eee]"
-						: ""
+							? user.themeColor
+								? "bg-[#292929]"
+								: "bg-[#eee]"
+							: ""
 				}`}
 			>
 				{todolist.ignoreTodo ? (
@@ -352,15 +352,15 @@ export default function ImportantTodos({ todolist }) {
 				) : (
 					<div
 						className={`absolute top-0 left-0 w-1 h-full ${
-							todolist && todolist.difficulty === "Hard"
+							todolist && todolist.difficulty.includes("Hard")
 								? "bg-red-500"
-								: todolist.difficulty === "Intermediate"
-								? "bg-yellow-500"
-								: todolist.difficulty === "Easy"
-								? "bg-green-500"
-								: user.themeColor
-								? "bg-[#444]"
-								: "bg-[#ccc]"
+								: todolist.difficulty.includes("Intermediate")
+									? "bg-yellow-500"
+									: todolist.difficulty.inclues("Easy")
+										? "bg-green-500"
+										: user.themeColor
+											? "bg-[#444]"
+											: "bg-[#ccc]"
 						}`}
 					/>
 				)}
@@ -377,8 +377,8 @@ export default function ImportantTodos({ todolist }) {
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-										? "/icons/checkbox-empty-white.svg"
-										: "/icons/checkbox-empty-black.svg"
+											? "/icons/checkbox-empty-white.svg"
+											: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}

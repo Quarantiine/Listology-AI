@@ -36,7 +36,7 @@ export default function TodosContent({
 	subTodoSearchInput,
 }) {
 	const { auth, todoLists } = FirebaseApi();
-	const { readTodoDifficulty, difficultyLoading, geminiDifficultyChoice } =
+	const { readTodoDifficulty, todoLoading, grammaticallyFixedTodo } =
 		GeminiAPI();
 	const { user } = useContext(UserCredentialCtx);
 	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
@@ -104,7 +104,10 @@ export default function TodosContent({
 		if (todoText) {
 			setTodoText("");
 			setEditTextActive(false);
-			todoLists.updatingTodolist(todolist.id, todoText);
+			todoLists.updatingTodolist(
+				todolist.id,
+				await grammaticallyFixedTodo(todoText),
+			);
 
 			const subTodos = todoLists.allSubTodos
 				.filter((value) => value.todoID === todolist.id)
@@ -152,8 +155,6 @@ export default function TodosContent({
 					`${subTodos ? subTodos : "No Sub Todos"}`,
 				),
 			);
-
-			console.log(todolist.difficulty);
 		}
 	};
 
@@ -662,6 +663,7 @@ export default function TodosContent({
 						}`}
 					/>
 				)}
+
 				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
 					{!todolist.ignoreTodo && (
 						<button
@@ -717,83 +719,107 @@ export default function TodosContent({
 				</div>
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
-					<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
-						{!todolist.deletionIndicator &&
-						editTextActive &&
-						!todolist.completed ? (
-							<div className="flex justify-between items-center gap-2 w-full">
-								<>
-									<textarea
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-									<input
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-								</>
-								<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-									<button onClick={handleChangeEditText} className="base-btn">
-										change
-									</button>
-									<button
-										onClick={handleEditTextActive}
-										className="base-btn !bg-red-500"
-									>
-										cancel
-									</button>
-								</div>
-							</div>
-						) : linkPattern.test(todolist.todo) ? (
-							<>
-								{openLinkDropdown && extractLink() && (
-									<div
-										className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
-									>
-										<Link
-											href={extractLink()}
-											target="_blank"
-											onClick={() => {
-												handleLinkDropdown();
-												setSubTodoButtonAppear(false);
-											}}
-											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed && "line-through select-all"
+					{!todoLoading ? (
+						<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
+							{!todolist.deletionIndicator &&
+							editTextActive &&
+							!todolist.completed ? (
+								<div className="flex justify-between items-center gap-2 w-full">
+									<>
+										<textarea
+											ref={editTextActiveRef}
+											onChange={(e) => setTodoText(e.target.value)}
+											onKeyDown={handleKeyedChangeEditText}
+											className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
+												user.themeColor
+													? "text-white bg-[#333]"
+													: "text-black bg-gray-200"
 											}`}
-										>
-											<span>Link</span>
-										</Link>
+											type="text"
+											placeholder={todolist.todo}
+										/>
+
+										<input
+											ref={editTextActiveRef}
+											onChange={(e) => setTodoText(e.target.value)}
+											onKeyDown={handleKeyedChangeEditText}
+											className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
+												user.themeColor
+													? "text-white bg-[#333]"
+													: "text-black bg-gray-200"
+											}`}
+											type="text"
+											placeholder={todolist.todo}
+										/>
+									</>
+
+									<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
+										<button onClick={handleChangeEditText} className="base-btn">
+											change
+										</button>
 										<button
 											onClick={handleEditTextActive}
-											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed && "line-through select-all"
-											}`}
+											className="base-btn !bg-red-500"
 										>
-											<span>Edit</span>
+											cancel
 										</button>
 									</div>
-								)}
+								</div>
+							) : linkPattern.test(todolist.todo) ? (
+								<>
+									{openLinkDropdown && extractLink() && (
+										<div
+											className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
+										>
+											<Link
+												href={extractLink()}
+												target="_blank"
+												onClick={() => {
+													handleLinkDropdown();
+													setSubTodoButtonAppear(false);
+												}}
+												className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+													todolist.completed && "line-through select-all"
+												}`}
+											>
+												<span>Link</span>
+											</Link>
+											<button
+												onClick={handleEditTextActive}
+												className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+													todolist.completed && "line-through select-all"
+												}`}
+											>
+												<span>Edit</span>
+											</button>
+										</div>
+									)}
 
-								<button
-									onClick={handleLinkDropdown}
-									title={"Go to link"}
-									className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+									<button
+										onClick={handleLinkDropdown}
+										title={"Go to link"}
+										className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+											todolist.completed && "line-through select-all"
+										} ${
+											subTodoButtonAppear || openLinkDropdown
+												? "translate-x-0"
+												: "translate-x-0 lg:-translate-x-8"
+										}`}
+									>
+										<p className="">
+											{todolist.todo.replace(extractLink(), "")}{" "}
+											<span className="text-[#0E51FF]">
+												{shortenUrl(extractLink(), -30)
+													.replace("", "(Link)")
+													.slice(0, 6)}
+											</span>
+										</p>
+									</button>
+								</>
+							) : (
+								<p
+									onClick={handleEditTextActive}
+									className={`text-btn w-full ${
 										todolist.completed && "line-through select-all"
 									} ${
 										subTodoButtonAppear || openLinkDropdown
@@ -801,31 +827,23 @@ export default function TodosContent({
 											: "translate-x-0 lg:-translate-x-8"
 									}`}
 								>
-									<p className="">
-										{todolist.todo.replace(extractLink(), "")}{" "}
-										<span className="text-[#0E51FF]">
-											{shortenUrl(extractLink(), -30)
-												.replace("", "(Link)")
-												.slice(0, 6)}
-										</span>
-									</p>
-								</button>
-							</>
-						) : (
-							<p
-								onClick={handleEditTextActive}
-								className={`text-btn w-full ${
-									todolist.completed && "line-through select-all"
-								} ${
-									subTodoButtonAppear || openLinkDropdown
-										? "translate-x-0"
-										: "translate-x-0 lg:-translate-x-8"
-								}`}
-							>
-								{todolist.todo}
-							</p>
-						)}
-					</div>
+									{todolist.todo}
+								</p>
+							)}
+						</div>
+					) : (
+						<p
+							className={`w-full ${user.themeColor ? "text-[#999]" : "text-gray-500"} ${
+								todolist.completed && "line-through select-all"
+							} ${
+								subTodoButtonAppear || openLinkDropdown
+									? "translate-x-0"
+									: "translate-x-0 lg:-translate-x-8"
+							}`}
+						>
+							Loading Todo...
+						</p>
+					)}
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
 						{todolist.deletionIndicator && deletionIntervals === 5000 && (

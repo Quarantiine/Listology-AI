@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
-import FirebaseAPI from "../api/firebaseApi";
 
 const apiKey = "AIzaSyDdWaYlYDPQRzptwky48BXA7-reubQ9vuU";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -21,11 +20,14 @@ const generationConfig = {
 
 class GeminiChatSystem {
 	setGeminiDifficultyChoice: React.Dispatch<React.SetStateAction<string>>;
+	setTodoLoading: React.Dispatch<React.SetStateAction<boolean>>;
 
 	constructor(
 		setGeminiDifficultyChoice: React.Dispatch<React.SetStateAction<string>>,
+		setTodoLoading: React.Dispatch<React.SetStateAction<boolean>>,
 	) {
 		this.setGeminiDifficultyChoice = setGeminiDifficultyChoice;
+		this.setTodoLoading = setTodoLoading;
 	}
 
 	async readTodoDifficulty(
@@ -61,28 +63,63 @@ class GeminiChatSystem {
 				.filter((value) => value.role === "model")
 				.map((resp) => resp.parts[0].text)
 				.toString();
-
-			// console.log(
-			// 	response
-			// 		.filter((value) => value.role === "model")
-			// 		.map((resp) => resp.parts[0].text)
-			// 		.toString(),
-			// );
 		} catch (error) {
 			console.log(error);
 		}
+	}
+
+	async grammaticallyFixedTodo(text: string) {
+		const chatSession = model.startChat({
+			generationConfig,
+			history: [
+				{
+					role: "user",
+					parts: [
+						{
+							text: "Hello Gemini. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is to change the text, no matter what it says that I send you, make it grammatically accurate and easier to read only and nothing more than that. Also without changing the meaning of the text. Just give me the changed text and that's it. If a to-do have a link, don't change the link at all.",
+						},
+					],
+				},
+			],
+		});
+
+		try {
+			this.setTodoLoading(true);
+			await chatSession.sendMessage(
+				`Change this text and make it better accorrding to the instructions given above: ${text}`,
+			);
+
+			const response: Content[] = await chatSession.getHistory();
+
+			return response
+				.filter((value) => value.role === "model")
+				.map((resp) => resp.parts[0].text)
+				.toString();
+		} catch (error) {
+			console.log(error);
+		} finally {
+			this.setTodoLoading(false);
+		}
+	}
+
+	async createTodoList() {
+		// STOPPED HERE
 	}
 }
 
 export default function GeminiAPI() {
 	const [geminiDifficultyChoice, setGeminiDifficultyChoice] =
 		useState<string>("");
+	const [todoLoading, setTodoLoading] = useState<boolean>(false);
 
-	const GCS = new GeminiChatSystem(setGeminiDifficultyChoice);
+	const GCS = new GeminiChatSystem(setGeminiDifficultyChoice, setTodoLoading);
 
 	GCS.readTodoDifficulty;
+	GCS.grammaticallyFixedTodo;
 
 	return {
+		todoLoading,
+		grammaticallyFixedTodo: GCS.grammaticallyFixedTodo.bind(GCS),
 		geminiDifficultyChoice,
 		readTodoDifficulty: GCS.readTodoDifficulty.bind(GCS),
 	};
