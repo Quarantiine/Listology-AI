@@ -110,7 +110,10 @@ export default function TodosContent({
 			);
 
 			const subTodos = todoLists.allSubTodos
-				.filter((value) => value.todoID === todolist.id)
+				.filter(
+					(value) =>
+						value.todoID === todolist.id && value.uid === auth.currentUser.uid,
+				)
 				.map((subTodo) => subTodo.todo)
 				.toString();
 
@@ -1201,6 +1204,7 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
+										todolistFolder={todolistFolder}
 									/>
 								</React.Fragment>
 							);

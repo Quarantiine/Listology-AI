@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import shortenUrl from "shorten-url";
 import GeminiAPI from "../../pages/api/geminiApi";
+import FirebaseApi from "../../pages/api/firebaseApi";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -28,8 +29,11 @@ export default function SubTodos({
 	user,
 	todoLists,
 	closeSubTodos,
+	todolistFolder,
 }) {
-	const { todoLoading, grammaticallyFixedTodo } = GeminiAPI();
+	const { auth } = FirebaseApi();
+	const { todoLoading, grammaticallyFixedTodo, readTodoDifficulty } =
+		GeminiAPI();
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		subTodoDropdown: "",
 	});
@@ -77,6 +81,27 @@ export default function SubTodos({
 			todoLists.updatingSubTodoEdit(
 				subTodo.id,
 				await grammaticallyFixedTodo(subTodoText),
+			);
+
+			const subTodos = todoLists.allSubTodos
+				.filter(
+					(value) =>
+						value.todoID === todolist.id &&
+						value.userID === auth.currentUser.uid,
+				)
+				.map((subTodo) => subTodo.todo)
+				.toString();
+
+			todoLists.updatingTodoDifficulty(
+				todolist.id,
+				await readTodoDifficulty(
+					todolistFolder.folderTitle,
+					todolistFolder.folderDescription,
+					todolist.todo,
+					"No Start Date",
+					"No End Date",
+					subTodos,
+				),
 			);
 		}
 	};
