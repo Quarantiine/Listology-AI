@@ -1248,8 +1248,13 @@ export default function TodolistMainContent({
 						)
 						?.map((todolist) => todolist).length < 1 &&
 					!completedTodos && (
-						<div className="w-full flex justify-center itmes-center">
-							<button className="base-btn">Create with Gemini</button>
+						<div className="w-full flex flex-col justify-center itmes-center gap-1">
+							<button
+								onClick={null}
+								className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"
+							>
+								Create with Gemini (Coming Soon)
+							</button>
 						</div>
 					)}
 			</div>
