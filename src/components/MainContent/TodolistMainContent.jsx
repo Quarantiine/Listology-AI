@@ -1117,12 +1117,12 @@ export default function TodolistMainContent({
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
-									todolist.difficulty === "Easy" &&
+									todolist.difficulty?.includes("Easy") &&
 									todolist.completed === false,
 							)
 							.includes(true) &&
 							filterState.filterCategories.value === "Difficulty" &&
-							filterState.filterCategories.value2 === "Easy" && (
+							filterState.filterCategories.value2?.includes("Easy") && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={
@@ -1139,12 +1139,12 @@ export default function TodolistMainContent({
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
-									todolist.difficulty === "Intermediate" &&
+									todolist.difficulty?.includes("Intermediate") &&
 									todolist.completed === false,
 							)
 							.includes(true) &&
 							filterState.filterCategories.value === "Difficulty" &&
-							filterState.filterCategories.value2 === "Intermediate" && (
+							filterState.filterCategories.value2?.includes("Intermediate") && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={
@@ -1161,12 +1161,12 @@ export default function TodolistMainContent({
 							?.map(
 								(todolist) =>
 									todolist.folderID === clickedTodoFolder &&
-									todolist.difficulty === "Hard" &&
+									todolist.difficulty?.includes("Hard") &&
 									todolist.completed === false,
 							)
 							.includes(true) &&
 							filterState.filterCategories.value === "Difficulty" &&
-							filterState.filterCategories.value2 === "Hard" && (
+							filterState.filterCategories.value2?.includes("Hard") && (
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									<p
 										className={

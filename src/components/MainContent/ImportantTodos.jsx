@@ -352,11 +352,11 @@ export default function ImportantTodos({ todolist }) {
 				) : (
 					<div
 						className={`absolute top-0 left-0 w-1 h-full ${
-							todolist && todolist.difficulty.includes("Hard")
+							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
-								: todolist.difficulty.includes("Intermediate")
+								: todolist.difficulty?.includes("Intermediate")
 									? "bg-yellow-500"
-									: todolist.difficulty.inclues("Easy")
+									: todolist.difficulty?.inclues("Easy")
 										? "bg-green-500"
 										: user.themeColor
 											? "bg-[#444]"

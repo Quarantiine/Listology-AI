@@ -156,6 +156,7 @@ export default function TodosContent({
 					`Start Date: ${todolist.startDate ? `Start Date: ${todoDate(startTimeMiliSec)}, ${todoTime(startTimeMiliSec)}` : "No Start Date"}`,
 					`End Date: ${todolist.endDate ? `End Date: ${todoDate(endTimeMiliSec)}, ${todoTime(endTimeMiliSec)}` : "No End Date"}`,
 					`${subTodos ? subTodos : "No Sub Todos"}`,
+					todolist.ignoreTodo,
 				),
 			);
 		}

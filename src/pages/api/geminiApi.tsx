@@ -37,6 +37,7 @@ class GeminiChatSystem {
 		todoStartDate: string,
 		todoEndDate: string,
 		todoSubTodo: string,
+		ignoredTodo: boolean,
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -45,7 +46,7 @@ class GeminiChatSystem {
 					role: "user",
 					parts: [
 						{
-							text: "Hello Gemini. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. I want you to tell me if a to-do is easy, intermidate, or hard. I want you to base this difficulty on the to-do folder title, description, the specific to-do task, the to-do due date, and the to-do sub to-dos. Only say `Easy`, `Intermediate`, `Hard`, or `Unsure`. Do not say anything else. Do not say anything other than the difficulty I provided, also If the to-do doesn't have a task or unsure if it does, then say `Unsure` and that's it. You only say the difficulies or `Unsure` according the information giving to you.",
+							text: "Hello Gemini. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. I want you to tell me if a to-do is easy, intermidate, or hard. I want you to base this difficulty on the to-do folder title, description, the specific to-do task, the to-do due date, and the to-do sub to-dos. Only say `Easy`, `Intermediate`, `Hard`, or `Unsure`. And if a you see `Todo is Ignored`, just add `Unsure` or change the current difficulty to `Unsure`. Do not say anything other than the difficulties I provided, also If the to-do doesn't have a task or unsure if it does, then say `Unsure` and that's it. You only say the difficulies or `Unsure` according the information giving to you.",
 						},
 					],
 				},
@@ -54,7 +55,7 @@ class GeminiChatSystem {
 
 		try {
 			await chatSession.sendMessage(
-				`Todo Folder Title: ${todoFolderTitle}, Descriptions: ${todoFolderDescription}, Todo Task: ${todoTask}, Start Date: ${todoStartDate}, End Date: ${todoEndDate}, Sub Todo: ${todoSubTodo}. What is the difficulty of the to-do based on the given information?`,
+				`Todo Folder Title: ${todoFolderTitle}, Descriptions: ${todoFolderDescription}, Todo Task: ${todoTask}, Start Date: ${todoStartDate}, End Date: ${todoEndDate}, Sub Todo: ${todoSubTodo}, Todo is ${ignoredTodo ? "Ignored" : "Not Ignored"}. What is the difficulty of the to-do based on the given information?`,
 			);
 
 			const response: Content[] = await chatSession.getHistory();

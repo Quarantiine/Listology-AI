@@ -52,7 +52,7 @@ const db: Firestore = getFirestore(app);
 const colRefRegistration: CollectionReference = collection(
 	db,
 	"registration",
-	""
+	"",
 );
 
 const colRefFolders: CollectionReference = collection(db, "folders", "");
@@ -61,30 +61,30 @@ const queFolders: Query = query(colRefFolders, orderBy("createdTime"));
 const colRefTodoFolders: CollectionReference = collection(
 	db,
 	"todo-folders",
-	""
+	"",
 );
 const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
 
 const colRefTodoLists: CollectionReference = collection(db, "todo-lists", "");
 const queTodoLists: Query = query(
 	colRefTodoLists,
-	orderBy("createdTime", "asc")
+	orderBy("createdTime", "asc"),
 );
 
 const colRefSubTodoLists: CollectionReference = collection(
 	db,
 	"sub-todo-lists",
-	""
+	"",
 );
 const queSubTodoLists: Query = query(
 	colRefSubTodoLists,
-	orderBy("createdTime")
+	orderBy("createdTime"),
 );
 
 const colRefPersonalURLs: CollectionReference = collection(db, "urls", "");
 const quePersonalURLs: Query = query(
 	colRefPersonalURLs,
-	orderBy("createdTime")
+	orderBy("createdTime"),
 );
 
 // ==================
@@ -201,7 +201,7 @@ export default function FirebaseApi() {
 				const user: UserCredential = await createUserWithEmailAndPassword(
 					auth,
 					email,
-					password
+					password,
 				);
 				await sendEmailVerification(user.user);
 			} catch (err) {
@@ -297,7 +297,7 @@ export default function FirebaseApi() {
 					user.email &&
 					allusers
 						?.map((users: any) =>
-							users.email.toString() === user.email ? true : false
+							users.email.toString() === user.email ? true : false,
 						)
 						.includes(true)
 						? console.log("Signing In")
@@ -309,7 +309,7 @@ export default function FirebaseApi() {
 								bannerImage: "",
 								bannerSize: false,
 								photoURL: user.photoURL,
-						  });
+							});
 				});
 			} catch (err) {
 				console.log(`Google sign in Error |`, err.message);
@@ -433,6 +433,13 @@ export default function FirebaseApi() {
 			});
 		};
 
+		updatingCreatedTime = async (id: string) => {
+			const docRef = doc(colRefFolders, id);
+			await updateDoc(docRef, {
+				createdTime: serverTimestamp(),
+			});
+		};
+
 		deletingFolder = async (id: string) => {
 			const docRef = doc(colRefFolders, id);
 			await deleteDoc(docRef);
@@ -442,6 +449,7 @@ export default function FirebaseApi() {
 	const addingFolder = FS.addingFolder;
 	const updatingCompletionFolder = FS.updatingCompletionFolder;
 	const deletingFolder = FS.deletingFolder;
+	const updatingCreatedTime = FS.updatingCreatedTime
 
 	class TodolistFolderSystem {
 		constructor() {}
@@ -450,7 +458,7 @@ export default function FirebaseApi() {
 			folderEmoji: string,
 			folderTitle: string,
 			folderDescription: string,
-			folderName: string
+			folderName: string,
 		) => {
 			await addDoc(colRefTodoFolders, {
 				folderEmoji: folderEmoji || "",
@@ -493,7 +501,7 @@ export default function FirebaseApi() {
 
 		updatingFolderDescription = async (
 			id: string,
-			folderDescription: string
+			folderDescription: string,
 		) => {
 			const docRef = doc(colRefTodoFolders, id);
 			await updateDoc(docRef, {
@@ -601,7 +609,7 @@ export default function FirebaseApi() {
 		addSubTodo = async (
 			mainFolder: string,
 			folderID: string,
-			todoID: string
+			todoID: string,
 		) => {
 			try {
 				await addDoc(colRefSubTodoLists, {
@@ -692,7 +700,7 @@ export default function FirebaseApi() {
 		updatingTodoCompletionDates = async (
 			id: string,
 			startDate: string,
-			endDate: string
+			endDate: string,
 		) => {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 
@@ -704,7 +712,7 @@ export default function FirebaseApi() {
 
 		updatingDeletionIndicator = async (
 			id: string,
-			deletionIndicator: boolean
+			deletionIndicator: boolean,
 		) => {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 
@@ -715,7 +723,7 @@ export default function FirebaseApi() {
 
 		updatingSubTodoDeletionIndicator = async (
 			id: string,
-			deletionIndicator: boolean
+			deletionIndicator: boolean,
 		) => {
 			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
 
@@ -794,6 +802,7 @@ export default function FirebaseApi() {
 			allFolders,
 			addingFolder,
 			updatingCompletionFolder,
+			updatingCreatedTime,
 			deletingFolder,
 		},
 

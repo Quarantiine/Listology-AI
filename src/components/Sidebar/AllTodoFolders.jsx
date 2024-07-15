@@ -61,7 +61,7 @@ export default function AllTodoFolders({
 			.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser?.uid === value.userID
+					auth.currentUser?.uid === value.userID,
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
@@ -69,7 +69,7 @@ export default function AllTodoFolders({
 			.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser?.uid === value.userID
+					auth.currentUser?.uid === value.userID,
 			)
 			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
@@ -86,6 +86,13 @@ export default function AllTodoFolders({
 		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 		setClickedTodoFolder(todoFolder.id);
 		setOpenTodolistSidebar(false);
+		folders.allFolders
+			.filter(
+				(value) =>
+					value.folderName === todoFolder.folderName &&
+					auth.currentUser?.uid === value.userID,
+			)
+			.map((folder) => folders.updatingCreatedTime(folder.id));
 
 		filterDispatch({
 			type: "filter-category",
@@ -119,7 +126,7 @@ export default function AllTodoFolders({
 						?.filter(
 							(value) =>
 								value.folderName === clickedFolder &&
-								value.userID === auth.currentUser?.uid
+								value.userID === auth.currentUser?.uid,
 						)
 						.slice(0, 1)
 						?.map((folder) => folder.folderName)
@@ -136,7 +143,7 @@ export default function AllTodoFolders({
 								<p>Completed To-do Folder: {todoFolder.folderTitle}</p>
 							</div>
 						</>,
-						document.body
+						document.body,
 					)}
 
 				<p
@@ -193,8 +200,8 @@ export default function AllTodoFolders({
 								todoFolder.completed
 									? "/icons/completed-folder.svg"
 									: user.themeColor
-									? "/icons/checkbox-empty-white.svg"
-									: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 							}
 							alt="completed"
 							width={20}
