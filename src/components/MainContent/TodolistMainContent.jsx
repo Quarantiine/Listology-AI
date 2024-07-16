@@ -824,6 +824,13 @@ export default function TodolistMainContent({
 						)}
 					</button>
 
+					<button
+						onClick={handleOpenGeminiTodoModal}
+						className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 block sm:hidden"
+					>
+						Create with Gemini
+					</button>
+
 					<div
 						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
 							todoSearchInputWidthCheck() && "hidden"
@@ -928,7 +935,7 @@ export default function TodolistMainContent({
 								)}
 							</div>
 						) : (
-							<div className="w-full flex justify-start items-center gap-2">
+							<div className="w-full flex justify-start items-end gap-2">
 								<p
 									className={`text-xl font-semibold ${
 										user.themeColor ? "text-[#555]" : "text-gray-400"
@@ -953,7 +960,7 @@ export default function TodolistMainContent({
 													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 												}`}
 											>
-												Copy All To-dos
+												Copy Completed To-dos
 											</button>
 										)
 									: todoLists.allTodoLists
@@ -965,72 +972,90 @@ export default function TodolistMainContent({
 													!value.completed,
 											)
 											?.map((todolist) => todolist).length > 1 && (
-											<button
-												onClick={handleCopyAll}
-												className={`text-btn text-sm ${
-													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
-												}`}
-											>
-												Copy All To-dos
-											</button>
-										)}
-
-								{filterState.filterCategories === "All" && (
-									<>
-										{totalCompletionPercentage() ? (
-											<>
-												{totalCompletionPercentage() >= 1 ? (
-													<p
-														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
-														}`}
-													>
-														{totalCompletionPercentage()
-															.toFixed(2)
-															.replace("0.", "")
-															.replace(".", "")}
-														% Completed
-													</p>
-												) : totalCompletionPercentage()
-														.toString()
-														.includes("0") ? (
-													<p
-														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
-														}`}
-													>
-														{totalCompletionPercentage()
-															.toFixed(2)
-															.replace("0.", "")}
-														% Completed
-													</p>
-												) : (
-													<p
-														className={`text-base font-normal ml-auto ${
-															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
-														}`}
-													>
-														{totalCompletionPercentage()
-															.toFixed(2)
-															.replace("0.", "")
-															.replace("0", "")}
-														% Completed
-													</p>
-												)}
-											</>
-										) : (
-											<>
-												<p
-													className={`text-base font-normal ml-auto ${
-														user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+											<div className="flex gap-2 justify-center items-center">
+												<button
+													onClick={handleCopyAll}
+													className={`text-btn text-sm ${
+														user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 													}`}
 												>
-													No To-dos Completed
-												</p>
-											</>
+													Copy All To-dos
+												</button>
+											</div>
 										)}
-									</>
-								)}
+
+								<div className="flex flex-col gap-3 justify-end items-start ml-auto">
+									<button
+										onClick={handleOpenGeminiTodoModal}
+										className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
+									>
+										Create with Gemini
+									</button>
+
+									{filterState.filterCategories === "All" && (
+										<>
+											{totalCompletionPercentage() ? (
+												<>
+													{totalCompletionPercentage() >= 1 ? (
+														<p
+															className={`text-base font-normal ml-auto ${
+																user.themeColor
+																	? "text-[#666]"
+																	: "text-[#9CA3AF]"
+															}`}
+														>
+															{totalCompletionPercentage()
+																.toFixed(2)
+																.replace("0.", "")
+																.replace(".", "")}
+															% Completed
+														</p>
+													) : totalCompletionPercentage()
+															.toString()
+															.includes("0") ? (
+														<p
+															className={`text-base font-normal ml-auto ${
+																user.themeColor
+																	? "text-[#666]"
+																	: "text-[#9CA3AF]"
+															}`}
+														>
+															{totalCompletionPercentage()
+																.toFixed(2)
+																.replace("0.", "")}
+															% Completed
+														</p>
+													) : (
+														<p
+															className={`text-base font-normal ml-auto ${
+																user.themeColor
+																	? "text-[#666]"
+																	: "text-[#9CA3AF]"
+															}`}
+														>
+															{totalCompletionPercentage()
+																.toFixed(2)
+																.replace("0.", "")
+																.replace("0", "")}
+															% Completed
+														</p>
+													)}
+												</>
+											) : (
+												<>
+													<p
+														className={`text-base font-normal ml-auto ${
+															user.themeColor ? "text-[#666]" : "text-[#9CA3AF]"
+														}`}
+													>
+														No To-dos Completed
+													</p>
+												</>
+											)}
+										</>
+									)}
+								</div>
+
 								{filterState.filterCategories !== "All" && (
 									<button
 										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
@@ -1203,13 +1228,6 @@ export default function TodolistMainContent({
 								>
 									No To-dos Found
 								</p>
-
-								<button
-									onClick={handleOpenGeminiTodoModal}
-									className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"
-								>
-									Create with Gemini
-								</button>
 							</div>
 						)}
 
