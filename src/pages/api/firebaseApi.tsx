@@ -103,6 +103,7 @@ export default function FirebaseApi() {
 	const [allSubTodos, setAllSubTodos] = useState<any>();
 	const [allPersonalURLs, setPersonalURLs] = useState<any>();
 
+
 	// Registration System ======
 	useEffect(() => {
 		onSnapshot(colRefRegistration, (ss) => {
@@ -449,7 +450,7 @@ export default function FirebaseApi() {
 	const addingFolder = FS.addingFolder;
 	const updatingCompletionFolder = FS.updatingCompletionFolder;
 	const deletingFolder = FS.deletingFolder;
-	const updatingCreatedTime = FS.updatingCreatedTime
+	const updatingCreatedTime = FS.updatingCreatedTime;
 
 	class TodolistFolderSystem {
 		constructor() {}
@@ -577,6 +578,27 @@ export default function FirebaseApi() {
 				ignoreTodo: false,
 				createdTime: serverTimestamp(),
 			});
+		};
+
+		addingTodosGemini = async (
+			folderID: string,
+			mainFolder: string,
+			todo: string,
+		) => {
+			try {
+				await addDoc(colRefTodoLists, {
+					todo: todo,
+					mainFolder,
+					folderID: folderID,
+					favorited: false,
+					completed: false,
+					userID: auth.currentUser?.uid,
+					ignoreTodo: false,
+					createdTime: serverTimestamp(),
+				});
+			} catch (err) {
+				console.log(err);
+			}
 		};
 
 		updatingTodolist = async (id: string, todo: string) => {
@@ -752,6 +774,7 @@ export default function FirebaseApi() {
 	const updatingTodoCompletionDates = TLS.updatingTodoCompletionDates;
 	const updatingDeletionIndicator = TLS.updatingDeletionIndicator;
 	const updatingSubTodoDeletionIndicator = TLS.updatingSubTodoDeletionIndicator;
+	const addingTodosGemini = TLS.addingTodosGemini;
 
 	class PersonalURLsSystem {
 		constructor() {}
@@ -843,6 +866,7 @@ export default function FirebaseApi() {
 			updatingTodoCompletionDates,
 			updatingDeletionIndicator,
 			updatingSubTodoDeletionIndicator,
+			addingTodosGemini,
 		},
 
 		personalURLsSystem: {

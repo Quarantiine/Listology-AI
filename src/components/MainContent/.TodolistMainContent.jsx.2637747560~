@@ -9,7 +9,7 @@ import TodosContent from "./TodosContent";
 import Filters from "../Sidebar/Filters";
 import AllIgnoredTodos from "./AllIgnoredTodos";
 import AllTodos from "./AllTodos";
-import AskGeminiComponent from "./AskGeminiComponent";
+import GeminiAPI from "../../pages/api/geminiApi";
 
 export default function TodolistMainContent({
 	todolistFolder,
@@ -49,7 +49,6 @@ export default function TodolistMainContent({
 	const [deletionLoad, setDeletionLoad] = useState(false);
 	const windowWidthCheckRef = useRef();
 	const [openGeminiTodoModal, setOpenGeminiTodoModal] = useState(false);
-	const [loadingTodos, setLoadingTodos] = useState(false);
 
 	const handleWindowWidth = () => {
 		if (window.innerWidth < 445) {
@@ -1090,6 +1089,7 @@ export default function TodolistMainContent({
 								</p>
 							</div>
 						)}
+
 					{/* Favorites */}
 					{!todoLists.allTodoLists
 						?.filter((value) => value.userID === auth.currentUser?.uid)
@@ -1109,6 +1109,7 @@ export default function TodolistMainContent({
 								</p>
 							</div>
 						)}
+
 					<>
 						{/* Difficulties */}
 						{!todoLists.allTodoLists
@@ -1177,6 +1178,7 @@ export default function TodolistMainContent({
 								</div>
 							)}
 					</>
+
 					{/* No To-dos */}
 					{filterState.filterCategories !== "Favorites" &&
 						filterState.filterCategories.value !== "Difficulty" &&
@@ -1195,37 +1197,14 @@ export default function TodolistMainContent({
 							)
 							?.map((todolist) => todolist).length < 1 &&
 						!completedTodos && (
-							<div className="flex flex-col gap-2 justify-start items-start">
-								<p
-									className={`${
-										user.themeColor ? "text-[#555]" : "text-gray-400"
-									}`}
-								>
-									No To-dos Found
-								</p>
-
-								<button
-									onClick={handleOpenGeminiTodoModal}
-									className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"
-								>
-									Create with Gemini
-								</button>
-							</div>
+							<p
+								className={`${
+									user.themeColor ? "text-[#555]" : "text-gray-400"
+								}`}
+							>
+								No To-dos Found
+							</p>
 						)}
-
-					<div className="w-full flex flex-col justify-center itmes-center gap-1">
-						{openGeminiTodoModal &&
-							createPortal(
-								<AskGeminiComponent
-									handleOpenGeminiTodoModal={handleOpenGeminiTodoModal}
-									clickedTodoFolder={clickedTodoFolder}
-									clickedFolder={clickedFolder}
-									loadingTodos={loadingTodos}
-									setLoadingTodos={setLoadingTodos}
-								/>,
-								document.body,
-							)}
-					</div>
 
 					{/* No Completed Todos */}
 					{!todoLists.allTodoLists
@@ -1242,7 +1221,7 @@ export default function TodolistMainContent({
 						)
 						.includes(true) &&
 						completedTodos && (
-							<div className="flex flex-col justify-start items-start gap-2 w-full">
+							<div className="flex flex-col justify-start items-start gap-3 w-full">
 								<p
 									className={user.themeColor ? "text-[#555]" : "text-gray-400"}
 								>
@@ -1251,7 +1230,90 @@ export default function TodolistMainContent({
 							</div>
 						)}
 				</div>
+
+				{filterState.filterCategories !== "Favorites" &&
+					filterState.filterCategories.value !== "Difficulty" &&
+					todoLists.allTodoLists
+						?.filter(
+							(value) =>
+								value.folderID === todolistFolder.id &&
+								value.userID === auth.currentUser?.uid &&
+								value.completed === completedTodos &&
+								value.folderID === clickedTodoFolder &&
+								value.todo
+									.normalize("NFD")
+									.replace(/\p{Diacritic}/gu, "")
+									.toLowerCase()
+									.includes(todoSearchInput.toLowerCase()),
+						)
+						?.map((todolist) => todolist).length < 1 &&
+					!completedTodos && (
+						<div className="w-full flex flex-col justify-center itmes-center gap-1">
+							<button
+								onClick={handleOpenGeminiTodoModal}
+								className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500"
+							>
+								Create with Gemini (Coming Soon)
+							</button>
+
+							{openGeminiTodoModal &&
+								createPortal(
+									<AskGeminiComponent
+										handleOpenGeminiTodoModal={handleOpenGeminiTodoModal}
+									/>,
+									document.body,
+								)}
+						</div>
+					)}
 			</div>
 		</>
 	);
 }
+
+const AskGeminiComponent = ({ handleOpenGeminiTodoModal }) => {
+	const {geminiLoadingTodos, createTodoListWithAI} = GeminiAPI()
+	const [promptText, setPromptText] = useState("");
+
+	return (
+		<>
+			<div className="absolute left-0 top-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+				<div className="bg-white w-fit h-fit rounded-lg relative p-4 flex flex-col gap-4">
+					<div className="flex justify-between items-start gap-2">
+						<div className="flex flex-col w-full">
+							<h1 className="text-xl font-bold">
+								Create To-dos with Gemini AI
+							</h1>
+							<p className="text-sm text-gray-500">
+								Ask Gemini anything to create To-dos for you
+							</p>
+						</div>
+
+						<button onClick={handleOpenGeminiTodoModal} className="text-btn">
+							<Image
+								className="min-h-[25px] max-h-[25px] w-auto cursor-default md:cursor-pointer rotate-90"
+								src={"/icons/close.svg"}
+								alt="close"
+								width={30}
+								height={30}
+							/>
+						</button>
+					</div>
+
+					{!geminiLoadingTodos?<form className="flex flex-col gap-2">
+						<textarea
+							className="input-field rounded-lg"
+							cols={20}
+							rows={5}
+							placeholder="Ask Gemini..."
+							onChange={(e) => setPromptText(e.target.value)}
+						/>
+
+						<button onClick={(e) => e.preventDefault()} className="base-btn">
+							Create
+						</button>
+					</form>:<></>}
+				</div>
+			</div>
+		</>
+	);
+};

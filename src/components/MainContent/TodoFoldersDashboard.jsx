@@ -43,7 +43,7 @@ export default function TodoFoldersDashboard({
 		setOpenTodoSearchInput(false);
 
 		folders.allFolders
-			.filter(
+			?.filter(
 				(value) =>
 					value.folderName === todoFolder.folderName &&
 					auth.currentUser?.uid === value.userID,
@@ -73,7 +73,7 @@ export default function TodoFoldersDashboard({
 		todolistFolders.deletingTodoFolder(todoFolder.id);
 
 		todoLists.allTodoLists
-			.filter(
+			?.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
 					auth.currentUser?.uid === value.userID,
@@ -81,7 +81,7 @@ export default function TodoFoldersDashboard({
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
 		todoLists.allSubTodos
-			.filter(
+			?.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
 					auth.currentUser?.uid === value.userID,
