@@ -90,6 +90,7 @@ export default function Filters({ user }) {
 							>
 								All
 							</button>
+							
 							<button onClick={handleFilterSidebar} className={`w-fit`}>
 								<Image
 									className={`w-[15px] h-auto -rotate-90`}

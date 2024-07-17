@@ -10,6 +10,7 @@ import Filters from "../Sidebar/Filters";
 import AllIgnoredTodos from "./AllIgnoredTodos";
 import AllTodos from "./AllTodos";
 import AskGeminiComponent from "./AskGeminiComponent";
+import GeminiChat from "./GeminiChat";
 
 export default function TodolistMainContent({
 	todolistFolder,
@@ -430,8 +431,11 @@ export default function TodolistMainContent({
 
 	return (
 		<>
+			<GeminiChat user={user} />
+
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto relative">
 				<Filters user={user} />
+
 				<button
 					onClick={() => {
 						handleClearTodoFolderClick();
@@ -441,7 +445,7 @@ export default function TodolistMainContent({
 					}`}
 				>
 					<Image
-						className="min-h-[13px] max-h-[13px] w-auto cursor-default md:cursor-pointer rotate-90"
+						className="min-h-[10px] max-h-[10px] w-auto cursor-default md:cursor-pointer rotate-90"
 						src={
 							user.themeColor
 								? "/icons/arrow-white.svg"
@@ -453,6 +457,7 @@ export default function TodolistMainContent({
 					/>
 					<span>Back to Dashboard</span>
 				</button>
+
 				<div className="w-full h-auto flex flex-col gap-2 justify-center items-start">
 					<div className="flex justify-between items-center gap-2 w-full">
 						<div className="flex justify-start items-center gap-5 w-full">
@@ -536,6 +541,7 @@ export default function TodolistMainContent({
 											</div>
 										</div>
 									))}
+
 								<div className="flex flex-col justify-start items-start gap-3 w-full">
 									{editFolderTitleMode ? (
 										<input
@@ -559,6 +565,7 @@ export default function TodolistMainContent({
 										</h1>
 									)}
 								</div>
+
 								{editFolderTitleMode && (
 									<>
 										<div className="flex justify-center items-center gap-2 mt-1">
@@ -579,6 +586,7 @@ export default function TodolistMainContent({
 								)}
 							</form>
 						</div>
+
 						{windowWidthCheck &&
 							createPortal(
 								<>
@@ -591,6 +599,7 @@ export default function TodolistMainContent({
 								</>,
 								document.body,
 							)}
+
 						{!editFolderTitleMode && (
 							<div className="relative">
 								<button
@@ -616,6 +625,7 @@ export default function TodolistMainContent({
 							</div>
 						)}
 					</div>
+
 					{editFolderDescriptionMode ? (
 						<form className="flex flex-col justify-start items-start gap-3 w-full">
 							<textarea
@@ -629,6 +639,7 @@ export default function TodolistMainContent({
 								name="folder-description"
 								placeholder={todolistFolder.folderDescription}
 							></textarea>
+
 							<div className="flex justify-center items-center gap-2">
 								<button
 									onClick={handleFolderDescriptionEdit}
@@ -920,12 +931,13 @@ export default function TodolistMainContent({
 							)}
 					</>
 				)}
+
 				<div
 					className={`flex flex-col justify-start items-start w-full gap-2 rounded-md`}
 				>
 					<>
 						{filterState.filterCategories.value ? (
-							<div className="flex justify-start items-start gap-2">
+							<div className="flex justify-start items-start gap-2 w-full">
 								<div className="flex justify-start items-center gap-1">
 									<p
 										className={`text-lg font-semibold ${
@@ -942,9 +954,10 @@ export default function TodolistMainContent({
 										{filterState.filterCategories.value2}
 									</p>
 								</div>
+
 								{filterState.filterCategories !== "All" && (
 									<button
-										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
+										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm mr-auto"
 										onClick={handleClearFilter}
 									>
 										Clear
@@ -1001,15 +1014,22 @@ export default function TodolistMainContent({
 											</div>
 										)}
 
-								<div className="flex flex-col gap-3 justify-end items-start ml-auto">
-									{!completedTodos && (
-										<button
-											onClick={handleOpenGeminiTodoModal}
-											className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
-										>
-											Create with Gemini
-										</button>
-									)}
+								<div
+									className={`flex flex-col gap-3 items-start ml-auto ${
+										!completedTodos && filterState.filterCategories === "All"
+											? "justify-start"
+											: "justify-end"
+									}`}
+								>
+									{!completedTodos &&
+										filterState.filterCategories === "All" && (
+											<button
+												onClick={handleOpenGeminiTodoModal}
+												className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
+											>
+												Create with Gemini
+											</button>
+										)}
 
 									{filterState.filterCategories === "All" && (
 										<>
@@ -1077,7 +1097,7 @@ export default function TodolistMainContent({
 
 								{filterState.filterCategories !== "All" && (
 									<button
-										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm"
+										className="px-2 py-1 rounded-md text-white bg-red-500 text-sm mr-auto"
 										onClick={handleClearFilter}
 									>
 										Clear

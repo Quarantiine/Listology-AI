@@ -199,6 +199,10 @@ class GeminiChatSystem {
 			}, 5000);
 		}
 	}
+
+	async geminiChatSystem () {
+		// START HERE
+	}
 }
 
 export default function GeminiAPI() {
