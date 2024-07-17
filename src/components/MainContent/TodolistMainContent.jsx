@@ -422,6 +422,12 @@ export default function TodolistMainContent({
 		setOpenGeminiTodoModal(!openGeminiTodoModal);
 	};
 
+	const handleClearSearch = () => {
+		setTodoSearchInput("");
+		setSubTodoSearchInput("");
+		setSubSearchDropdown(false);
+	};
+
 	return (
 		<>
 			<div className="flex flex-col gap-8 w-full lg:w-[80%] 2xl:w-[70%] h-auto relative">
@@ -681,18 +687,15 @@ export default function TodolistMainContent({
 
 							{openTodoSearchInput && (
 								<>
-									{todoSearchInput.length > 0 && (
+									{todoSearchInput && (
 										<button
-											onClick={() => {
-												setTodoSearchInput("");
-												setSubTodoSearchInput("");
-												setSubSearchDropdown(false);
-											}}
+											onClick={handleClearSearch}
 											className="text-[14px] base-btn !bg-red-500"
 										>
 											Clear
 										</button>
 									)}
+
 									<div className="hidden md:flex justify-center items-center gap-1 relative h-fit w-full">
 										<input
 											type="text"
@@ -728,43 +731,55 @@ export default function TodolistMainContent({
 								</>
 							)}
 
-							<div
-								className={`flex md:hidden justify-center items-center gap-1 relative h-fit w-full`}
-							>
-								<input
-									type="text"
-									onChange={(e) => setTodoSearchInput(e.target.value)}
-									placeholder="Search To-dos"
-									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
-										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
-									}`}
-								/>
+							<>
+								{todoSearchInput && (
+									<button
+										onClick={handleClearSearch}
+										className="text-[14px] base-btn !bg-red-500 flex md:hidden"
+									>
+										Clear
+									</button>
+								)}
 
-								<button
-									onClick={handleSubSearchBarDropdown}
-									className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
-								>
-									<Image
-										className={`w-auto h-[9px] ${
-											subSearchDropdown && "rotate-180"
+								<div className="flex md:hidden justify-center items-center gap-1 relative h-fit w-full">
+									<input
+										type="text"
+										onChange={(e) => setTodoSearchInput(e.target.value)}
+										value={todoSearchInput}
+										placeholder="Search To-dos"
+										className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
+											user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
 										}`}
-										src={
-											user.themeColor
-												? "/icons/arrow-white.svg"
-												: "/icons/arrow-black.svg"
-										}
-										alt="arrow"
-										width={20}
-										height={20}
 									/>
-								</button>
-							</div>
+
+									<button
+										onClick={handleSubSearchBarDropdown}
+										className="flex h-full justify-center items-center absolute top-1/2 -translate-y-1/2 right-2"
+									>
+										<Image
+											className={`w-auto h-[9px] ${
+												subSearchDropdown && "rotate-180"
+											}`}
+											src={
+												user.themeColor
+													? "/icons/arrow-white.svg"
+													: "/icons/arrow-black.svg"
+											}
+											alt="arrow"
+											width={20}
+											height={20}
+										/>
+									</button>
+								</div>
+							</>
 						</div>
+
 						{subSearchDropdown && (
 							<div className="flex z-10 justify-end items-center gap-2 w-full absolute top-9 left-0">
 								<input
 									type="text"
 									onChange={(e) => setSubTodoSearchInput(e.target.value)}
+									value={subTodoSearchInput}
 									placeholder="Search Sub To-dos"
 									className={`pl-2 pr-9 py-1 rounded-md border outline-none text-sm w-full md:w-fit ${
 										user.themeColor ? "bg-[#333] border-[#555]" : "bg-[#eee]"
