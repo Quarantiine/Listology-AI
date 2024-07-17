@@ -115,7 +115,14 @@ class GeminiChatSystem {
 		}
 	}
 
-	async createTodoListWithAI(text: string) {
+	async createTodoListWithAI(
+		prompt: string,
+		todoFolderTitle: string,
+		todoFolderDescription: string,
+		userExsistingTodos: string,
+		userExsistingSubTodos: string,
+		userExsistingCompletedTodos: string,
+	) {
 		const chatSession = model.startChat({
 			generationConfig,
 			history: [
@@ -123,21 +130,35 @@ class GeminiChatSystem {
 					role: "user",
 					parts: [
 						{
-							text: `Hello Gemini. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is...Create a to-do list for the user. The user will provide you with the prompt of what the to-do list should consist of. Make the best to-do list that best fit the user's prompt. Output the to-do list in a JSON format. 
+							text: `Hello Gemini. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is follow carefully the instructions below.
 
-							The "todo" item will have a title then an explaination of the to-do. Make sure the "todo" are concise and detailed with the most important info for the user. Only out the JSON format  of the to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user prompt is not clear and it's hard for you to create to-do list for, then just only say "error" and that's it.
+							Instruction: Create a to-do list for the user. The user will provide you with the prompt of what the to-do list should consist of. Make the best to-do list that best fit the user's prompt. Output the to-do list in a JSON format.
 
-							Example Below (User prompt: Give me a list of errands):
+							Instruction: The user will also provide you with their to-do list and sub to-dos that already exsist and the title, and description of the to-do folder for better creating specialized to-dos for that folder. Take in their to-do list as a memory so if the user ask you about their own to-do list, like wanting you to create to-do lists that aligns with their already exsisting to-do list or wanting you to add on to their exsiting to-do list, you can use the memory gained to create a to-do list for them. You can create you own to-do list that aligns with the user's to-do list, so you can create new to-do list that's related to the user's to-dos list but it doesn't have to exactly be the same as the user's to-do list. That's only if they ask you to create to-do list that aligns or adds on with their already exsisting to-do list. If they ask you to create to-do list about something else, then just create a to-do list about that. If the user doesn't have an exsisting to-do list or any sub to-dos, then just only say "error" and that's it. If the user have completed to-dos, then take into account those completed to-dos so you don't have repeat creating that same to-dos over and over again, so the user can focus on completing new to-dos. With every to-do you create, add a difficulty rating for the to-do like in the example below. The difficulty rating is based on the to-do and their should be "Easy", "Intermediate", "Hard" or "Unsure" if you don't know the difficulty of a to-do. If the user wants to ignore a to-do list, then the user will just input "@ignore" then you will make ignore "true" like in the example below. If you don't see the "@ignore" in the user's prompt then it should be "false".
+
+							Instruction: The "todo" item will have a title then an explaination of the to-do. Make sure the "todo" are concise and detailed with the most important info for the user. Only out the JSON format  of the to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user prompt is not clear and it's hard for you to create to-do list for, then just only say "error" and that's it.
+
+							Example Below: (User prompt: Give me a list of errands):
 
 							[
-								{todo: "Buy groceries: milk, eggs, and chips etc..."},
-								{todo: "Replenish your stock of pantry staples: rice, beans, bread, and cereal etc..."},
+								{todo: "Buy groceries: milk, eggs, and chips etc...", difficulty: "Easy", ignoreTodo: false},
+								{todo: "Replenish your stock of pantry staples: rice, beans, bread, and cereal etc...",  difficulty: "Intermediate", ignoreTodo: false},
 								{todo: "Pick up meat or seafood"},
-								{todo: "Get household supplies: raid, bleach, and window clearner etc..."},
-								{todo: "Look for personal care items: deodorant, shampoo, soap etc..."},
-								{todo: "Go to the pharmacy for medications or toiletries"}
+								{todo: "Get household supplies: raid, bleach, and window clearner etc...",  difficulty: "Intermediate", ignoreTodo: false},
+								{todo: "Look for personal care items: deodorant, shampoo, soap etc...",  difficulty: "Easy", ignoreTodo: false},
+								{todo: "Go to the pharmacy for medications or toiletries",  difficulty: "Hard", ignoreTodo: false}
 							]
-							
+
+							Example Below with "/ignore": (User prompt: /ignore Give me a list of errands):
+
+							[
+								{todo: "Buy groceries: milk, eggs, and chips etc...", difficulty: "Easy", ignoreTodo: true},
+								{todo: "Replenish your stock of pantry staples: rice, beans, bread, and cereal etc...",  difficulty: "Intermediate", ignoreTodo: true},
+								{todo: "Pick up meat or seafood"},
+								{todo: "Get household supplies: raid, bleach, and window clearner etc...",  difficulty: "Intermediate", ignoreTodo: true},
+								{todo: "Look for personal care items: deodorant, shampoo, soap etc...",  difficulty: "Easy", ignoreTodo: true},
+								{todo: "Go to the pharmacy for medications or toiletries",  difficulty: "Hard", ignoreTodo: true}
+							]
 							`,
 						},
 					],
@@ -150,7 +171,9 @@ class GeminiChatSystem {
 
 			this.setGeminiLoadingTodos(true);
 
-			await chatSession.sendMessage(text);
+			await chatSession.sendMessage(
+				`User's Prompt: ${prompt} | User's Todo Folder Title: ${todoFolderTitle} and Description: ${todoFolderDescription}, Exsisting To-dos: ${userExsistingTodos ? userExsistingTodos : "No To-dos"}, Exsisting Sub To-dos: ${userExsistingSubTodos ? userExsistingSubTodos : "No Sub To-dos"} | Completed To-dos: ${userExsistingCompletedTodos ? userExsistingCompletedTodos : "No Completed To-dos"}`,
+			);
 
 			const response: Content[] = await chatSession.getHistory();
 

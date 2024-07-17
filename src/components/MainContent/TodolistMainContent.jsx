@@ -824,12 +824,14 @@ export default function TodolistMainContent({
 						)}
 					</button>
 
-					<button
-						onClick={handleOpenGeminiTodoModal}
-						className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 block sm:hidden"
-					>
-						Create with Gemini
-					</button>
+					{!completedTodos && (
+						<button
+							onClick={handleOpenGeminiTodoModal}
+							className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 block sm:hidden"
+						>
+							Create with Gemini
+						</button>
+					)}
 
 					<div
 						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
@@ -956,7 +958,7 @@ export default function TodolistMainContent({
 											?.map((todolist) => todolist).length > 1 && (
 											<button
 												onClick={handleCopyAll}
-												className={`text-btn text-sm ${
+												className={`text-btn ${
 													user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 												}`}
 											>
@@ -975,7 +977,7 @@ export default function TodolistMainContent({
 											<div className="flex gap-2 justify-center items-center">
 												<button
 													onClick={handleCopyAll}
-													className={`text-btn text-sm ${
+													className={`text-btn ${
 														user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
 													}`}
 												>
@@ -985,12 +987,14 @@ export default function TodolistMainContent({
 										)}
 
 								<div className="flex flex-col gap-3 justify-end items-start ml-auto">
-									<button
-										onClick={handleOpenGeminiTodoModal}
-										className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
-									>
-										Create with Gemini
-									</button>
+									{!completedTodos && (
+										<button
+											onClick={handleOpenGeminiTodoModal}
+											className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
+										>
+											Create with Gemini
+										</button>
+									)}
 
 									{filterState.filterCategories === "All" && (
 										<>

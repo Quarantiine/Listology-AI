@@ -103,10 +103,9 @@ export default function FirebaseApi() {
 	const [allSubTodos, setAllSubTodos] = useState<any>();
 	const [allPersonalURLs, setPersonalURLs] = useState<any>();
 
-
 	// Registration System ======
 	useEffect(() => {
-		onSnapshot(colRefRegistration, (ss) => {
+		const unsubscribe = onSnapshot(colRefRegistration, (ss) => {
 			const users: any = [];
 			setAllusers(users);
 
@@ -117,11 +116,13 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// Folder System ======
 	useEffect(() => {
-		onSnapshot(queFolders, (ss) => {
+		const unsubscribe = onSnapshot(queFolders, (ss) => {
 			const folders: any = [];
 			setAllFolders(folders);
 
@@ -132,11 +133,13 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// T0do Folders System ======
 	useEffect(() => {
-		onSnapshot(queTodoFolders, (ss) => {
+		const unsubscribe = onSnapshot(queTodoFolders, (ss) => {
 			const todoFolders: any = [];
 			setAllTodoFolders(todoFolders);
 
@@ -147,11 +150,13 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// T0do List System ======
 	useEffect(() => {
-		onSnapshot(queTodoLists, (ss) => {
+		const unsubscribe = onSnapshot(queTodoLists, (ss) => {
 			const todos: any = [];
 			setAllTodoLists(todos);
 
@@ -162,11 +167,13 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// Sub T0do List System ======
 	useEffect(() => {
-		onSnapshot(queSubTodoLists, (ss) => {
+		const unsubscribe = onSnapshot(queSubTodoLists, (ss) => {
 			const subTodos: any = [];
 			setAllSubTodos(subTodos);
 
@@ -177,11 +184,13 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// Personal URL System ======
 	useEffect(() => {
-		onSnapshot(quePersonalURLs, (ss) => {
+		const unsubscribe = onSnapshot(quePersonalURLs, (ss) => {
 			const personalURLs: any = [];
 			setPersonalURLs(personalURLs);
 
@@ -192,6 +201,8 @@ export default function FirebaseApi() {
 				});
 			});
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	class RegistrationSystem {
@@ -584,6 +595,8 @@ export default function FirebaseApi() {
 			folderID: string,
 			mainFolder: string,
 			todo: string,
+			difficulty: string,
+			ignoreTodo: boolean,
 		) => {
 			try {
 				await addDoc(colRefTodoLists, {
@@ -593,7 +606,8 @@ export default function FirebaseApi() {
 					favorited: false,
 					completed: false,
 					userID: auth.currentUser?.uid,
-					ignoreTodo: false,
+					ignoreTodo: ignoreTodo,
+					difficulty: difficulty,
 					createdTime: serverTimestamp(),
 				});
 			} catch (err) {

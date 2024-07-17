@@ -10,7 +10,7 @@ export default function AskGeminiComponent({
 	loadingTodos,
 	setLoadingTodos,
 }) {
-	const { todoLists } = FirebaseApi();
+	const { auth, todoLists, todolistFolders } = FirebaseApi();
 	const {
 		geminiLoadingTodos,
 		createTodoListWithAI,
@@ -22,7 +22,63 @@ export default function AskGeminiComponent({
 
 	const handleCreateTodoListWithAI = async () => {
 		if (promptText) {
-			await createTodoListWithAI(promptText);
+			await createTodoListWithAI(
+				promptText,
+
+				todolistFolders.allTodoFolders
+					.filter(
+						(value) =>
+							value.userID === auth.currentUser.uid &&
+							value.id === clickedTodoFolder &&
+							value.folderName === clickedFolder,
+					)
+					.map((value) => value.folderTitle)
+					.toString(),
+
+				todolistFolders.allTodoFolders
+					.filter(
+						(value) =>
+							value.userID === auth.currentUser.uid &&
+							value.id === clickedTodoFolder &&
+							value.folderName === clickedFolder,
+					)
+					.map((value) => value.folderDescription)
+					.toString(),
+
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder &&
+								!value.completed,
+						)
+						.map((value) => value.todo),
+				),
+
+				JSON.stringify(
+					todoLists.allSubTodos
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder &&
+								!value.completed,
+						)
+						.map((value) => value.todo),
+				),
+
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder &&
+								value.completed,
+						)
+						.map((value) => value.todo),
+				),
+			);
+
 			setPromptText("");
 		}
 	};
@@ -40,6 +96,8 @@ export default function AskGeminiComponent({
 					clickedTodoFolder,
 					clickedFolder,
 					todoItem.todo,
+					todoItem.difficulty,
+					todoItem.ignoreTodo,
 				),
 			);
 		} catch (error) {
