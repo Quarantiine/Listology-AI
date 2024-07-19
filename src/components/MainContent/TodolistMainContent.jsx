@@ -1002,27 +1002,33 @@ export default function TodolistMainContent({
 													!value.completed,
 											)
 											?.map((todolist) => todolist).length > 1 && (
-											<div className="flex gap-2 justify-center items-center">
-												<button
-													onClick={handleCopyAll}
-													className={`text-btn ${
-														user.themeColor ? "text-[#999]" : "text-[#a9a9a9]"
-													}`}
-												>
-													Copy All To-dos
-												</button>
-											</div>
+											<>
+												{filterState.filterCategories === "All" && (
+													<div className="flex gap-2 justify-center items-center">
+														<button
+															onClick={handleCopyAll}
+															className={`text-btn ${
+																user.themeColor
+																	? "text-[#999]"
+																	: "text-[#a9a9a9]"
+															}`}
+														>
+															Copy All To-dos
+														</button>
+													</div>
+												)}
+											</>
 										)}
 
-								<div
-									className={`flex flex-col gap-3 items-start ml-auto ${
-										!completedTodos && filterState.filterCategories === "All"
-											? "justify-start"
-											: "justify-end"
-									}`}
-								>
-									{!completedTodos &&
-										filterState.filterCategories === "All" && (
+								{filterState.filterCategories === "All" && (
+									<div
+										className={`flex flex-col gap-3 items-start ml-auto ${
+											!completedTodos && filterState.filterCategories === "All"
+												? "justify-start"
+												: "justify-end"
+										}`}
+									>
+										{!completedTodos && (
 											<button
 												onClick={handleOpenGeminiTodoModal}
 												className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
@@ -1031,7 +1037,6 @@ export default function TodolistMainContent({
 											</button>
 										)}
 
-									{filterState.filterCategories === "All" && (
 										<>
 											{totalCompletionPercentage() ? (
 												<>
@@ -1092,8 +1097,8 @@ export default function TodolistMainContent({
 												</>
 											)}
 										</>
-									)}
-								</div>
+									</div>
+								)}
 
 								{filterState.filterCategories !== "All" && (
 									<button

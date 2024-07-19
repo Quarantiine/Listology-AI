@@ -113,7 +113,7 @@ export default function AskGeminiComponent({
 		<>
 			<div className="absolute left-0 top-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50 p-8">
 				<div
-					className={`bg-white w-[90%] max-w-[90%] sm:w-fit md:max-w-[60%] lg:max-w-[600px] rounded-lg relative p-4 flex flex-col gap-4 overflow-y-scroll overflow-x-hidden ${AIListOfTodos ? "max-h-[90%] min-h-fit sm:h-fit" : "h-fit"}`}
+					className={`default-overflow bg-white w-[90%] max-w-[90%] sm:w-fit md:max-w-[60%] lg:max-w-[600px] rounded-lg relative p-4 flex flex-col gap-4 overflow-y-scroll overflow-x-hidden ${AIListOfTodos ? "max-h-[90%] min-h-fit sm:h-fit" : "h-fit"}`}
 				>
 					{errorLoadingList && (
 						<p className="text-sm bg-red-500 text-white px-2 py-1 rounded-lg text-center">

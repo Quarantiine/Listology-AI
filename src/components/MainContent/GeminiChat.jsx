@@ -1,11 +1,186 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
+import GeminiAPI from "../../pages/api/geminiApi";
+import FirebaseAPI from "../../pages/api/firebaseApi";
+import { StateCtx } from "../../components/Layout";
+import ReactMarkdown from "react-markdown";
 
 export default function GeminiChat({ user }) {
+	const { auth, todoLists, todolistFolders } = FirebaseAPI();
+	const { messageHistory, geminiChatLoading, geminiChat } = GeminiAPI();
+	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
+	const [openGeminiChat, setOpenGeminiChat] = useState(false);
+	const [message, setMessage] = useState("");
+	const messageBoxRef = useRef();
+
+	const handleOpenGeminiChat = () => {
+		setOpenGeminiChat(!openGeminiChat);
+	};
+
+	const handleSendMessage = (e) => {
+		e.preventDefault();
+
+		if (message) {
+			geminiChat(
+				message,
+				user.username,
+				todolistFolders.allTodoFolders
+					.filter(
+						(value) =>
+							value.userID === auth.currentUser.uid &&
+							value.folderName === clickedFolder &&
+							value.id === clickedTodoFolder,
+					)
+					.map((value) => value.folderTitle)
+					.toString(),
+				todolistFolders.allTodoFolders
+					.filter(
+						(value) =>
+							value.userID === auth.currentUser.uid &&
+							value.folderName === clickedFolder &&
+							value.id === clickedTodoFolder,
+					)
+					.map((value) => value.folderDescription)
+					.toString(),
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder,
+						)
+						.map((value) => value),
+				),
+				JSON.stringify(
+					todoLists.allSubTodos
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder,
+						)
+						.map((value) => value),
+				),
+			);
+
+			setMessage("");
+		}
+	};
+
+	useEffect(() => {
+		messageBoxRef.current?.scrollTo(0, messageBoxRef.current.scrollHeight);
+	}, [geminiChatLoading]);
+
 	return (
 		<>
+			{openGeminiChat &&
+				createPortal(
+					<>
+						<div className="modal-base">
+							<div className="bg-gray-100 w-[90%] sm:w-fit h-[90%] sm:h-fit rounded-lg p-4 flex flex-col gap-3 justify-start items-start">
+								<div className="flex justify-bewteen items-center gap-1 w-full">
+									<h1 className="h1-base">Chat With Gemini</h1>
+									<button
+										onClick={handleOpenGeminiChat}
+										className="text-btn flex justify-center items-center ml-auto max-h-[25px] min-h-[25px] max-w-[25px] min-w-[25px]"
+									>
+										<Image
+											src={"/icons/close.svg"}
+											width={25}
+											height={25}
+											alt="close"
+										/>
+									</button>
+								</div>
+
+								<div
+									ref={messageBoxRef}
+									className="default-overflow w-full sm:w-[400px] h-full sm:max-h-[350px] bg-white rounded-md p-4 flex flex-col gap-1.5 justify-start items-center overflow-y-scroll overflow-x-hidden"
+								>
+									{messageHistory?.length > 0 ? (
+										messageHistory
+											?.filter(
+												(value) =>
+													!value.parts[0]?.text.includes(
+														"Hello. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is follow carefully the instructions below.",
+													),
+											)
+											.map((message, index) => {
+												return (
+													<React.Fragment key={index}>
+														<div className={`mx-auto w-full`}>
+															<div
+																className={`w-full ${message.role === "user" ? "mr-auto" : "ml-auto"}`}
+															>
+																<div
+																	className={`flex items-start justify-center gap-1 text-white text-start w-fit rounded-lg`}
+																>
+																	<p
+																		className={`text-white px-3 py-1 rounded-l-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																	>
+																		{message.role.charAt(0).toUpperCase() +
+																			message.role.slice(1)}
+																		:
+																	</p>
+
+																	<div
+																		className={`w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																	>
+																		<ReactMarkdown>
+																			{message.parts[0]?.text}
+																		</ReactMarkdown>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</React.Fragment>
+												);
+											})
+									) : (
+										<div className="flex flex-col justify-center items-center w-full h-full text-gray-500 gap-2">
+											<p>Say "Hello" to start</p>
+
+											{geminiChatLoading && (
+												<p className="w-full text-center pt-2">
+													Gemini Typing...
+												</p>
+											)}
+										</div>
+									)}
+
+									{geminiChatLoading && messageHistory?.length > 0 && (
+										<p className="text-gray-500 w-full text-center pt-2">
+											Gemini Typing...
+										</p>
+									)}
+								</div>
+
+								<form className="flex flex-col justify-center items-center w-full gap-2">
+									<input
+										onChange={(e) => setMessage(e.target.value)}
+										className="input-field !bg-white"
+										type="text"
+										name="message"
+										placeholder="Send Message"
+										value={message}
+									/>
+
+									<button
+										onClick={handleSendMessage}
+										className="base-btn w-full"
+									>
+										Send Message
+									</button>
+								</form>
+							</div>
+						</div>
+					</>,
+					document.body,
+				)}
+
 			<div
-				onClick={null}
+				onClick={handleOpenGeminiChat}
 				className={`z-40 fixed top-1/2 translate-y-2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${user.themeColor ? "text-white" : "text-black"}`}
 			>
 				<button
