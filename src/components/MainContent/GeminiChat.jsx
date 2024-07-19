@@ -78,7 +78,7 @@ export default function GeminiChat({ user }) {
 				createPortal(
 					<>
 						<div className="modal-base">
-							<div className="bg-gray-100 w-[90%] sm:w-fit h-[90%] sm:h-fit rounded-lg p-4 flex flex-col gap-3 justify-start items-start">
+							<div className="bg-gray-100 w-full sm:w-fit h-full sm:h-fit rounded-lg p-4 flex flex-col gap-3 justify-start items-start">
 								<div className="flex justify-bewteen items-center gap-1 w-full">
 									<h1 className="h1-base">Chat With Gemini</h1>
 									<button

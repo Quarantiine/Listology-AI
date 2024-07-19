@@ -267,6 +267,8 @@ class GeminiChatSystem {
 							- [Todo]
 							- [Todo]
 
+							Instruction: If the prompt is not clear, then explain to the user that they are not clear on what they need you to do.
+
 						`,
 					},
 				],
