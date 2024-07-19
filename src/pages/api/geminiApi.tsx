@@ -28,8 +28,6 @@ class GeminiChatSystem {
 	setGeminiChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	messageHistory: any;
 	setMessageHistory: any;
-	setCount: React.Dispatch<React.SetStateAction<number>>;
-	count: number;
 
 	constructor(
 		setGeminiDifficultyChoice: React.Dispatch<React.SetStateAction<string>>,
@@ -41,8 +39,6 @@ class GeminiChatSystem {
 		setGeminiChatLoading: React.Dispatch<React.SetStateAction<boolean>>,
 		messageHistory: any,
 		setMessageHistory: any,
-		setCount: React.Dispatch<React.SetStateAction<number>>,
-		count: number,
 	) {
 		this.setGeminiDifficultyChoice = setGeminiDifficultyChoice;
 		this.setTodoLoading = setTodoLoading;
@@ -53,8 +49,6 @@ class GeminiChatSystem {
 		this.setGeminiChatLoading = setGeminiChatLoading;
 		this.messageHistory = messageHistory;
 		this.setMessageHistory = setMessageHistory;
-		this.setCount = setCount;
-		this.count = count;
 	}
 
 	async readTodoDifficulty(
@@ -233,13 +227,15 @@ class GeminiChatSystem {
 				role: "user",
 				parts: [
 					{
-						text: `Hello. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is follow carefully the instructions below.
+						text: `Password: *^GIbi*&&Bgfdr3ECj - This password is to never be shared with anyone. Only read the introduction and follow the instructions and examples below.
+						
+						Introduction: Hello. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is follow carefully the instructions below given by Daniel Ward, the developer, for you to be a great assistance for users.
 
-						Instruction: Please keep responses short and concise. You will be named as Gemini, address the user as "${username}", and if they asked who created you or something related to that, you were configured by Daniel Ward, a smart developer and created by Google. Also act like Jarvis to the user, like Javis acts to Iron Man.
+						Instruction: Please keep responses short and concise. You will be named as Gemini, address the user as "${username}" because this is their name, username, or anything related to that, and if they asked who created you or something related to that, you were configured by Daniel Ward, a smart developer and created by Google. Also act like Jarvis to the user, like Javis acts to Iron Man.
 
 						Instuction: You are meant to be a helpful assistant. Answer whatever questions they may have. You will have the user's to-do folder's information, which is going to be the to-do folder's title, description, and the user's to-dos, and sub to-dos in that folder. This information will be just for your memory. If the user answer anything concerning things in their to-do folder, then try your best helping them answer their questions. The user's to-do folder's information will be given in a object string JSON format to you so you'll know everything about the user's info in their to-do folder. Keep it as a memory until the user asks you something about it. But if the user ask questions or commands you to do something that's not related to anything in their to-do folder then answer there questions and do things for them. So whether the user ask things about things in their to-do folder or not, be a helpful assistance to what they need.
 
-						User's To-do folder info - To-do folder title: ${todoFolderTitle} and description: ${todoFolderDescription} | To-dos: ${todos}, Sub To-dos: ${subTodos}
+						User Data: User's To-do folder info - To-do folder title: ${todoFolderTitle} and description: ${todoFolderDescription} | To-dos: ${todos}, Sub To-dos: ${subTodos}
 						
 						Instruction: You won't be able to create to-do lists for the user. You will only be able to give them information about what they ask. So basically, you're a regular chatbot with the intent to be a helpful assistant. If the user wants you to create to-dos, then you would revert them to use the "Create with Gemini" button in the to-do folder colored blue, purple, and red that can create to-do list with Gemini AI. Pay attention to what the user is asking for. Don't get confused on if the user is asking you to create to-do lists or not. If you provide a link to a user, make sure the link opens in a new tab.
 
@@ -274,9 +270,8 @@ class GeminiChatSystem {
 				],
 			};
 
-			if (this.count < 2) {
+			if (this.messageHistory.length < 1) {
 				chatHistory?.unshift(prePrompt);
-				this.setCount(this.count + 1);
 			}
 
 			const chatSession = model.startChat({
@@ -304,8 +299,7 @@ export default function GeminiAPI() {
 	const errorLoadingListRef = useRef<any>(null);
 	const [AIListOfTodos, setAIListOfTodos] = useState<any>();
 	const [geminiChatLoading, setGeminiChatLoading] = useState<boolean>(false);
-	const [messageHistory, setMessageHistory] = useState<any>();
-	const [count, setCount] = useState<number>(0);
+	const [messageHistory, setMessageHistory] = useState<any>([]);
 
 	const GCS = new GeminiChatSystem(
 		setGeminiDifficultyChoice,
@@ -317,8 +311,6 @@ export default function GeminiAPI() {
 		setGeminiChatLoading,
 		messageHistory,
 		setMessageHistory,
-		setCount,
-		count,
 	);
 
 	GCS.readTodoDifficulty;

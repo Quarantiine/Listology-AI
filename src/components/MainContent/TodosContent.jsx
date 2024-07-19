@@ -307,10 +307,10 @@ export default function TodosContent({
 		const date = new Date(timeMiliSec);
 		const month = date.getMonth();
 		const day = date.getUTCDate();
+		const year = date.getFullYear();
 
-		return `${timeMonths[month]}, ${day}`;
+		return `${timeMonths[month]} ${day}, ${year}`;
 	};
-	createdTimeText();
 
 	const handleSetDifficulty = (difficulty) => {
 		setSubTodoButtonAppear(false);

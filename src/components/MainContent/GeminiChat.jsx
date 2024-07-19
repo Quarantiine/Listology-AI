@@ -9,10 +9,11 @@ import ReactMarkdown from "react-markdown";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
-	const { messageHistory, geminiChatLoading, geminiChat } = GeminiAPI();
+	const { messageHistory, setMessageHistory, geminiChatLoading, geminiChat } =
+		GeminiAPI();
 	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
 	const [openGeminiChat, setOpenGeminiChat] = useState(false);
-	const [message, setMessage] = useState("");
+	const [message, setMessage] = useState("Hello");
 	const messageBoxRef = useRef();
 
 	const handleOpenGeminiChat = () => {
@@ -68,6 +69,12 @@ export default function GeminiChat({ user }) {
 		}
 	};
 
+	const handleClearChat = (e) => {
+		e.preventDefault();
+		setMessageHistory([]);
+		setMessage("Hello");
+	};
+
 	useEffect(() => {
 		messageBoxRef.current?.scrollTo(0, messageBoxRef.current.scrollHeight);
 	}, [geminiChatLoading]);
@@ -102,49 +109,47 @@ export default function GeminiChat({ user }) {
 										messageHistory
 											?.filter(
 												(value) =>
-													!value.parts[0]?.text.includes(
-														"Hello. You are intergated into a web application called listology. It is a to-do list managament tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. What I want you to do is follow carefully the instructions below.",
-													),
+													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj"),
 											)
 											.map((message, index) => {
 												return (
 													<React.Fragment key={index}>
 														<div className={`mx-auto w-full`}>
-															<div
-																className={`w-full ${message.role === "user" ? "mr-auto" : "ml-auto"}`}
-															>
-																<div
-																	className={`flex items-start justify-center gap-1 text-white text-start w-fit rounded-lg`}
-																>
-																	<p
-																		className={`text-white px-3 py-1 rounded-l-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
-																	>
-																		{message.role.charAt(0).toUpperCase() +
-																			message.role.slice(1)}
-																		:
-																	</p>
-
+															{message.parts[0]?.text.length > 0 && (
+																<div className={`w-full`}>
 																	<div
-																		className={`w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																		className={`flex items-start justify-center gap-1 text-white text-start w-fit rounded-lg`}
 																	>
-																		<ReactMarkdown>
-																			{message.parts[0]?.text}
-																		</ReactMarkdown>
+																		<p
+																			className={`text-white px-3 py-1 rounded-l-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																		>
+																			{message.role.charAt(0).toUpperCase() +
+																				message.role.slice(1)}
+																			:
+																		</p>
+
+																		<div
+																			className={`w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																		>
+																			<ReactMarkdown>
+																				{message.parts[0]?.text}
+																			</ReactMarkdown>
+																		</div>
 																	</div>
 																</div>
-															</div>
+															)}
 														</div>
 													</React.Fragment>
 												);
 											})
 									) : (
 										<div className="flex flex-col justify-center items-center w-full h-full text-gray-500 gap-2">
-											<p>Say {"Hello"} to start</p>
-
-											{geminiChatLoading && (
+											{geminiChatLoading ? (
 												<p className="w-full text-center pt-2">
 													Gemini Typing...
 												</p>
+											) : (
+												<p>Say {'"Hello"'}</p>
 											)}
 										</div>
 									)}
@@ -172,6 +177,14 @@ export default function GeminiChat({ user }) {
 									>
 										Send Message
 									</button>
+									{messageHistory?.length > 0 && (
+										<button
+											onClick={handleClearChat}
+											className="base-btn !bg-red-500 w-full"
+										>
+											Clear Chat
+										</button>
+									)}
 								</form>
 							</div>
 						</div>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import GeminiAPI from "../../pages/api/geminiApi";
+import ReactMarkdown from "react-markdown";
 
 export default function AskGeminiComponent({
 	handleOpenGeminiTodoModal,
@@ -79,7 +80,7 @@ export default function AskGeminiComponent({
 				),
 			);
 
-			setPromptText("");
+			setPromptText(promptText);
 		}
 	};
 
@@ -108,6 +109,10 @@ export default function AskGeminiComponent({
 			handleOpenGeminiTodoModal();
 		}
 	};
+
+	useEffect(() => {
+		console.log(promptText);
+	});
 
 	return (
 		<>
@@ -170,6 +175,7 @@ export default function AskGeminiComponent({
 										rows={5}
 										placeholder="Create me a list..."
 										onChange={(e) => setPromptText(e.target.value)}
+										value={promptText}
 									/>
 
 									<button
@@ -184,10 +190,8 @@ export default function AskGeminiComponent({
 									<div className="flex flex-wrap sm:grid sm:grid-cols-2 gap-2 w-full min-h-auto h-full sm:max-h-[300px] overflow-y-scroll overflow-x-hidden">
 										{AIListOfTodos.map((todoItem, index) => (
 											<div key={index}>
-												<p>
-													<span className="font-bold">{index + 1}. To-do:</span>{" "}
-													{todoItem.todo}
-												</p>
+												<p className="font-bold">{index + 1}. To-do:</p>{" "}
+												<ReactMarkdown>{todoItem.todo}</ReactMarkdown>
 											</div>
 										))}
 									</div>

@@ -183,7 +183,6 @@ export default function TimelineTodos({
 	};
 
 	const createdTimeText = () => {
-		// TODO: Add time here
 		const timeMonths = [
 			"January",
 			"February",
@@ -203,10 +202,10 @@ export default function TimelineTodos({
 		const date = new Date(timeMiliSec);
 		const month = date.getMonth();
 		const day = date.getUTCDate();
+		const year = date.getFullYear();
 
-		return `${timeMonths[month]}, ${day}`;
+		return `${timeMonths[month]} ${day}, ${year}`;
 	};
-	createdTimeText();
 
 	const handleSetDifficulty = (difficulty) => {
 		setOpenMoreDropdown(false);
