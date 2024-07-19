@@ -5,7 +5,7 @@ import Image from "next/image";
 import GeminiAPI from "../../pages/api/geminiApi";
 import FirebaseAPI from "../../pages/api/firebaseApi";
 import { StateCtx } from "../../components/Layout";
-import ReactMarkdown from "react-markdown";
+// import ReactMarkdown from "react-markdown";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
@@ -127,9 +127,9 @@ export default function GeminiChat({ user }) {
 																	<div
 																		className={`w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
 																	>
-																		<ReactMarkdown>
-																			{message.parts[0]?.text}
-																		</ReactMarkdown>
+																		{/* <ReactMarkdown> */}
+																		{message.parts[0]?.text}
+																		{/* </ReactMarkdown> */}
 																	</div>
 																</div>
 															</div>
