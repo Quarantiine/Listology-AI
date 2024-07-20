@@ -6,6 +6,8 @@ import GeminiAPI from "../../pages/api/geminiApi";
 import FirebaseAPI from "../../pages/api/firebaseApi";
 import { StateCtx } from "../../components/Layout";
 import ReactMarkdown from "react-markdown";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
@@ -129,7 +131,7 @@ export default function GeminiChat({ user }) {
 																		</p>
 
 																		<div
-																			className={`w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																			className={`default-overflow overflow-y-hidden overflow-x-scroll w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
 																		>
 																			<ReactMarkdown>
 																				{message.parts[0]?.text}
@@ -171,19 +173,33 @@ export default function GeminiChat({ user }) {
 										value={message}
 									/>
 
-									<button
-										onClick={handleSendMessage}
-										className="base-btn w-full"
-									>
-										Send Message
-									</button>
-									{messageHistory?.length > 0 && (
-										<button
-											onClick={handleClearChat}
-											className="base-btn !bg-red-500 w-full"
-										>
-											Clear Chat
-										</button>
+									{geminiChatLoading ? (
+										<>
+											<button
+												className="base-btn w-full !bg-gray-500 cursor-not-allowed"
+												disabled
+											>
+												Send Message
+											</button>
+										</>
+									) : (
+										<>
+											<button
+												onClick={handleSendMessage}
+												className="base-btn w-full"
+											>
+												Send Message
+											</button>
+											
+											{messageHistory?.length > 0 && (
+												<button
+													onClick={handleClearChat}
+													className="base-btn !bg-red-500 w-full"
+												>
+													Clear Chat
+												</button>
+											)}
+										</>
 									)}
 								</form>
 							</div>
