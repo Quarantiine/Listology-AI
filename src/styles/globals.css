@@ -114,3 +114,12 @@
 	background-color: #999;
 	border-radius: 100px;
 }
+
+.gemini-overflow::-webkit-scrollbar {
+	height: 5px;
+}
+
+.gemini-overflow::-webkit-scrollbar-thumb {
+	background-color: #999;
+	border-radius: 100px;
+}

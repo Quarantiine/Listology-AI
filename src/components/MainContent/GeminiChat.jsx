@@ -6,8 +6,6 @@ import GeminiAPI from "../../pages/api/geminiApi";
 import FirebaseAPI from "../../pages/api/firebaseApi";
 import { StateCtx } from "../../components/Layout";
 import ReactMarkdown from "react-markdown";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
@@ -81,6 +79,10 @@ export default function GeminiChat({ user }) {
 		messageBoxRef.current?.scrollTo(0, messageBoxRef.current.scrollHeight);
 	}, [geminiChatLoading]);
 
+	const handleCopyModelText = (modelText) => {
+		navigator.clipboard.writeText(modelText);
+	};
+
 	return (
 		<>
 			{openGeminiChat &&
@@ -120,22 +122,33 @@ export default function GeminiChat({ user }) {
 															{message.parts[0]?.text.length > 0 && (
 																<div className={`w-full`}>
 																	<div
-																		className={`flex items-start justify-center gap-1 text-white text-start w-fit rounded-lg`}
+																		className={`flex items-start justify-center gap-1 text-white text-start w-full rounded-lg`}
 																	>
 																		<p
-																			className={`text-white px-3 py-1 rounded-l-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																			className={`text-white px-3 py-1 rounded-l-lg text-sm ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
 																		>
 																			{message.role.charAt(0).toUpperCase() +
 																				message.role.slice(1)}
 																			:
 																		</p>
 
-																		<div
-																			className={`default-overflow overflow-y-hidden overflow-x-scroll w-fit px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
-																		>
-																			<ReactMarkdown>
-																				{message.parts[0]?.text}
-																			</ReactMarkdown>
+																		<div className="flex flex-col justify-start items-start gap-1 w-full">
+																			<div
+																				className={`gemini-overflow overflow-y-hidden overflow-x-scroll w-full px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																			>
+																				<ReactMarkdown>
+																					{message.parts[0]?.text}
+																				</ReactMarkdown>
+																			</div>
+
+																			{message.role === "model" && (
+																				<button
+																					onClick={()=> handleCopyModelText(message.parts[0]?.text)}
+																					className="text-btn text-sm text-gray-500 ml-auto"
+																				>
+																					copy
+																				</button>
+																			)}
 																		</div>
 																	</div>
 																</div>
@@ -190,7 +203,7 @@ export default function GeminiChat({ user }) {
 											>
 												Send Message
 											</button>
-											
+
 											{messageHistory?.length > 0 && (
 												<button
 													onClick={handleClearChat}
