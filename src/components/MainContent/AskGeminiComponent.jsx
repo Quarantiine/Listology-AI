@@ -303,7 +303,9 @@ const CreateAISubTodoList = ({
 										>
 											<p className="font-bold min-w-[50px]">To-do: </p>
 											{!extractLink(value.todo) && (
-												<ReactMarkdown>{value.todo}</ReactMarkdown>
+												<div className="line-clamp-2">
+													<ReactMarkdown>{value.todo}</ReactMarkdown>
+												</div>
 											)}
 
 											{extractLink(value.todo) && (
@@ -345,7 +347,22 @@ const CreateAISubTodoList = ({
 								<React.Fragment key={value.id}>
 									<div className="text-start flex justify-start items-start gap-1">
 										<p className="font-bold min-w-[50px]">To-do: </p>
-										<ReactMarkdown>{value.todo}</ReactMarkdown>
+										{!extractLink(value.todo) && (
+											<div className="line-clamp-3">
+												<ReactMarkdown>{value.todo}</ReactMarkdown>
+											</div>
+										)}
+
+										{extractLink(value.todo) && (
+											<p>
+												{value.todo.replace(extractLink(value.todo), "")}{" "}
+												<span className="text-gray-500">
+													{shortenUrl(extractLink(value.todo), -30)
+														.replace("", "[Link]")
+														.slice(0, 6)}
+												</span>
+											</p>
+										)}
 									</div>
 								</React.Fragment>
 							);
