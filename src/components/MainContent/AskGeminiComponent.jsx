@@ -362,7 +362,7 @@ const CreateAISubTodoList = ({
 						/>
 
 						<button onClick={AICreateSubTodos} className="base-btn w-full">
-							Create
+							Create (Coming Soon)
 						</button>
 
 						<button
