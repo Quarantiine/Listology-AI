@@ -20,6 +20,7 @@ export default function AskGeminiComponent({
 		setAIListOfTodos,
 	} = GeminiAPI();
 	const [promptText, setPromptText] = useState("");
+	const [chatStyle, setChatStyle] = useState("");
 
 	const handleCreateTodoListWithAI = async () => {
 		if (promptText) {
@@ -165,15 +166,17 @@ export default function AskGeminiComponent({
 						)}
 					</div>
 
-					<CreateAITodolist
-						geminiLoadingTodos={geminiLoadingTodos}
-						AIListOfTodos={AIListOfTodos}
-						promptText={promptText}
-						setPromptText={setPromptText}
-						handleCreateTodoListWithAI={handleCreateTodoListWithAI}
-						handleSaveListOfTodos={handleSaveListOfTodos}
-						handleClearTodolist={handleClearTodolist}
-					/>
+					{chatStyle === "todo" && (
+						<CreateAITodolist
+							geminiLoadingTodos={geminiLoadingTodos}
+							AIListOfTodos={AIListOfTodos}
+							promptText={promptText}
+							setPromptText={setPromptText}
+							handleCreateTodoListWithAI={handleCreateTodoListWithAI}
+							handleSaveListOfTodos={handleSaveListOfTodos}
+							handleClearTodolist={handleClearTodolist}
+						/>
+					)}
 				</div>
 			</div>
 		</>
