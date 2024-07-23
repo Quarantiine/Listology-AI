@@ -356,7 +356,7 @@ export default function ImportantTodos({ todolist }) {
 								? "bg-red-500"
 								: todolist.difficulty?.includes("Intermediate")
 									? "bg-yellow-500"
-									: todolist.difficulty?.inclues("Easy")
+									: todolist.difficulty?.includes("Easy")
 										? "bg-green-500"
 										: user.themeColor
 											? "bg-[#444]"

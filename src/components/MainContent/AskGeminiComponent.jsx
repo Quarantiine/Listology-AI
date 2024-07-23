@@ -165,60 +165,84 @@ export default function AskGeminiComponent({
 						)}
 					</div>
 
-					{!geminiLoadingTodos ? (
-						<>
-							{!AIListOfTodos ? (
-								<div className="flex flex-col gap-2 w-full">
-									<textarea
-										className="input-field rounded-lg"
-										cols={20}
-										rows={5}
-										placeholder="Create me a list..."
-										onChange={(e) => setPromptText(e.target.value)}
-										value={promptText}
-									/>
-
-									<button
-										onClick={handleCreateTodoListWithAI}
-										className="base-btn w-full"
-									>
-										Create
-									</button>
-								</div>
-							) : (
-								<div className="flex flex-col gap-4 w-full">
-									<div className="flex flex-wrap sm:grid sm:grid-cols-2 gap-2 w-full min-h-auto h-full sm:max-h-[300px] overflow-y-scroll overflow-x-hidden">
-										{AIListOfTodos.map((todoItem, index) => (
-											<div key={index}>
-												<p className="font-bold">{index + 1}. To-do:</p>{" "}
-												<ReactMarkdown>{todoItem.todo}</ReactMarkdown>
-											</div>
-										))}
-									</div>
-
-									<div className="flex flex-col w-full justify-center items-center gap-1 mt-auto">
-										<button
-											onClick={handleSaveListOfTodos}
-											className="base-btn w-full"
-										>
-											Save
-										</button>
-
-										<button
-											onClick={handleClearTodolist}
-											className="base-btn !bg-red-500 w-full"
-										>
-											Cancel
-										</button>
-									</div>
-								</div>
-							)}
-						</>
-					) : (
-						<p className="text-gray-500">Loading To-dos...</p>
-					)}
+					<CreateAITodolist
+						geminiLoadingTodos={geminiLoadingTodos}
+						AIListOfTodos={AIListOfTodos}
+						promptText={promptText}
+						setPromptText={setPromptText}
+						handleCreateTodoListWithAI={handleCreateTodoListWithAI}
+						handleSaveListOfTodos={handleSaveListOfTodos}
+						handleClearTodolist={handleClearTodolist}
+					/>
 				</div>
 			</div>
 		</>
 	);
 }
+
+const CreateAITodolist = ({
+	geminiLoadingTodos,
+	AIListOfTodos,
+	promptText,
+	setPromptText,
+	handleCreateTodoListWithAI,
+	handleSaveListOfTodos,
+	handleClearTodolist,
+}) => {
+	return (
+		<>
+			{!geminiLoadingTodos ? (
+				<>
+					{!AIListOfTodos ? (
+						<div className="flex flex-col gap-2 w-full">
+							<textarea
+								className="input-field rounded-lg"
+								cols={20}
+								rows={5}
+								placeholder="Create me a list..."
+								onChange={(e) => setPromptText(e.target.value)}
+								value={promptText}
+							/>
+
+							<button
+								onClick={handleCreateTodoListWithAI}
+								className="base-btn w-full"
+							>
+								Create
+							</button>
+						</div>
+					) : (
+						<div className="flex flex-col gap-4 w-full">
+							<div className="flex flex-wrap sm:grid sm:grid-cols-2 gap-2 w-full min-h-auto h-full sm:max-h-[300px] overflow-y-scroll overflow-x-hidden">
+								{AIListOfTodos.map((todoItem, index) => (
+									<div key={index}>
+										<p className="font-bold">{index + 1}. To-do:</p>{" "}
+										<ReactMarkdown>{todoItem.todo}</ReactMarkdown>
+									</div>
+								))}
+							</div>
+
+							<div className="flex flex-col w-full justify-center items-center gap-1 mt-auto">
+								<button
+									onClick={handleSaveListOfTodos}
+									className="base-btn w-full"
+								>
+									Save
+								</button>
+
+								<button
+									onClick={handleClearTodolist}
+									className="base-btn !bg-red-500 w-full"
+								>
+									Cancel
+								</button>
+							</div>
+						</div>
+					)}
+				</>
+			) : (
+				<p className="text-gray-500">Loading To-dos...</p>
+			)}
+		</>
+	);
+};

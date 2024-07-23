@@ -29,7 +29,21 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	const handleDeleteFolder = () => {
 		setClickedTodoFolder("");
 
-		folders.deletingFolder(folder.id);
+		todoLists.allSubTodos
+			.filter(
+				(value) =>
+					auth.currentUser?.uid === value.userID &&
+					folder.folderName.includes(value.mainFolder[0]),
+			)
+			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
+
+		todoLists.allTodoLists
+			.filter(
+				(value) =>
+					auth.currentUser?.uid === value.userID &&
+					folder.folderName.includes(value.mainFolder[0]),
+			)
+			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
 		todolistFolders.allTodoFolders
 			.filter(
@@ -40,20 +54,8 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 			?.map((todolistFolder) =>
 				todolistFolders.deletingTodoFolder(todolistFolder.id),
 			);
-		todoLists.allTodoLists
-			.filter(
-				(value) =>
-					auth.currentUser?.uid === value.userID &&
-					value.mainFolder[0] === folder.folderName,
-			)
-			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
-		todoLists.allSubTodos
-			.filter(
-				(value) =>
-					auth.currentUser?.uid === value.userID &&
-					value.mainFolder[0] === folder.folderName,
-			)
-			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
+
+		folders.deletingFolder(folder.id);
 
 		setOpenTodolistSidebar(false);
 	};

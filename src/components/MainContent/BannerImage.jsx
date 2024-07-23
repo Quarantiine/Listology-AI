@@ -24,11 +24,8 @@ export default function BannerImage({ user }) {
 				/>
 				{!user.profileImage && <Fallback user={user} />}
 			</div>
-			{user.bannerSize && (
-				<div className="fixed top-5 right-0 z-40 w-20 h-20">
-					<ImageControls />
-				</div>
-			)}
+
+			{user.bannerSize && <ImageControls />}
 		</>
 	);
 }
@@ -38,22 +35,13 @@ const TextContent = ({ user }) => {
 		<>
 			<div className="absolute flex justify-center items-center z-10 w-full h-full">
 				<div className="w-[95%] h-full flex flex-col justify-end items-start gap-2 pb-4">
-					{/* <div className="flex justify-center items-center gap-3">
-						<p
-							className={`${
-								user.themeColor ? "text-white" : "text-[#333]"
-							} text-xl sm:text-3xl font-thin`}
-						>
-							Welcome
-						</p>
-					</div> */}
 					<h1
 						className={`line-clamp-1 px-5 py-2 rounded-full flex justify-center items-center gap-2 ${
 							user.themeColor ? "text-white bg-[#333]" : "text-[#333] bg-white"
 						} text-xl font-medium`}
 					>
-						<span>
-							{user.profileImage && (
+						{user.profileImage && (
+							<span>
 								<Image
 									className="min-w-[25px] max-w-[25px]  min-h-[25px] max-h-[25px] rounded-full object-cover object-center"
 									src={user.profileImage}
@@ -61,8 +49,8 @@ const TextContent = ({ user }) => {
 									width={30}
 									height={30}
 								/>
-							)}
-						</span>
+							</span>
+						)}
 						<span>{user.username || "Username"}</span>
 					</h1>
 				</div>

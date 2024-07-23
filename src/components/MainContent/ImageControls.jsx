@@ -54,24 +54,26 @@ export default function ImageControls() {
 
 	return (
 		<>
-			<div className="z-30 absolute bottom-3 right-5 w-fi ht-fit flex justify-center items-center">
+			<div
+				className={`z-30 w-fit h-fit flex justify-center items-center ${!user.bannerSize ? "bottom-3 right-5 absolute" : "top-12 right-5 fixed"}`}
+			>
 				{clickedImageLoading &&
 					createPortal(
 						<div className="image-loading-indicator w-full h-fit px-10 py-2 bg-green-500 text-white fixed left-1/2 -translate-x-1/2 z-50 flex justify-center items-center text-center">
-							<p>(Successful) Your Picture is Arriving, Be Patient...</p>
+							<p>Your Picture is Arriving</p>
 						</div>,
-						document.body
+						document.body,
 					)}
 
 				<button
 					onClick={handleIncreaseBannerSize}
-					className={`flex justify-center items-center w-fit h-fit  p-2 text-btn ${
+					className={`flex justify-center items-center w-fit h-fit p-2 text-btn ${
 						user.bannerSize ? "rounded-md" : "rounded-l-md"
-					} ${user.themeColor ? "bg-[#fff]" : "bg-[#333]"}`}
+					} ${user.themeColor ? "bg-[#fff]" : "bg-[#222]"}`}
 				>
 					{user.themeColor ? (
 						<Image
-							className="w-auto h-[18px]"
+							className={`w-auto ${!user.bannerSize ? "h-[18px]" : "h-[15px]"}`}
 							src={"/icons/increase-size-black.svg"}
 							alt="increase-image"
 							width={20}
@@ -79,7 +81,7 @@ export default function ImageControls() {
 						/>
 					) : (
 						<Image
-							className="w-auto h-[18px]"
+							className={`w-auto ${!user.bannerSize ? "h-[18px]" : "h-[15px]"}`}
 							src={"/icons/increase-size-white.svg"}
 							alt="increase-image"
 							width={20}
@@ -94,7 +96,7 @@ export default function ImageControls() {
 						className="flex justify-center items-center w-fit h-fit bg-white py-2 px-1 rounded-r-md text-btn"
 					>
 						<Image
-							className="w-auto h-[17px]"
+							className="w-auto h-[18px]"
 							src={"/icons/picture-black.svg"}
 							alt="gallery"
 							width={20}
@@ -125,7 +127,7 @@ export default function ImageControls() {
 							openGalleryModal={openGalleryModal}
 							setOpenGalleryModal={setOpenGalleryModal}
 						/>,
-						document.body
+						document.body,
 					)}
 			</div>
 		</>
