@@ -32,7 +32,7 @@ export default function GeminiChat({ user }) {
 						(value) =>
 							value.userID === auth.currentUser.uid &&
 							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder,
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderTitle)
 					.toString(),
@@ -41,7 +41,7 @@ export default function GeminiChat({ user }) {
 						(value) =>
 							value.userID === auth.currentUser.uid &&
 							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder,
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderDescription)
 					.toString(),
@@ -50,19 +50,19 @@ export default function GeminiChat({ user }) {
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder,
+								value.folderID === clickedTodoFolder
 						)
-						.map((value) => value),
+						.map((value) => value)
 				),
 				JSON.stringify(
 					todoLists.allSubTodos
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder,
+								value.folderID === clickedTodoFolder
 						)
-						.map((value) => value),
-				),
+						.map((value) => value)
+				)
 			);
 
 			setMessage("");
@@ -113,7 +113,7 @@ export default function GeminiChat({ user }) {
 										messageHistory
 											?.filter(
 												(value) =>
-													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj"),
+													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj")
 											)
 											.map((message, index) => {
 												return (
@@ -125,7 +125,11 @@ export default function GeminiChat({ user }) {
 																		className={`flex items-start justify-center gap-1 text-white text-start w-full rounded-lg`}
 																	>
 																		<p
-																			className={`text-white px-3 py-1 rounded-l-lg text-sm ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																			className={`text-white px-3 py-1 rounded-l-lg text-sm ${
+																				message.role === "user"
+																					? "bg-blue-500"
+																					: "bg-gray-700"
+																			}`}
 																		>
 																			{message.role.charAt(0).toUpperCase() +
 																				message.role.slice(1)}
@@ -134,7 +138,11 @@ export default function GeminiChat({ user }) {
 
 																		<div className="flex flex-col justify-start items-start gap-1 w-full">
 																			<div
-																				className={`gemini-overflow overflow-y-hidden overflow-x-scroll w-full px-3 py-1 rounded-r-lg ${message.role === "user" ? "bg-blue-500" : "bg-gray-700"}`}
+																				className={`gemini-overflow overflow-y-hidden overflow-x-scroll w-full px-3 py-1 rounded-r-lg ${
+																					message.role === "user"
+																						? "bg-blue-500"
+																						: "bg-gray-700"
+																				}`}
 																			>
 																				<ReactMarkdown>
 																					{message.parts[0]?.text}
@@ -143,7 +151,11 @@ export default function GeminiChat({ user }) {
 
 																			{message.role === "model" && (
 																				<button
-																					onClick={()=> handleCopyModelText(message.parts[0]?.text)}
+																					onClick={() =>
+																						handleCopyModelText(
+																							message.parts[0]?.text
+																						)
+																					}
 																					className="text-btn text-sm text-gray-500 ml-auto"
 																				>
 																					copy
@@ -164,7 +176,7 @@ export default function GeminiChat({ user }) {
 													Gemini Typing...
 												</p>
 											) : (
-												<p>Say {'"Hello"'}</p>
+												<p>Say {'"Hello"'} to Gemini</p>
 											)}
 										</div>
 									)}
@@ -218,12 +230,14 @@ export default function GeminiChat({ user }) {
 							</div>
 						</div>
 					</>,
-					document.body,
+					document.body
 				)}
 
 			<div
 				onClick={handleOpenGeminiChat}
-				className={`z-40 fixed top-1/2 translate-y-2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${user.themeColor ? "text-white" : "text-black"}`}
+				className={`z-40 fixed top-1/2 translate-y-2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
+					user.themeColor ? "text-white" : "text-black"
+				}`}
 			>
 				<button
 					className={`text-btn w-fit h-fit absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 flex justify-center items-center`}

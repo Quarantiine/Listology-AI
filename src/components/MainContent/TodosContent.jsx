@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import React, {
 	useContext,
@@ -106,13 +107,13 @@ export default function TodosContent({
 			setEditTextActive(false);
 			todoLists.updatingTodolist(
 				todolist.id,
-				await grammaticallyFixedTodo(todoText),
+				await grammaticallyFixedTodo(todoText)
 			);
 
 			const subTodos = todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id && value.uid === auth.currentUser.uid,
+						value.todoID === todolist.id && value.uid === auth.currentUser.uid
 				)
 				.map((subTodo) => subTodo.todo)
 				.toString();
@@ -153,11 +154,23 @@ export default function TodosContent({
 					todolistFolder.folderTitle,
 					todolistFolder.folderDescription,
 					todoText,
-					`Start Date: ${todolist.startDate ? `Start Date: ${todoDate(startTimeMiliSec)}, ${todoTime(startTimeMiliSec)}` : "No Start Date"}`,
-					`End Date: ${todolist.endDate ? `End Date: ${todoDate(endTimeMiliSec)}, ${todoTime(endTimeMiliSec)}` : "No End Date"}`,
+					`Start Date: ${
+						todolist.startDate
+							? `Start Date: ${todoDate(startTimeMiliSec)}, ${todoTime(
+									startTimeMiliSec
+							  )}`
+							: "No Start Date"
+					}`,
+					`End Date: ${
+						todolist.endDate
+							? `End Date: ${todoDate(endTimeMiliSec)}, ${todoTime(
+									endTimeMiliSec
+							  )}`
+							: "No End Date"
+					}`,
 					`${subTodos ? subTodos : "No Sub Todos"}`,
-					todolist.ignoreTodo,
-				),
+					todolist.ignoreTodo
+				)
 			);
 		}
 	};
@@ -186,7 +199,7 @@ export default function TodosContent({
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false,
+			todoIndicator.current ? true : false
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -200,7 +213,7 @@ export default function TodosContent({
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID,
+						auth.currentUser?.uid === value.userID
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -222,12 +235,12 @@ export default function TodosContent({
 				?.filter(
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
-						value.folderName === clickedFolder,
+						value.folderName === clickedFolder
 				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName),
 			todolistFolder.id,
-			todolist.id,
+			todolist.id
 		);
 	};
 
@@ -326,7 +339,7 @@ export default function TodosContent({
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -444,7 +457,7 @@ export default function TodosContent({
 			todoLists.updatingTodoCompletionDates(
 				todolist.id,
 				timelineDate,
-				timelineDate2,
+				timelineDate2
 			);
 			setOpenTimelineModal(false);
 			setTimelineDate(new Date());
@@ -633,7 +646,7 @@ export default function TodosContent({
 						</div>
 					)}
 				</>,
-				document.body,
+				document.body
 			)}
 
 			<div
@@ -658,12 +671,12 @@ export default function TodosContent({
 							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
 								: todolist.difficulty?.includes("Intermediate")
-									? "bg-yellow-500"
-									: todolist.difficulty?.includes("Easy")
-										? "bg-green-500"
-										: user.themeColor
-											? "bg-[#444]"
-											: "bg-[#ccc]"
+								? "bg-yellow-500"
+								: todolist.difficulty?.includes("Easy")
+								? "bg-green-500"
+								: user.themeColor
+								? "bg-[#444]"
+								: "bg-[#ccc]"
 						}`}
 					/>
 				)}
@@ -680,8 +693,8 @@ export default function TodosContent({
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-											? "/icons/checkbox-empty-white.svg"
-											: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}
@@ -821,7 +834,7 @@ export default function TodosContent({
 									</button>
 								</>
 							) : (
-								<p
+								<div
 									onClick={handleEditTextActive}
 									className={`text-btn w-full ${
 										todolist.completed && "line-through select-all"
@@ -831,15 +844,15 @@ export default function TodosContent({
 											: "translate-x-0 lg:-translate-x-8"
 									}`}
 								>
-									{todolist.todo}
-								</p>
+									<ReactMarkdown>{todolist.todo}</ReactMarkdown>
+								</div>
 							)}
 						</div>
 					) : (
 						<p
-							className={`w-full ${user.themeColor ? "text-[#999]" : "text-gray-500"} ${
-								todolist.completed && "line-through select-all"
-							} ${
+							className={`w-full ${
+								user.themeColor ? "text-[#999]" : "text-gray-500"
+							} ${todolist.completed && "line-through select-all"} ${
 								subTodoButtonAppear || openLinkDropdown
 									? "translate-x-0"
 									: "translate-x-0 lg:-translate-x-8"
@@ -1153,7 +1166,7 @@ export default function TodosContent({
 						(value) =>
 							value.folderID === todolistFolder.id &&
 							value.userID === auth.currentUser?.uid &&
-							value.todoID === todolist.id,
+							value.todoID === todolist.id
 					)
 					.map((subTodo) => subTodo.todoID === todolist.id)
 					.includes(true) && (
@@ -1185,7 +1198,7 @@ export default function TodosContent({
 					?.filter(
 						(value) =>
 							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser?.uid,
+							value.userID === auth.currentUser?.uid
 					)
 					.map((subTodo) => {
 						if (

@@ -38,7 +38,7 @@ class GeminiChatSystem {
 		setAIListOfTodos: React.Dispatch<React.SetStateAction<any>>,
 		setGeminiChatLoading: React.Dispatch<React.SetStateAction<boolean>>,
 		messageHistory: any,
-		setMessageHistory: any,
+		setMessageHistory: any
 	) {
 		this.setGeminiDifficultyChoice = setGeminiDifficultyChoice;
 		this.setTodoLoading = setTodoLoading;
@@ -58,7 +58,7 @@ class GeminiChatSystem {
 		todoStartDate: string,
 		todoEndDate: string,
 		todoSubTodo: string,
-		ignoredTodo: boolean,
+		ignoredTodo: boolean
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -76,7 +76,9 @@ class GeminiChatSystem {
 
 		try {
 			await chatSession.sendMessage(
-				`Todo Folder Title: ${todoFolderTitle}, Descriptions: ${todoFolderDescription}, Todo Task: ${todoTask}, Start Date: ${todoStartDate}, End Date: ${todoEndDate}, Sub Todo: ${todoSubTodo}, Todo is ${ignoredTodo ? "Ignored" : "Not Ignored"}. What is the difficulty of the to-do based on the given information?`,
+				`Todo Folder Title: ${todoFolderTitle}, Descriptions: ${todoFolderDescription}, Todo Task: ${todoTask}, Start Date: ${todoStartDate}, End Date: ${todoEndDate}, Sub Todo: ${todoSubTodo}, Todo is ${
+					ignoredTodo ? "Ignored" : "Not Ignored"
+				}. What is the difficulty of the to-do based on the given information?`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -108,7 +110,7 @@ class GeminiChatSystem {
 		try {
 			this.setTodoLoading(true);
 			await chatSession.sendMessage(
-				`Change this text and make it better accorrding to the instructions given above: ${text}`,
+				`Change this text and make it better accorrding to the instructions given above: ${text}`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -128,9 +130,9 @@ class GeminiChatSystem {
 		prompt: string,
 		todoFolderTitle: string,
 		todoFolderDescription: string,
-		userExsistingTodos: string,
-		userExsistingSubTodos: string,
-		userExsistingCompletedTodos: string,
+		userExistingTodos: string,
+		userExistingSubTodos: string,
+		userExistingCompletedTodos: string
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -143,7 +145,7 @@ class GeminiChatSystem {
 
 							Instruction: Create a to-do list for the user. The user will provide you with the prompt of what the to-do list should consist of. Make the best to-do list that best fit the user's prompt. Output the to-do list in a JSON format.
 
-							Instruction: The user will also provide you with their to-do list and sub to-dos that already exsist and the title, and description of the to-do folder for better creating specialized to-dos for that folder. Take in their to-do list as a memory so if the user ask you about their own to-do list, like wanting you to create to-do lists that aligns with their already exsisting to-do list or wanting you to add on to their exsiting to-do list, you can use the memory gained to create a to-do list for them. You can create you own to-do list that aligns with the user's to-do list, so you can create new to-do list that's related to the user's to-dos list but it doesn't have to exactly be the same as the user's to-do list. That's only if they ask you to create to-do list that aligns or adds on with their already exsisting to-do list. If they ask you to create to-do list about something else, then just create a to-do list about that. If the user doesn't have an exsisting to-do list or any sub to-dos, then just only say "error" and that's it. If the user have completed to-dos, then take into account those completed to-dos so you don't have repeat creating that same to-dos over and over again, so the user can focus on completing new to-dos. With every to-do you create, add a difficulty rating for the to-do like in the example below. The difficulty rating is based on the to-do and their should be "Easy", "Intermediate", "Hard" or "Unsure" if you don't know the difficulty of a to-do. If the user wants to ignore a to-do list, then the user will just input "@ignore" then you will make ignore "true" like in the example below. If a user types "@ignore" then set the difficulties to "Unsure", then the difficulty will be "Unsure". If you don't see the "@ignore" in the user's prompt then the "ignoreTodo" should be "false".
+							Instruction: The user will also provide you with their to-do list and sub to-dos that already exsist and the title, and description of the to-do folder for better creating specialized to-dos for that folder. Take in their to-do list as a memory so if the user ask you about their own to-do list, like wanting you to create to-do lists that aligns with their already Existing to-do list or wanting you to add on to their exsiting to-do list, you can use the memory gained to create a to-do list for them. You can create you own to-do list that aligns with the user's to-do list, so you can create new to-do list that's related to the user's to-dos list but it doesn't have to exactly be the same as the user's to-do list. That's only if they ask you to create to-do list that aligns or adds on with their already Existing to-do list. If they ask you to create to-do list about something else, then just create a to-do list about that. If the user doesn't have an Existing to-do list or any sub to-dos, then just only say "error" and that's it. If the user have completed to-dos, then take into account those completed to-dos so you don't have repeat creating that same to-dos over and over again, so the user can focus on completing new to-dos. With every to-do you create, add a difficulty rating for the to-do like in the example below. The difficulty rating is based on the to-do and their should be "Easy", "Intermediate", "Hard" or "Unsure" if you don't know the difficulty of a to-do. If the user wants to ignore a to-do list, then the user will just input "@ignore" then you will make ignore "true" like in the example below. If a user types "@ignore" then set the difficulties to "Unsure", then the difficulty will be "Unsure". If you don't see the "@ignore" in the user's prompt then the "ignoreTodo" should be "false".
 
 							Instruction: The "todo" item will have a title then an explaination of the to-do. Make sure the "todo" are concise and detailed with the most important info for the user. Only out the JSON format  of the to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user prompt is not clear and it's hard for you to create to-do list for, then just only say "error" and that's it.
 
@@ -181,7 +183,15 @@ class GeminiChatSystem {
 			this.setGeminiLoadingTodos(true);
 
 			await chatSession.sendMessage(
-				`User's Prompt: ${prompt} | User's Todo Folder Title: ${todoFolderTitle} and Description: ${todoFolderDescription}, Exsisting To-dos: ${userExsistingTodos ? userExsistingTodos : "No To-dos"}, Exsisting Sub To-dos: ${userExsistingSubTodos ? userExsistingSubTodos : "No Sub To-dos"} | Completed To-dos: ${userExsistingCompletedTodos ? userExsistingCompletedTodos : "No Completed To-dos"}`,
+				`User's Prompt: ${prompt} | User's Todo Folder Title: ${todoFolderTitle} and Description: ${todoFolderDescription}, Existing To-dos: ${
+					userExistingTodos ? userExistingTodos : "No To-dos"
+				}, Existing Sub To-dos: ${
+					userExistingSubTodos ? userExistingSubTodos : "No Sub To-dos"
+				} | Completed To-dos: ${
+					userExistingCompletedTodos
+						? userExistingCompletedTodos
+						: "No Completed To-dos"
+				}`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -213,7 +223,7 @@ class GeminiChatSystem {
 		todoFolderTitle: string,
 		todoFolderDescription: string,
 		todos: string,
-		subTodos: string,
+		subTodos: string
 	) {
 		try {
 			this.setGeminiChatLoading(true);
@@ -336,7 +346,7 @@ export default function GeminiAPI() {
 		setAIListOfTodos,
 		setGeminiChatLoading,
 		messageHistory,
-		setMessageHistory,
+		setMessageHistory
 	);
 
 	GCS.readTodoDifficulty;
