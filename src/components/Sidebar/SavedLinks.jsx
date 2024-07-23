@@ -11,6 +11,8 @@ export default function SavedLinks({ user }) {
 	const [openSaveLinkModal, setOpenSaveLinkModal] = useState(false);
 	const [URLText, setURLText] = useState("");
 	const [URLTitle, setURLTitle] = useState("");
+	const [initiateSearch, setInitiateSearch] = useState(false);
+	const [searchResults, setSearchResults] = useState("");
 
 	const errMessageRef = useRef();
 
@@ -65,12 +67,16 @@ export default function SavedLinks({ user }) {
 			clearTimeout(errMessageRef.current);
 			setErrMessage("");
 		} else {
-			setErrMessage("Err: Check Information");
+			setErrMessage("Check Information");
 
 			errMessageRef.current = setTimeout(() => {
 				setErrMessage("");
 			}, 4000);
 		}
+	};
+
+	const handleInitiateSearch = () => {
+		setInitiateSearch(!initiateSearch);
 	};
 
 	return (
@@ -142,45 +148,115 @@ export default function SavedLinks({ user }) {
 								</div>
 							</div>
 						</>,
-						document.body
+						document.body,
 					)}
 
 				{openSavedLinks && (
 					<div className="saved-links saved-links-overflow absolute top-16 left-1/2 -translate-x-1/2 w-[80%] min-h-[50px] max-h-[150px] bg-white shadow-md rounded-lg text-black px-3 py-2 overflow-y-scroll overflow-x-hidden">
-						<div className="flex flex-row justify-between items-center gap-1">
-							<h1 className="text-lg font-bold">Links</h1>
+						{!initiateSearch && (
+							<>
+								<div className="flex flex-row justify-between items-center gap-1 w-full">
+									<h1 className="text-lg font-bold">Links</h1>
 
-							<button
-								onClick={handleOpenSaveLinkModal}
-								className="saved-links-modal text-btn"
-							>
-								<Image
-									className="rotate-45"
-									src={"/icons/close.svg"}
-									alt="icon"
-									width={20}
-									height={20}
+									<div className="flex justify-center items-center gap-1">
+										<button
+											onClick={handleInitiateSearch}
+											className="saved-links-modal text-btn hidden sm:block"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												x="0px"
+												y="0px"
+												width="18"
+												height="18"
+												viewBox="0 0 24 24"
+											>
+												<path d="M 9 2 C 5.1458514 2 2 5.1458514 2 9 C 2 12.854149 5.1458514 16 9 16 C 10.747998 16 12.345009 15.348024 13.574219 14.28125 L 14 14.707031 L 14 16 L 20 22 L 22 20 L 16 14 L 14.707031 14 L 14.28125 13.574219 C 15.348024 12.345009 16 10.747998 16 9 C 16 5.1458514 12.854149 2 9 2 z M 9 4 C 11.773268 4 14 6.2267316 14 9 C 14 11.773268 11.773268 14 9 14 C 6.2267316 14 4 11.773268 4 9 C 4 6.2267316 6.2267316 4 9 4 z"></path>
+											</svg>
+										</button>
+
+										<button
+											onClick={handleOpenSaveLinkModal}
+											className="saved-links-modal text-btn hidden sm:block"
+										>
+											<Image
+												className="rotate-45"
+												src={"/icons/close.svg"}
+												alt="icon"
+												width={20}
+												height={20}
+											/>
+										</button>
+									</div>
+								</div>
+
+								<p className="text-sm">Save links for easy access</p>
+							</>
+						)}
+
+						{initiateSearch && (
+							<div className="flex flex-col w-full hidden sm:block">
+								<div className="flex justify-between items-center">
+									<h1 className="text-lg font-bold">Search</h1>
+
+									<button
+										onClick={handleInitiateSearch}
+										className="saved-links-modal text-btn hidden sm:block"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											x="0px"
+											y="0px"
+											width="18"
+											height="18"
+											viewBox="0 0 24 24"
+										>
+											<path d="M 9 2 C 5.1458514 2 2 5.1458514 2 9 C 2 12.854149 5.1458514 16 9 16 C 10.747998 16 12.345009 15.348024 13.574219 14.28125 L 14 14.707031 L 14 16 L 20 22 L 22 20 L 16 14 L 14.707031 14 L 14.28125 13.574219 C 15.348024 12.345009 16 10.747998 16 9 C 16 5.1458514 12.854149 2 9 2 z M 9 4 C 11.773268 4 14 6.2267316 14 9 C 14 11.773268 11.773268 14 9 14 C 6.2267316 14 4 11.773268 4 9 C 4 6.2267316 6.2267316 4 9 4 z"></path>
+										</svg>
+									</button>
+								</div>
+
+								<input
+									className="px-2 py-1 rounded-md text-sm bg-gray-100 w-full outline-none"
+									type="search"
+									name="search"
+									placeholder="Search Links"
+									onChange={(e) => setSearchResults(e.target.value)}
 								/>
-							</button>
-						</div>
-
-						<p className="text-sm">Save links for easy access</p>
+							</div>
+						)}
 
 						<div className="flex flex-col justify-center items-start mt-2">
 							{personalURLsSystem.allPersonalURLs
-								.filter((value) => value.uid === auth.currentUser.uid)
+								.filter(
+									(value) =>
+										value.uid === auth.currentUser.uid &&
+										value.title
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchResults.toLowerCase()),
+								)
 								.map((personalURL) => personalURL).length > 0 ? (
 								<>
 									{personalURLsSystem.allPersonalURLs
 										.filter((value) => value.uid === auth.currentUser.uid)
 										.map((personalURL) => {
-											return (
-												<URLDeletionSystem
-													key={personalURL.id}
-													personalURLsSystem={personalURLsSystem}
-													personalURL={personalURL}
-												/>
-											);
+											if (
+												personalURL.title
+													.normalize("NFD")
+													.replace(/\p{Diacritic}/gu, "")
+													.toLowerCase()
+													.includes(searchResults.toLowerCase())
+											) {
+												return (
+													<URLDeletionSystem
+														key={personalURL.id}
+														personalURLsSystem={personalURLsSystem}
+														personalURL={personalURL}
+													/>
+												);
+											}
 										})}
 								</>
 							) : (

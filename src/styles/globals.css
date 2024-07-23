@@ -27,13 +27,29 @@
 	@apply px-3 py-2 rounded-md w-full outline-none bg-gray-100;
 }
 
+@layer utilities {
+	.bg-modal-overlay {
+		background-color: rgba(0, 0, 0, 0.7);
+	}
+}
+
+.modal-base {
+	@apply bg-modal-overlay absolute top-0 left-0 w-full h-full p-3 z-50 flex justify-center items-center;
+}
+
+.h1-base {
+	@apply text-2xl font-bold;
+}
+
 /* CSS */
 .main-content-overflow::-webkit-scrollbar {
 	width: 5px;
 }
+
 .main-content-overflow::-webkit-scrollbar-thumb {
 	background-color: #777;
 }
+
 .main-content-overflow::-webkit-scrollbar-track {
 	background-color: #eee;
 }
@@ -71,9 +87,11 @@
 .calendar-overflow::-webkit-scrollbar {
 	height: 5px;
 }
+
 .calendar-overflow::-webkit-scrollbar-thumb {
 	background-color: #777;
 }
+
 .calendar-overflow::-webkit-scrollbar-track {
 	background-color: #eee;
 }
@@ -81,7 +99,27 @@
 .saved-links-overflow::-webkit-scrollbar {
 	width: 5px;
 }
+
 .saved-links-overflow::-webkit-scrollbar-thumb {
+	background-color: #999;
+	border-radius: 100px;
+}
+
+.default-overflow::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+.default-overflow::-webkit-scrollbar-thumb {
+	background-color: #999;
+	border-radius: 100px;
+}
+
+.gemini-overflow::-webkit-scrollbar {
+	height: 5px;
+}
+
+.gemini-overflow::-webkit-scrollbar-thumb {
 	background-color: #999;
 	border-radius: 100px;
 }

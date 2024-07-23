@@ -20,7 +20,7 @@ export default function AllIgnoredTodos({
 						value.folderID === todolistFolder.id &&
 						value.userID === auth.currentUser?.uid &&
 						value.completed === completedTodos &&
-						value.ignoreTodo
+						value.ignoreTodo,
 				)
 				?.map((todolist) => {
 					if (
@@ -64,7 +64,7 @@ export default function AllIgnoredTodos({
 
 						if (
 							filterState.filterCategories.value === "Difficulty" &&
-							filterState.filterCategories.value2 === todolist.difficulty
+							todolist.difficulty?.includes(filterState.filterCategories.value2)
 						) {
 							return (
 								<TodosContent

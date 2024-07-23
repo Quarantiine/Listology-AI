@@ -87,7 +87,7 @@ export default function TimelineTodos({
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false
+			todoIndicator.current ? true : false,
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -101,7 +101,7 @@ export default function TimelineTodos({
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID
+						auth.currentUser?.uid === value.userID,
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -183,7 +183,6 @@ export default function TimelineTodos({
 	};
 
 	const createdTimeText = () => {
-		// TODO: Add time here
 		const timeMonths = [
 			"January",
 			"February",
@@ -203,10 +202,10 @@ export default function TimelineTodos({
 		const date = new Date(timeMiliSec);
 		const month = date.getMonth();
 		const day = date.getUTCDate();
+		const year = date.getFullYear();
 
-		return `${timeMonths[month]}, ${day}`;
+		return `${timeMonths[month]} ${day}, ${year}`;
 	};
-	createdTimeText();
 
 	const handleSetDifficulty = (difficulty) => {
 		setOpenMoreDropdown(false);
@@ -221,7 +220,7 @@ export default function TimelineTodos({
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -298,14 +297,14 @@ export default function TimelineTodos({
 								differenceInEndHours >= -1
 									? "text-yellow-500"
 									: user.themeColor
-									? "text-[#888]"
-									: "text-gray-400"
+										? "text-[#888]"
+										: "text-gray-400"
 							} ${
 								differenceInEndHours <= -1
 									? "text-red-500"
 									: user.themeColor
-									? "text-[#888]"
-									: "text-gray-400"
+										? "text-[#888]"
+										: "text-gray-400"
 							}`}
 						>
 							{differenceInEndHours <= -1 ? (
@@ -348,10 +347,10 @@ export default function TimelineTodos({
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
-						? user.themeColor
-							? "bg-[#292929]"
-							: "bg-[#eee]"
-						: ""
+							? user.themeColor
+								? "bg-[#292929]"
+								: "bg-[#eee]"
+							: ""
 				}`}
 			>
 				{todolist.ignoreTodo ? (
@@ -359,15 +358,15 @@ export default function TimelineTodos({
 				) : (
 					<div
 						className={`absolute top-0 left-0 w-1 h-full ${
-							todolist && todolist.difficulty === "Hard"
+							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
-								: todolist.difficulty === "Intermediate"
-								? "bg-yellow-500"
-								: todolist.difficulty === "Easy"
-								? "bg-green-500"
-								: user.themeColor
-								? "bg-[#444]"
-								: "bg-[#ccc]"
+								: todolist.difficulty?.includes("Intermediate")
+									? "bg-yellow-500"
+									: todolist.difficulty?.includes("Easy")
+										? "bg-green-500"
+										: user.themeColor
+											? "bg-[#444]"
+											: "bg-[#ccc]"
 						}`}
 					/>
 				)}
@@ -384,8 +383,8 @@ export default function TimelineTodos({
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-										? "/icons/checkbox-empty-white.svg"
-										: "/icons/checkbox-empty-black.svg"
+											? "/icons/checkbox-empty-white.svg"
+											: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}

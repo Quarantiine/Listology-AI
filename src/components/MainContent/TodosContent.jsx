@@ -15,6 +15,7 @@ import shortenUrl from "shorten-url";
 import { createPortal } from "react-dom";
 import Timeline from "../MainContent/Timeline";
 import DateTimeline from "./DateTimeline";
+import GeminiAPI from "../../pages/api/geminiApi";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -35,6 +36,8 @@ export default function TodosContent({
 	subTodoSearchInput,
 }) {
 	const { auth, todoLists } = FirebaseApi();
+	const { readTodoDifficulty, todoLoading, grammaticallyFixedTodo } =
+		GeminiAPI();
 	const { user } = useContext(UserCredentialCtx);
 	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
@@ -97,11 +100,65 @@ export default function TodosContent({
 		}, 10);
 	};
 
-	const handleChangeEditText = () => {
+	const handleChangeEditText = async () => {
 		if (todoText) {
 			setTodoText("");
 			setEditTextActive(false);
-			todoLists.updatingTodolist(todolist.id, todoText);
+			todoLists.updatingTodolist(
+				todolist.id,
+				await grammaticallyFixedTodo(todoText),
+			);
+
+			const subTodos = todoLists.allSubTodos
+				.filter(
+					(value) =>
+						value.todoID === todolist.id && value.uid === auth.currentUser.uid,
+				)
+				.map((subTodo) => subTodo.todo)
+				.toString();
+
+			const startTimeMiliSec = todolist.startDate?.seconds * 1000;
+			const endTimeMiliSec = todolist.endDate?.seconds * 1000;
+
+			const todoDate = (timeMiliSec) => {
+				const date = new Date(timeMiliSec);
+				const month = date.getMonth();
+				const day = date.getDate();
+
+				return `${timeMonths[month]}, ${day}`;
+			};
+
+			function todoTime(time) {
+				const modifiedDate = new Date(time);
+
+				const hour =
+					modifiedDate.getHours() >= 12
+						? Math.abs(modifiedDate.getHours() - 12)
+						: modifiedDate.getHours();
+
+				const minutes = modifiedDate.getMinutes();
+
+				const isPM = modifiedDate.getHours() >= 12 ? false : true;
+
+				const formattedHours = hour.toString().padStart(2, "0");
+				const formattedMinutes = minutes.toString().padStart(2, "0");
+
+				// Return formatted time with AM/PM
+				return `${formattedHours}:${formattedMinutes} ${isPM ? "AM" : "PM"}`;
+			}
+
+			todoLists.updatingTodoDifficulty(
+				todolist.id,
+				await readTodoDifficulty(
+					todolistFolder.folderTitle,
+					todolistFolder.folderDescription,
+					todoText,
+					`Start Date: ${todolist.startDate ? `Start Date: ${todoDate(startTimeMiliSec)}, ${todoTime(startTimeMiliSec)}` : "No Start Date"}`,
+					`End Date: ${todolist.endDate ? `End Date: ${todoDate(endTimeMiliSec)}, ${todoTime(endTimeMiliSec)}` : "No End Date"}`,
+					`${subTodos ? subTodos : "No Sub Todos"}`,
+					todolist.ignoreTodo,
+				),
+			);
 		}
 	};
 
@@ -129,7 +186,7 @@ export default function TodosContent({
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false
+			todoIndicator.current ? true : false,
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -143,7 +200,7 @@ export default function TodosContent({
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID
+						auth.currentUser?.uid === value.userID,
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -165,12 +222,12 @@ export default function TodosContent({
 				?.filter(
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
-						value.folderName === clickedFolder
+						value.folderName === clickedFolder,
 				)
 				.slice(0, 1)
 				?.map((folder) => folder.folderName),
 			todolistFolder.id,
-			todolist.id
+			todolist.id,
 		);
 	};
 
@@ -250,10 +307,10 @@ export default function TodosContent({
 		const date = new Date(timeMiliSec);
 		const month = date.getMonth();
 		const day = date.getUTCDate();
+		const year = date.getFullYear();
 
-		return `${timeMonths[month]}, ${day}`;
+		return `${timeMonths[month]} ${day}, ${year}`;
 	};
-	createdTimeText();
 
 	const handleSetDifficulty = (difficulty) => {
 		setSubTodoButtonAppear(false);
@@ -269,7 +326,7 @@ export default function TodosContent({
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -387,7 +444,7 @@ export default function TodosContent({
 			todoLists.updatingTodoCompletionDates(
 				todolist.id,
 				timelineDate,
-				timelineDate2
+				timelineDate2,
 			);
 			setOpenTimelineModal(false);
 			setTimelineDate(new Date());
@@ -576,7 +633,7 @@ export default function TodosContent({
 						</div>
 					)}
 				</>,
-				document.body
+				document.body,
 			)}
 
 			<div
@@ -598,18 +655,19 @@ export default function TodosContent({
 				) : (
 					<div
 						className={`absolute top-0 left-0 w-1 h-full ${
-							todolist && todolist.difficulty === "Hard"
+							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
-								: todolist.difficulty === "Intermediate"
-								? "bg-yellow-500"
-								: todolist.difficulty === "Easy"
-								? "bg-green-500"
-								: user.themeColor
-								? "bg-[#444]"
-								: "bg-[#ccc]"
+								: todolist.difficulty?.includes("Intermediate")
+									? "bg-yellow-500"
+									: todolist.difficulty?.includes("Easy")
+										? "bg-green-500"
+										: user.themeColor
+											? "bg-[#444]"
+											: "bg-[#ccc]"
 						}`}
 					/>
 				)}
+
 				<div className="relative flex flex-col lg:flex-row justify-center items-center gap-2">
 					{!todolist.ignoreTodo && (
 						<button
@@ -622,8 +680,8 @@ export default function TodosContent({
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-										? "/icons/checkbox-empty-white.svg"
-										: "/icons/checkbox-empty-black.svg"
+											? "/icons/checkbox-empty-white.svg"
+											: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}
@@ -665,83 +723,107 @@ export default function TodosContent({
 				</div>
 
 				<div className="w-full h-auto flex flex-col sm:flex-row justify-start items-center">
-					<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
-						{!todolist.deletionIndicator &&
-						editTextActive &&
-						!todolist.completed ? (
-							<div className="flex justify-between items-center gap-2 w-full">
-								<>
-									<textarea
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-									<input
-										ref={editTextActiveRef}
-										onChange={(e) => setTodoText(e.target.value)}
-										onKeyDown={handleKeyedChangeEditText}
-										className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
-											user.themeColor
-												? "text-white bg-[#333]"
-												: "text-black bg-gray-200"
-										}`}
-										type="text"
-										placeholder={todolist.todo}
-									/>
-								</>
-								<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
-									<button onClick={handleChangeEditText} className="base-btn">
-										change
-									</button>
-									<button
-										onClick={handleEditTextActive}
-										className="base-btn !bg-red-500"
-									>
-										cancel
-									</button>
-								</div>
-							</div>
-						) : linkPattern.test(todolist.todo) ? (
-							<>
-								{openLinkDropdown && extractLink() && (
-									<div
-										className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
-									>
-										<Link
-											href={extractLink()}
-											target="_blank"
-											onClick={() => {
-												handleLinkDropdown();
-												setSubTodoButtonAppear(false);
-											}}
-											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed && "line-through select-all"
+					{!todoLoading ? (
+						<div className="w-full sm:w-[90%] h-fit relative flex justify-start items-center gap-3">
+							{!todolist.deletionIndicator &&
+							editTextActive &&
+							!todolist.completed ? (
+								<div className="flex justify-between items-center gap-2 w-full">
+									<>
+										<textarea
+											ref={editTextActiveRef}
+											onChange={(e) => setTodoText(e.target.value)}
+											onKeyDown={handleKeyedChangeEditText}
+											className={`input-todo-text outline-none block lg:hidden border-none w-full rounded-md px-3 py-2 h-[40px] ${
+												user.themeColor
+													? "text-white bg-[#333]"
+													: "text-black bg-gray-200"
 											}`}
-										>
-											<span>Link</span>
-										</Link>
+											type="text"
+											placeholder={todolist.todo}
+										/>
+
+										<input
+											ref={editTextActiveRef}
+											onChange={(e) => setTodoText(e.target.value)}
+											onKeyDown={handleKeyedChangeEditText}
+											className={`input-todo-text outline-none hidden lg:block border-none w-full rounded-md px-3 py-2 h-[40px] ${
+												user.themeColor
+													? "text-white bg-[#333]"
+													: "text-black bg-gray-200"
+											}`}
+											type="text"
+											placeholder={todolist.todo}
+										/>
+									</>
+
+									<div className="input-todo-text flex flex-col sm:flex-row justify-center items-center gap-2">
+										<button onClick={handleChangeEditText} className="base-btn">
+											change
+										</button>
 										<button
 											onClick={handleEditTextActive}
-											className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
-												todolist.completed && "line-through select-all"
-											}`}
+											className="base-btn !bg-red-500"
 										>
-											<span>Edit</span>
+											cancel
 										</button>
 									</div>
-								)}
+								</div>
+							) : linkPattern.test(todolist.todo) ? (
+								<>
+									{openLinkDropdown && extractLink() && (
+										<div
+											className={`link-dropdown relative w-fit h-fit px-3 py-1 rounded-md border z-10 flex justify-center items-start gap-1 bg-[#0E51FF] text-white text-sm`}
+										>
+											<Link
+												href={extractLink()}
+												target="_blank"
+												onClick={() => {
+													handleLinkDropdown();
+													setSubTodoButtonAppear(false);
+												}}
+												className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+													todolist.completed && "line-through select-all"
+												}`}
+											>
+												<span>Link</span>
+											</Link>
+											<button
+												onClick={handleEditTextActive}
+												className={`text-btn w-full flex flex-col justify-center items-start gap-1 ${
+													todolist.completed && "line-through select-all"
+												}`}
+											>
+												<span>Edit</span>
+											</button>
+										</div>
+									)}
 
-								<button
-									onClick={handleLinkDropdown}
-									title={"Go to link"}
-									className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+									<button
+										onClick={handleLinkDropdown}
+										title={"Go to link"}
+										className={`text-btn w-full sm:w-[90%] text-start no-underline line-clamp-1 flex justify-start items-center gap-1 ${
+											todolist.completed && "line-through select-all"
+										} ${
+											subTodoButtonAppear || openLinkDropdown
+												? "translate-x-0"
+												: "translate-x-0 lg:-translate-x-8"
+										}`}
+									>
+										<p className="">
+											{todolist.todo.replace(extractLink(), "")}{" "}
+											<span className="text-[#0E51FF]">
+												{shortenUrl(extractLink(), -30)
+													.replace("", "(Link)")
+													.slice(0, 6)}
+											</span>
+										</p>
+									</button>
+								</>
+							) : (
+								<p
+									onClick={handleEditTextActive}
+									className={`text-btn w-full ${
 										todolist.completed && "line-through select-all"
 									} ${
 										subTodoButtonAppear || openLinkDropdown
@@ -749,31 +831,23 @@ export default function TodosContent({
 											: "translate-x-0 lg:-translate-x-8"
 									}`}
 								>
-									<p className="">
-										{todolist.todo.replace(extractLink(), "")}{" "}
-										<span className="text-[#0E51FF]">
-											{shortenUrl(extractLink(), -30)
-												.replace("", "(Link)")
-												.slice(0, 6)}
-										</span>
-									</p>
-								</button>
-							</>
-						) : (
-							<p
-								onClick={handleEditTextActive}
-								className={`text-btn w-full ${
-									todolist.completed && "line-through select-all"
-								} ${
-									subTodoButtonAppear || openLinkDropdown
-										? "translate-x-0"
-										: "translate-x-0 lg:-translate-x-8"
-								}`}
-							>
-								{todolist.todo}
-							</p>
-						)}
-					</div>
+									{todolist.todo}
+								</p>
+							)}
+						</div>
+					) : (
+						<p
+							className={`w-full ${user.themeColor ? "text-[#999]" : "text-gray-500"} ${
+								todolist.completed && "line-through select-all"
+							} ${
+								subTodoButtonAppear || openLinkDropdown
+									? "translate-x-0"
+									: "translate-x-0 lg:-translate-x-8"
+							}`}
+						>
+							Loading Todo...
+						</p>
+					)}
 
 					<div className="flex w-20 justify-end items-center gap-3 ml-auto">
 						{todolist.deletionIndicator && deletionIntervals === 5000 && (
@@ -1079,7 +1153,7 @@ export default function TodosContent({
 						(value) =>
 							value.folderID === todolistFolder.id &&
 							value.userID === auth.currentUser?.uid &&
-							value.todoID === todolist.id
+							value.todoID === todolist.id,
 					)
 					.map((subTodo) => subTodo.todoID === todolist.id)
 					.includes(true) && (
@@ -1111,7 +1185,7 @@ export default function TodosContent({
 					?.filter(
 						(value) =>
 							value.folderID === todolistFolder.id &&
-							value.userID === auth.currentUser?.uid
+							value.userID === auth.currentUser?.uid,
 					)
 					.map((subTodo) => {
 						if (
@@ -1131,6 +1205,7 @@ export default function TodosContent({
 										todolist={todolist}
 										todoLists={todoLists}
 										closeSubTodos={closeSubTodos}
+										todolistFolder={todolistFolder}
 									/>
 								</React.Fragment>
 							);

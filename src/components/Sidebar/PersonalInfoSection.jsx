@@ -67,7 +67,7 @@ export default function PersonalInfoSection({ user }) {
 		if (fileRejections.length > 0) {
 			return `File (${fileRejections[0]?.file.name.slice(
 				0,
-				10
+				10,
 			)}...) is larger than 1 MB. Image File size: ${sizeInMB.toFixed(1)} MB`;
 		}
 		return false;
@@ -80,7 +80,7 @@ export default function PersonalInfoSection({ user }) {
 					<div className="image-loading-indicator w-full h-fit px-10 py-2 bg-green-500 text-white fixed left-1/2 -translate-x-1/2 z-50 flex justify-center items-center text-center">
 						<p className="">(Successful) Your Picture is Arriving...</p>
 					</div>,
-					document.body
+					document.body,
 				)}
 
 			{fullSize &&
@@ -105,7 +105,7 @@ export default function PersonalInfoSection({ user }) {
 							></Image>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 
 			{uploadModal &&
@@ -160,7 +160,7 @@ export default function PersonalInfoSection({ user }) {
 							</div>
 						</div>
 					</>,
-					document.body
+					document.body,
 				)}
 
 			<div className="w-full h-full flex flex-col gap-7 relative">
@@ -252,7 +252,7 @@ export default function PersonalInfoSection({ user }) {
 								openGalleryModal={openGalleryModal}
 								setOpenGalleryModal={setOpenGalleryModal}
 							/>,
-							document.body
+							document.body,
 						)}
 				</div>
 
@@ -314,10 +314,10 @@ const ChangingInfoSection = ({ user }) => {
 		const timeDifference = desiredTime - currentTime;
 		const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 		const minutes = Math.floor(
-			(timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+			(timeDifference % (1000 * 60 * 60)) / (1000 * 60),
 		);
 		const hours = Math.floor(
-			(timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+			(timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
 		);
 		const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
@@ -403,7 +403,7 @@ const ChangingInfoSection = ({ user }) => {
 							user.themeColor ? "text-[#888]" : "text-gray-500"
 						}`}
 					>
-						Takes up to 24 hours for visible change{" "}
+						{"Can't change email at this time"}
 						{/* <span className="">{`| ${countDownDisplay.days}d, ${countDownDisplay.hours}h`}</span> */}
 					</p>
 

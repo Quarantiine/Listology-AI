@@ -29,31 +29,33 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 	const handleDeleteFolder = () => {
 		setClickedTodoFolder("");
 
-		folders.deletingFolder(folder.id);
+		todoLists.allSubTodos
+			.filter(
+				(value) =>
+					auth.currentUser?.uid === value.userID &&
+					folder.folderName.includes(value.mainFolder[0]),
+			)
+			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
+
+		todoLists.allTodoLists
+			.filter(
+				(value) =>
+					auth.currentUser?.uid === value.userID &&
+					folder.folderName.includes(value.mainFolder[0]),
+			)
+			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
 		todolistFolders.allTodoFolders
 			.filter(
 				(value) =>
 					auth.currentUser?.uid === value.userID &&
-					value.folderName === clickedFolder
+					value.folderName === clickedFolder,
 			)
 			?.map((todolistFolder) =>
-				todolistFolders.deletingTodoFolder(todolistFolder.id)
+				todolistFolders.deletingTodoFolder(todolistFolder.id),
 			);
-		todoLists.allTodoLists
-			.filter(
-				(value) =>
-					auth.currentUser?.uid === value.userID &&
-					value.mainFolder[0] === folder.folderName
-			)
-			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
-		todoLists.allSubTodos
-			.filter(
-				(value) =>
-					auth.currentUser?.uid === value.userID &&
-					value.mainFolder[0] === folder.folderName
-			)
-			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
+
+		folders.deletingFolder(folder.id);
 
 		setOpenTodolistSidebar(false);
 	};
@@ -102,8 +104,8 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 								folder.completed
 									? "/icons/completed-folder.svg"
 									: user.themeColor
-									? "/icons/checkbox-empty-white.svg"
-									: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 							}
 							alt="completed"
 							width={20}
@@ -138,7 +140,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 									</div>
 								</div>
 							</>,
-							document.body
+							document.body,
 						)}
 					<button onClick={handleDeleteWarning}>
 						<Image

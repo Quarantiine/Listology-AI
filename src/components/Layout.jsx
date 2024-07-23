@@ -133,7 +133,7 @@ export default function Layout({ children }) {
 			"",
 			"Untitled",
 			folderDescriptionText,
-			clickedFolder
+			clickedFolder,
 		);
 	};
 

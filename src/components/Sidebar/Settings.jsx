@@ -41,7 +41,7 @@ export default function Settings() {
 					user.themeColor ? "text-white" : "text-black"
 				}`}
 			>
-				<div className="w-full md:w-[90%] lg:w-[80%] xl:w-[900px] h-full margin-auto flex flex-col gap-6 sm:gap-16">
+				<div className="w-full md:w-[90%] lg:w-[80%] xl:w-[900px] h-full margin-auto flex flex-col gap-6 sm:gap-10">
 					<h1 className="text-2xl font-semibold">Settings</h1>
 					<div className="flex flex-col sm:flex-row justify-between items-start gap-10 pb-16">
 						<div
