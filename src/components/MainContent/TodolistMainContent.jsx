@@ -51,7 +51,6 @@ export default function TodolistMainContent({
 	const [deletionLoad, setDeletionLoad] = useState(false);
 	const windowWidthCheckRef = useRef();
 	const [openGeminiTodoModal, setOpenGeminiTodoModal] = useState(false);
-	const [loadingTodos, setLoadingTodos] = useState(false);
 
 	const handleWindowWidth = () => {
 		if (window.innerWidth < 445) {
@@ -118,7 +117,7 @@ export default function TodolistMainContent({
 		if (editFolderDescription) {
 			todolistFolders.updatingFolderDescription(
 				todolistFolder.id,
-				editFolderDescription,
+				editFolderDescription
 			);
 			setEditFolderDescriptionMode(false);
 			setEditFolderDescription("");
@@ -134,10 +133,10 @@ export default function TodolistMainContent({
 				?.filter(
 					(value) =>
 						value.folderName === clickedFolder &&
-						value.userID === auth.currentUser?.uid,
+						value.userID === auth.currentUser?.uid
 				)
 				.slice(0, 1)
-				?.map((folder) => folder.folderName),
+				?.map((folder) => folder.folderName)
 		);
 	};
 
@@ -175,7 +174,7 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
-					value.folderID === clickedTodoFolder,
+					value.folderID === clickedTodoFolder
 			)
 			?.map((todo) => todoLists.updatingTodoMainFolder(todo.id, [folderName]));
 
@@ -184,10 +183,10 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
 					value.mainFolder[0] === clickedFolder &&
-					value.folderID === clickedTodoFolder,
+					value.folderID === clickedTodoFolder
 			)
 			?.map((subTodo) =>
-				todoLists.updatingSubTodoMainFolder(subTodo.id, [folderName]),
+				todoLists.updatingSubTodoMainFolder(subTodo.id, [folderName])
 			);
 	};
 
@@ -217,7 +216,7 @@ export default function TodolistMainContent({
 				(value) =>
 					value.userID == auth.currentUser?.uid &&
 					value.completed === true &&
-					value.folderID === clickedTodoFolder,
+					value.folderID === clickedTodoFolder
 			)
 			.map((todos) => {
 				todoLists.allSubTodos
@@ -225,7 +224,7 @@ export default function TodolistMainContent({
 						(value) =>
 							value.todoID === todos.id &&
 							value.folderID === clickedTodoFolder &&
-							auth.currentUser?.uid === value.userID,
+							auth.currentUser?.uid === value.userID
 					)
 					?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
@@ -242,7 +241,7 @@ export default function TodolistMainContent({
 					(value) =>
 						value.userID == auth.currentUser?.uid &&
 						value.completed === true &&
-						value.folderID === clickedTodoFolder,
+						value.folderID === clickedTodoFolder
 				)
 				?.map((todos) => todos) < 1
 		) {
@@ -287,7 +286,7 @@ export default function TodolistMainContent({
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
 						value.folderID === clickedTodoFolder &&
-						value.completed === true,
+						value.completed === true
 				)
 				?.map((todo) => todo).length
 		}/${
@@ -296,7 +295,7 @@ export default function TodolistMainContent({
 					(value) =>
 						value.userID === auth.currentUser?.uid &&
 						value.folderID === clickedTodoFolder &&
-						!value.ignoreTodo,
+						!value.ignoreTodo
 				)
 				?.map((todo) => todo).length
 		}`;
@@ -307,7 +306,7 @@ export default function TodolistMainContent({
 			?.filter(
 				(value) =>
 					value.userID === auth.currentUser?.uid &&
-					value.folderID === clickedTodoFolder,
+					value.folderID === clickedTodoFolder
 			)
 			.map((subTodo) => subTodo).length;
 	};
@@ -338,7 +337,7 @@ export default function TodolistMainContent({
 						value.folderID === clickedTodoFolder &&
 						value.mainFolder[0] === clickedFolder &&
 						value.completed &&
-						!value.ignoreTodo,
+						!value.ignoreTodo
 				)
 				?.map((todolist) => todolist).length /
 			todoLists.allTodoLists
@@ -347,7 +346,7 @@ export default function TodolistMainContent({
 						value.userID === auth.currentUser.uid &&
 						value.folderID === clickedTodoFolder &&
 						value.mainFolder[0] === clickedFolder &&
-						!value.ignoreTodo,
+						!value.ignoreTodo
 				)
 				?.map((todolist) => todolist).length;
 
@@ -362,7 +361,7 @@ export default function TodolistMainContent({
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
 					!value.completed &&
-					!value.ignoreTodo,
+					!value.ignoreTodo
 			)
 			?.map((todolist) => todolist).length;
 
@@ -373,7 +372,7 @@ export default function TodolistMainContent({
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
 					value.completed &&
-					!value.ignoreTodo,
+					!value.ignoreTodo
 			)
 			?.map((todolist) => todolist).length;
 
@@ -385,7 +384,7 @@ export default function TodolistMainContent({
 							auth.currentUser.uid &&
 							todolistFolder.id === value.folderID &&
 							value.completed &&
-							!value.ignoreTodo,
+							!value.ignoreTodo
 					)
 					?.map((todolist) => ` - ${todolist.todo}`)
 			: todoLists.allTodoLists
@@ -395,7 +394,7 @@ export default function TodolistMainContent({
 							auth.currentUser.uid &&
 							todolistFolder.id === value.folderID &&
 							!value.completed &&
-							!value.ignoreTodo,
+							!value.ignoreTodo
 					)
 					?.map((todolist) => ` - ${todolist.todo}`);
 
@@ -405,19 +404,19 @@ export default function TodolistMainContent({
 					value.userID &&
 					auth.currentUser.uid &&
 					todolistFolder.id === value.folderID &&
-					value.ignoreTodo,
+					value.ignoreTodo
 			)
 			?.map((todolist) => ` - ${todolist.todo}`);
 
 		completedTodos
 			? navigator.clipboard.writeText(
-					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`,
-				)
+					`Completed To-dos (${completedTodosLength}):\n\n ${todos.toString()}`
+			  )
 			: navigator.clipboard.writeText(
 					`To-dos (${todosLength}):\n\n ${todos.toString()} \n\nIgnored Todos (${
 						ignoredTodos.length
-					}):\n\n ${ignoredTodos.toString()}`,
-				);
+					}):\n\n ${ignoredTodos.toString()}`
+			  );
 	};
 
 	const handleOpenGeminiTodoModal = () => {
@@ -471,7 +470,7 @@ export default function TodolistMainContent({
 									?.filter(
 										(value) =>
 											value.folderName === clickedFolder &&
-											value.userID === auth.currentUser?.uid,
+											value.userID === auth.currentUser?.uid
 									)
 									.slice(0, 1)
 									?.map((folder) => (
@@ -489,7 +488,7 @@ export default function TodolistMainContent({
 															.filter(
 																(value) =>
 																	value.folderName !== folder.folderName &&
-																	value.userID === auth.currentUser?.uid,
+																	value.userID === auth.currentUser?.uid
 															)
 															.map((folders) => {
 																return (
@@ -499,7 +498,7 @@ export default function TodolistMainContent({
 																			onClick={(e) => {
 																				handleTransferTodoFolder(
 																					e,
-																					folders.folderName,
+																					folders.folderName
 																				);
 																			}}
 																		>
@@ -518,7 +517,7 @@ export default function TodolistMainContent({
 															.filter(
 																(value) =>
 																	value.userID === auth.currentUser?.uid &&
-																	value.folderName !== folder.folderName,
+																	value.folderName !== folder.folderName
 															)
 															.map((folders) => folders).length < 1 && (
 															<p className="text-[#bbb]">
@@ -598,7 +597,7 @@ export default function TodolistMainContent({
 										</p>
 									</div>
 								</>,
-								document.body,
+								document.body
 							)}
 
 						{!editFolderTitleMode && (
@@ -831,8 +830,8 @@ export default function TodolistMainContent({
 									? "border border-[#0E51FF] text-white"
 									: "text-btn bg-[#0E51FF] text-white"
 								: completedTodos
-									? "border border-[#0E51FF] text-[#0E51FF]"
-									: "text-btn bg-[#0E51FF] text-white"
+								? "border border-[#0E51FF] text-[#0E51FF]"
+								: "text-btn bg-[#0E51FF] text-white"
 						}`}
 					>
 						<p>Completed To-dos</p>
@@ -875,7 +874,7 @@ export default function TodolistMainContent({
 						</h3>
 					</div>
 				</div>
-				
+
 				{completedTodos && (
 					<>
 						<button
@@ -929,7 +928,7 @@ export default function TodolistMainContent({
 										</div>
 									</div>
 								</div>,
-								document.body,
+								document.body
 							)}
 					</>
 				)}
@@ -983,7 +982,7 @@ export default function TodolistMainContent({
 													value.userID &&
 													auth.currentUser.uid &&
 													todolistFolder.id === value.folderID &&
-													value.completed,
+													value.completed
 											)
 											?.map((todolist) => todolist).length > 1 && (
 											<button
@@ -994,14 +993,14 @@ export default function TodolistMainContent({
 											>
 												Copy Completed To-dos
 											</button>
-										)
+									  )
 									: todoLists.allTodoLists
 											?.filter(
 												(value) =>
 													value.userID &&
 													auth.currentUser.uid &&
 													todolistFolder.id === value.folderID &&
-													!value.completed,
+													!value.completed
 											)
 											?.map((todolist) => todolist).length > 1 && (
 											<>
@@ -1020,7 +1019,7 @@ export default function TodolistMainContent({
 													</div>
 												)}
 											</>
-										)}
+									  )}
 
 								{filterState.filterCategories === "All" && (
 									<div
@@ -1142,17 +1141,15 @@ export default function TodolistMainContent({
 
 					<Placeholders user={user} todolistFolder={todolistFolder} />
 
-					<div className="w-full flex flex-col justify-center itmes-center gap-1">
+					<div className="w-full flex flex-col justify-center gap-1">
 						{openGeminiTodoModal &&
 							createPortal(
 								<AskGeminiComponent
 									handleOpenGeminiTodoModal={handleOpenGeminiTodoModal}
 									clickedTodoFolder={clickedTodoFolder}
 									clickedFolder={clickedFolder}
-									loadingTodos={loadingTodos}
-									setLoadingTodos={setLoadingTodos}
 								/>,
-								document.body,
+								document.body
 							)}
 					</div>
 				</div>

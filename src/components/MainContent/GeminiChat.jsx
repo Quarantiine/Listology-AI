@@ -9,8 +9,15 @@ import ReactMarkdown from "react-markdown";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
-	const { messageHistory, setMessageHistory, geminiChatLoading, geminiChat } =
-		GeminiAPI();
+	const {
+		geminiChatSystem: {
+			messageHistory,
+			setMessageHistory,
+			geminiChatLoading,
+			geminiChat,
+		},
+	} = GeminiAPI();
+
 	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
 	const [openGeminiChat, setOpenGeminiChat] = useState(false);
 	const [message, setMessage] = useState("Hello");

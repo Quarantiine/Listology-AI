@@ -111,7 +111,6 @@
 }
 
 .default-overflow::-webkit-scrollbar-thumb {
-	background-color: #999;
 	border-radius: 100px;
 }
 

@@ -99,6 +99,7 @@ export default function Registration() {
 							</div>,
 							document.body
 						)}
+
 					{errorMesg &&
 						createPortal(
 							<div className="absolute right-0 top-0 bg-red-500 px-10 py-2 text-white flex justify-center md:justify-start items-center text-center w-full md:w-[60%]">
@@ -106,6 +107,7 @@ export default function Registration() {
 							</div>,
 							document.body
 						)}
+
 					<div className="w-full sm:w-[80%] flex flex-col justify-start items-start gap-12 px-10 sm:px-0">
 						<div className="flex flex-col justify-center items-start gap-2">
 							<Image
@@ -122,6 +124,7 @@ export default function Registration() {
 								life.
 							</p>
 						</div>
+
 						{!switchRegistration ? (
 							<SigningUp
 								handleInputChanging={handleInputChanging}
