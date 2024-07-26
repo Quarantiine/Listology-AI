@@ -36,7 +36,7 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyDetapdvyXWk9GParxqPi1YudSyCOnSbyc",
+	apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
 	authDomain: "todo-list-web-app-3329a.firebaseapp.com",
 	projectId: "todo-list-web-app-3329a",
 	storageBucket: "todo-list-web-app-3329a.appspot.com",

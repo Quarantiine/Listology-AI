@@ -204,7 +204,7 @@ export default function GeminiChat({ user }) {
 										placeholder="Send Message"
 										value={message}
 										autoFocus={true}
-										autoComplete={false}
+										autoComplete="off"
 									/>
 
 									{geminiChatLoading ? (
