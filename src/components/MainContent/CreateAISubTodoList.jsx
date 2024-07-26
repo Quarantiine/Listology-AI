@@ -141,11 +141,11 @@ export default function CreateAISubTodoList({
 				.toString();
 
 			const todoIgnored = todoLists.allTodoLists
-				.filter(
+				?.filter(
 					(value) =>
 						value.id === clickedTodo && value.userID === auth.currentUser.uid
 				)
-				.map((value) => value.ignoredTodo)[0];
+				?.map((value) => value.ignoreTodo)[0];
 
 			const subTodos = todoLists.allSubTodos
 				.filter(
@@ -155,7 +155,6 @@ export default function CreateAISubTodoList({
 				)
 				.map((value) => value.todo)
 				.toString();
-
 
 			todoLists.updatingTodoDifficulty(
 				clickedTodo,
