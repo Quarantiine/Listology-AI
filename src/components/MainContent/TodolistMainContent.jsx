@@ -49,8 +49,11 @@ export default function TodolistMainContent({
 	const [openTransferDropdown, setOpenTransferDropdown] = useState(false);
 	const [deleteCompletedTodo, setDeleteCompletedTodo] = useState(false);
 	const [deletionLoad, setDeletionLoad] = useState(false);
-	const windowWidthCheckRef = useRef();
 	const [openGeminiTodoModal, setOpenGeminiTodoModal] = useState(false);
+	const [copiedIndication, setCopiedIndication] = useState(false);
+
+	const windowWidthCheckRef = useRef();
+	const copiedIndicationRef = useRef();
 
 	const handleWindowWidth = () => {
 		if (window.innerWidth < 445) {
@@ -354,6 +357,9 @@ export default function TodolistMainContent({
 	};
 
 	const handleCopyAll = () => {
+		clearTimeout(copiedIndicationRef.current);
+		setCopiedIndication(true);
+
 		const todosLength = todoLists.allTodoLists
 			?.filter(
 				(value) =>
@@ -417,6 +423,10 @@ export default function TodolistMainContent({
 						ignoredTodos.length
 					}):\n\n ${ignoredTodos.toString()}`
 			  );
+
+		copiedIndicationRef.current = setTimeout(() => {
+			setCopiedIndication(false);
+		}, 3000);
 	};
 
 	const handleOpenGeminiTodoModal = () => {
@@ -480,10 +490,11 @@ export default function TodolistMainContent({
 													<h1 className="font-bold max-w-[100%] w-44">
 														Transfer To-do Folder to:
 													</h1>
-													<div className="flex flex-col justify-center items-start gap-0">
+													<div className="flex flex-col justify-center items-start gap-0 w-full">
 														<p className="text-sm text-[#aaa] font-semibold">
 															Main Folders
 														</p>
+
 														{folders.allFolders
 															.filter(
 																(value) =>
@@ -494,7 +505,7 @@ export default function TodolistMainContent({
 																return (
 																	<React.Fragment key={folders.id}>
 																		<button
-																			className="text-btn text-start flex justify-start items-start"
+																			className="text-btn text-start flex justify-start items-start w-full"
 																			onClick={(e) => {
 																				handleTransferTodoFolder(
 																					e,
@@ -1014,8 +1025,21 @@ export default function TodolistMainContent({
 																	: "text-[#a9a9a9]"
 															}`}
 														>
-															Copy All To-dos
+															{copiedIndication ? "Copied" : "Copy All To-dos"}
 														</button>
+
+														{copiedIndication && (
+															<Image
+																src={
+																	user.themeColor
+																		? "/icons/completed-white.svg"
+																		: "/icons/completed-black.svg"
+																}
+																width={15}
+																height={15}
+																alt="check"
+															/>
+														)}
 													</div>
 												)}
 											</>

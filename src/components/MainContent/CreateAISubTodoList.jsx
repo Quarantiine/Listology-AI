@@ -251,7 +251,7 @@ export default function CreateAISubTodoList({
 												className="text-btn text-start flex flex-col justify-start items-start gap-1 w-full bg-gray-200 px-2 py-1 rounded-lg"
 											>
 												<p className="font-bold min-w-[50px]">
-													<span className="text-gray-500">{index + 1}. </span>
+													<span>{index + 1}. </span>
 													To-do:
 												</p>
 
@@ -368,9 +368,7 @@ export default function CreateAISubTodoList({
 									)}
 
 									{loadingDifficulty && (
-										<p className="text-gray-500 mt-2">
-											Loading To-do Difficulty...
-										</p>
+										<p className="text-gray-500 mt-2">Loading...</p>
 									)}
 								</div>
 							</div>

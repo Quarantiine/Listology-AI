@@ -208,7 +208,7 @@ export default function GeminiChat({ user }) {
 									{geminiChatLoading ? (
 										<>
 											<button
-												className="base-btn w-full !bg-gray-500 cursor-not-allowed"
+												className="base-btn w-full !bg-gray-500 !cursor-not-allowed"
 												disabled
 											>
 												Send Message
