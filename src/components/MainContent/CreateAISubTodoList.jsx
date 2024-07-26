@@ -26,6 +26,7 @@ export default function CreateAISubTodoList({
 
 	const [clickedTodo, setClickedTodo] = useState("");
 	const [subTodoPrompt, setSubTodoPrompt] = useState("");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleClearChatStyle = (e) => {
 		e.preventDefault();
@@ -155,7 +156,6 @@ export default function CreateAISubTodoList({
 				.map((value) => value.todo)
 				.toString();
 
-			console.log(`To-do: ${todo}, Sub To-do: ${subTodos}`);
 
 			todoLists.updatingTodoDifficulty(
 				clickedTodo,
@@ -199,10 +199,32 @@ export default function CreateAISubTodoList({
 		setAIListOfSubTodos("");
 	};
 
+	const handleSearchQueryChange = (e) => {
+		setSearchQuery(e.target.value);
+	};
+
 	return (
 		<>
 			{!clickedTodo && (
 				<>
+					{todoLists.allTodoLists
+						?.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === clickedTodoFolder &&
+								!value.completed
+						)
+						?.map((value) => value).length > 5 && (
+						<input
+							className="input-field w-full"
+							type="search"
+							name="search"
+							placeholder="Search to-dos"
+							onChange={handleSearchQueryChange}
+							value={searchQuery}
+						/>
+					)}
+
 					<div className="flex flex-col justify-start items-start gap-1 text-start overflow-x-hidden overflow-y-scroll default-overflow w-full h-full">
 						<h1 className="text-xl font-bold">
 							Choose a to-do for your sub to-do list
@@ -216,37 +238,61 @@ export default function CreateAISubTodoList({
 									!value.completed
 							)
 							?.map((value, index) => {
-								return (
-									<React.Fragment key={value.id}>
-										<button
-											onClick={(e) => handleClickedTodo(e, value.id)}
-											className="text-btn text-start flex flex-col justify-start items-start gap-1 w-full bg-gray-200 px-2 py-1 rounded-lg"
-										>
-											<p className="font-bold min-w-[50px]">
-												<span className="text-gray-500">{index + 1}. </span>
-												To-do:
-											</p>
-
-											{!extractLink(value.todo) && (
-												<div className="line-clamp-2">
-													<ReactMarkdown>{value.todo}</ReactMarkdown>
-												</div>
-											)}
-
-											{extractLink(value.todo) && (
-												<p>
-													{value.todo.replace(extractLink(value.todo), "")}{" "}
-													<span className="text-gray-500">
-														{shortenUrl(extractLink(value.todo), -30)
-															.replace("", "[Link]")
-															.slice(0, 6)}
-													</span>
+								if (
+									value.todo
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(searchQuery.toLowerCase())
+								) {
+									return (
+										<React.Fragment key={value.id}>
+											<button
+												onClick={(e) => handleClickedTodo(e, value.id)}
+												className="text-btn text-start flex flex-col justify-start items-start gap-1 w-full bg-gray-200 px-2 py-1 rounded-lg"
+											>
+												<p className="font-bold min-w-[50px]">
+													<span className="text-gray-500">{index + 1}. </span>
+													To-do:
 												</p>
-											)}
-										</button>
-									</React.Fragment>
-								);
+
+												{!extractLink(value.todo) && (
+													<div className="line-clamp-2">
+														<ReactMarkdown>{value.todo}</ReactMarkdown>
+													</div>
+												)}
+
+												{extractLink(value.todo) && (
+													<p>
+														{value.todo.replace(extractLink(value.todo), "")}{" "}
+														<span className="text-gray-500">
+															{shortenUrl(extractLink(value.todo), -30)
+																.replace("", "[Link]")
+																.slice(0, 6)}
+														</span>
+													</p>
+												)}
+											</button>
+										</React.Fragment>
+									);
+								}
 							})}
+
+						{todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser.uid &&
+									value.folderID === clickedTodoFolder &&
+									!value.completed &&
+									value.todo
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(searchQuery.toLowerCase())
+							)
+							?.map((value) => value).length < 1 && (
+							<p className="text-gray-500">No Search Results</p>
+						)}
 					</div>
 
 					<button

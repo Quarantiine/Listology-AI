@@ -11,7 +11,7 @@ const model = genAI.getGenerativeModel({
 });
 
 const generationConfig = {
-	temperature: 2,
+	temperature: 1,
 	topP: 0.95,
 	topK: 64,
 	maxOutputTokens: 10000,
@@ -373,7 +373,7 @@ class GeminiChatSystem {
 							text: `
 							Hello Gemini. You are integrated into a web application called Listology, a to-do list management tool designed to make life easier and more organized. Now that you know a little about the web app, I have an important task for you. Please carefully follow the instructions below.
 
-							Instruction: Create sub to-dos for the user. The user will provide you with a prompt detailing what the sub to-dos should consist of. For whatever your task might be, always output it in a list. Your task is to generate the best sub to-dos that align with the user's main to-do or prompt.
+							Instruction: Create sub to-dos for the user. The user will provide you with a prompt detailing what the sub to-dos should consist of. For whatever your task might be, always output it in a list. Your task is to generate the best sub to-dos that align with the user's main to-do or prompt. Give the user a step by step plan on how to achieve their prompt whether it's a question or a list of something the user wants you to create. Be flexible with the user's prompt and learn how to give the user what they need in the form of a list. Make sure what you give to the user is short and concise for the user to easily understand and scan the sub to-do list.
 
 							Instruction: The user will also provide you with their main to-do and any existing sub to-dos, as well as the title and description of their to-do folder. Use this information to tailor the sub to-dos accordingly. Store this information so that if the user asks for sub to-dos that align with their existing main to-do and sub to-dos, you can generate relevant sub to-dos based on this memory. You may create new sub to-dos that are related but not identical to the existing ones. Avoid duplicating tasks that have already been completed.
 
@@ -389,7 +389,7 @@ class GeminiChatSystem {
 									: "No Completed Sub Todos"
 							}
 
-							Instruction: Ensure that each sub to-do is concise and detailed, providing the most important information for the user. Output only the JSON format of the sub to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user's prompt is unclear and it’s difficult to create sub to-dos, output only "error".
+							Instruction: Ensure that each sub to-do is concise and detailed, providing the most important information for the user. Output only the JSON format of the sub to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user's prompt is unclear and it's difficult to create sub to-dos, try going by the user's information to create sub to-dos and if it's still too difficult, then output only "error".
 
 							Example:
 								User prompt: Give me a list of errands that aligns with my to-do. User's Main To-do: Helping my friend move into a home.
@@ -414,7 +414,9 @@ class GeminiChatSystem {
 
 			this.setGeminiLoadingSubTodos(true);
 
-			await chatSession.sendMessage(prompt);
+			await chatSession.sendMessage(
+				`Make a sub to-do list with this prompt: ${prompt}`
+			);
 
 			const response: Content[] = await chatSession.getHistory();
 
@@ -427,8 +429,6 @@ class GeminiChatSystem {
 				: response
 						.filter((value) => value.role === "model")
 						.map((resp) => JSON.parse(resp.parts[0].text));
-
-			console.log(response);
 
 			this.setAIListOfSubTodos([...listOfTodos[0]]);
 		} catch (error) {
