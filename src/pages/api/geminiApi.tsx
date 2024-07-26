@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+const apiKey = "AIzaSyDdWaYlYDPQRzptwky48BXA7-reubQ9vuU";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
