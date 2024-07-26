@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import shortenUrl from "shorten-url";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import GeminiAPI from "../../pages/api/geminiApi";
@@ -189,7 +189,6 @@ export default function CreateAISubTodoList({
 						.toString()
 				)
 			);
-
 		} catch (error) {
 			console.log(error);
 		} finally {

@@ -203,6 +203,8 @@ export default function GeminiChat({ user }) {
 										name="message"
 										placeholder="Send Message"
 										value={message}
+										autoFocus={true}
+										autoComplete={false}
 									/>
 
 									{geminiChatLoading ? (
