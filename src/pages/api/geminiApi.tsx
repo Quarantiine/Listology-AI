@@ -73,7 +73,8 @@ class GeminiChatSystem {
 		todoStartDate: string,
 		todoEndDate: string,
 		todoSubTodo: string,
-		ignoredTodo: boolean
+		ignoredTodo: boolean,
+		createdSubTodos: string
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -82,7 +83,7 @@ class GeminiChatSystem {
 					role: "user",
 					parts: [
 						{
-							text: "Hello Gemini. You are integrated into a web application called Listology, a to-do list management tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. Your task is to assess the difficulty of a to-do item. Base the difficulty rating on the following criteria: the to-do folder title, description, the specific to-do task, the to-do due date, and any associated sub to-dos. You should only respond with one of the following difficulty levels: Easy, Intermediate, Hard, or Unsure. If you encounter the phrase Todo is Ignored, mark the difficulty as Unsure or change the current difficulty to Unsure. Do not provide any output other than the specified difficulty ratings. If the to-do does not have a specific task or you are unsure, respond with Unsure.",
+							text: "Hello Gemini. You are integrated into a web application called Listology, a to-do list management tool designed to make life easier. Now that you know a little about the web app, I have an important task for you. Your task is to assess the difficulty of a to-do item. Base the difficulty rating on the following criteria: the to-do folder title, description, the specific to-do task, the to-do due date, and any associated sub to-dos. You should only respond with one of the following difficulty levels: `Easy`, `Intermediate`, `Hard`, or `Unsure`. If you encounter the phrase Todo is Ignored, mark the difficulty as `Unsure` or change the current difficulty to `Unsure`. Do not provide any output other than the specified difficulty ratings. If the to-do does not have a specific task or you are `unsure`, respond with `Unsure`. The user information will consist of a lot of things so try your best to give the best difficulty",
 						},
 					],
 				},
@@ -93,9 +94,15 @@ class GeminiChatSystem {
 			this.setLoadingDifficulty(true);
 
 			await chatSession.sendMessage(
-				`Todo Folder Title: ${todoFolderTitle}, Descriptions: ${todoFolderDescription}, Todo Task: ${todoTask}, Start Date: ${todoStartDate}, End Date: ${todoEndDate}, Sub Todo: ${todoSubTodo}, Todo is ${
+				`
+				- To-do Folder Title: ${todoFolderTitle} and Descriptions: ${todoFolderDescription}
+				- To-do Task: ${todoTask}, To-do Start Date: ${todoStartDate}, To-do End Date: ${todoEndDate}, and Todo is ${
 					ignoredTodo ? "Ignored" : "Not Ignored"
-				}. What is the difficulty of the to-do based on the given information?`
+				}
+				- Sub To-dos: ${todoSubTodo}, ${createdSubTodos && createdSubTodos}
+				
+				What is the difficulty of the to-do based on the given information?
+				`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -225,7 +232,11 @@ class GeminiChatSystem {
 
 						Instruction: If a user requests a link, provide it, ensuring it does not open in a new tab.
 
-						Outro: The instructions above are for handling user prompts that follow this message. The guidelines above are from the developer Daniel Ward, but everything after this outro will be the user's prompts.
+						Instruction: If the user wants you to create prompts with you, so they could create great to-do list with the "Create with Gemini" button, then help them create prompts tailored to their prompts that will maximize the chances of creating great to-dos with the "Create with Gemini" button. Give the user one prompt to use and if the user doesn't like it and ask for more, then give the user one prompt at a time. With all of your prompts, don't make them too complex.
+
+						Instruction: If the user ask what can you do, then explain to them things various things your capable of doing for them in Listology
+
+						Outro: The instructions above are for handling user prompts that follow this outro message. The guidelines above are from the developer Daniel Ward, but everything after this outro will be the user's prompts.
 
 						`,
 					},
@@ -387,7 +398,7 @@ class GeminiChatSystem {
 									: "No Completed Sub Todos"
 							}
 
-							Instruction: Ensure that each sub to-do is concise and detailed, providing the most important information for the user. Output only the JSON format of the sub to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user's prompt is unclear and it's difficult to create sub to-dos, try going by the user's information to create sub to-dos and if it's still too difficult, then output only "error".
+							Instruction: Ensure that each sub to-do is short, but also providing the most important information for the user. Output only the JSON format of the sub to-dos. NO MATTER WHAT, the only output you should have is the JSON format without the word "json" in it and that's it. If the user's prompt is unclear and it's difficult to create sub to-dos, try going by the user's information to create sub to-dos if the user's prompt is too hard to understand and if it's still too difficult, then output only "error". The limit of sub to-dos is "15" or less. Make sure every detail is provided for each sub to-do you create so you can maximize on the 15 limit. You don't have to make 15 sub to-dos if you don't have to.
 
 							Example:
 								User prompt: Give me a list of errands that aligns with my to-do. User's Main To-do: Helping my friend move into a home.

@@ -179,13 +179,17 @@ export default function CreateAISubTodoList({
 						)
 						.map((value) => value.folderDescription)
 						.toString(),
-					todo,
+					`What the topic is: ${todo}`,
 					"No Start Date",
 					"No End Date",
 					subTodos,
-					todoIgnored
+					todoIgnored,
+					AIListOfSubTodos?.reverse()
+						?.map((todoItem) => todoItem.todo)
+						.toString()
 				)
 			);
+
 		} catch (error) {
 			console.log(error);
 		} finally {
