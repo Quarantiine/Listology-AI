@@ -48,7 +48,7 @@ class GeminiChatSystem {
 		errorLoadingSubTodoListRef: any,
 		setAIListOfSubTodos: React.Dispatch<React.SetStateAction<any>>,
 		loadingDifficulty: boolean,
-		setLoadingDifficulty: React.Dispatch<React.SetStateAction<boolean>>
+		setLoadingDifficulty: React.Dispatch<React.SetStateAction<boolean>>,
 	) {
 		this.setTodoLoading = setTodoLoading;
 		this.setGeminiLoadingTodos = setGeminiLoadingTodos;
@@ -74,7 +74,7 @@ class GeminiChatSystem {
 		todoEndDate: string,
 		todoSubTodo: string,
 		ignoredTodo: boolean,
-		createdSubTodos: string
+		createdSubTodos: string,
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -102,7 +102,7 @@ class GeminiChatSystem {
 				- Sub To-dos: ${todoSubTodo}, ${createdSubTodos && createdSubTodos}
 				
 				What is the difficulty of the to-do based on the given information?
-				`
+				`,
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -136,7 +136,7 @@ class GeminiChatSystem {
 		try {
 			this.setTodoLoading(true);
 			await chatSession.sendMessage(
-				`Change this text and make it better according to the instructions given above: ${text}`
+				`Change this text and make it better according to the instructions given above: ${text}`,
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -158,7 +158,7 @@ class GeminiChatSystem {
 		todoFolderTitle: string,
 		todoFolderDescription: string,
 		todos: string,
-		subTodos: string
+		subTodos: string,
 	) {
 		try {
 			this.setGeminiChatLoading(true);
@@ -268,7 +268,7 @@ class GeminiChatSystem {
 		todoFolderDescription: string,
 		userExistingTodos: string,
 		userExistingSubTodos: string,
-		userExistingCompletedTodos: string
+		userExistingCompletedTodos: string,
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -338,7 +338,7 @@ class GeminiChatSystem {
 					userExistingCompletedTodos
 						? userExistingCompletedTodos
 						: "No Completed To-dos"
-				}`
+				}`,
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -370,7 +370,7 @@ class GeminiChatSystem {
 		todoFolderDescription: string,
 		userTodo: string,
 		userSubTodos: string,
-		userCompletedSubTodos: string
+		userCompletedSubTodos: string,
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -424,7 +424,7 @@ class GeminiChatSystem {
 			this.setGeminiLoadingSubTodos(true);
 
 			await chatSession.sendMessage(
-				`Make a sub to-do list with this prompt: ${prompt}`
+				`Make a sub to-do list with this prompt: ${prompt}`,
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -484,7 +484,7 @@ export default function GeminiAPI() {
 		errorLoadingSubTodoListRef,
 		setAIListOfSubTodos,
 		loadingDifficulty,
-		setLoadingDifficulty
+		setLoadingDifficulty,
 	);
 
 	GCS.readTodoDifficulty;
