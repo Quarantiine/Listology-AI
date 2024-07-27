@@ -214,14 +214,6 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
-	const handleNotificationAPI = () => {
-		pushNotification(
-			"Listology",
-			"to-do timeline",
-			"Hello welcome to Listology!"
-		);
-	};
-
 	return (
 		<>
 			<div
@@ -272,7 +264,6 @@ export default function MainContent() {
 											})
 									) : (
 										<>
-											{/* <button className="base-btn" onClick={null}>Push Notification</button> */}
 
 											<div
 												className={`flex flex-col justify-start items-start w-full transition-all gap-5`}
