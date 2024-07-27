@@ -93,7 +93,7 @@ export default function Filters({ user }) {
 							
 							<button onClick={handleFilterSidebar} className={`w-fit`}>
 								<Image
-									className={`w-[15px] h-auto -rotate-90`}
+									className={`w-[15px] max-w-[15px] h-auto -rotate-90`}
 									src={
 										user.themeColor
 											? "/icons/arrow-white.svg"

@@ -875,7 +875,7 @@ export default function TodolistMainContent({
 						</h3>
 					</div>
 				</div>
-				
+
 				{completedTodos && (
 					<>
 						<button
