@@ -9,12 +9,15 @@ export default function SigningIn({ handleRegistrationChange }) {
 
 	const email = useRef();
 	const [modalEmail, setModalEmail] = useState();
-	const password = useRef();
-	const accountErrorRef = useRef();
 	const [resetPassword, setResetPassword] = useState(false);
 	const [emailExist, setEmailExist] = useState(false);
 	const [accountError, setAccountError] = useState(false);
 	const [passwordVisible, setPasswordVisible] = useState(false);
+	const [emailError, setEmailError] = useState(false);
+
+	const password = useRef();
+	const accountErrorRef = useRef();
+	const emailErrorRef = useRef();
 
 	useEffect(() => {
 		const closeResetModal = (e) => {
@@ -29,20 +32,29 @@ export default function SigningIn({ handleRegistrationChange }) {
 
 	const handleSigningIn = (e) => {
 		e.preventDefault();
-		setEmailExist(true);
-		clearTimeout(accountErrorRef.current);
+		clearTimeout(emailErrorRef.current);
+
 		if (
 			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
 				email.current.value
 			) &&
 			password.current.value?.length > 5
 		) {
+			setAccountError(false);
 			registration.signingIn(email.current.value, password.current.value);
+		} else {
+			console.log();
+			setEmailError(true);
+			emailErrorRef.current = setTimeout(() => {
+				setEmailError(false);
+			}, 3000);
 		}
 	};
 
 	const handleForgotPassword = (e) => {
 		e.preventDefault();
+		clearTimeout(accountErrorRef.current);
+
 		if (
 			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(modalEmail) &&
 			registration.allusers
@@ -69,6 +81,7 @@ export default function SigningIn({ handleRegistrationChange }) {
 						</div>,
 						document.body
 					)}
+
 				{registration.errorMesg &&
 					createPortal(
 						<div className="absolute right-0 top-0 bg-red-500 px-10 py-2 text-white flex justify-center md:justify-start items-center text-center w-full md:w-[60%]">
@@ -76,7 +89,18 @@ export default function SigningIn({ handleRegistrationChange }) {
 						</div>,
 						document.body
 					)}
+
+				{!registration.errorMesg &&
+					emailError &&
+					createPortal(
+						<div className="absolute right-0 top-0 bg-red-500 px-10 py-2 text-white flex justify-center md:justify-start items-center text-center w-full md:w-[60%]">
+							<p>Invalid Email or Password too short</p>
+						</div>,
+						document.body
+					)}
+
 				<h1 className="text-3xl font-semibold">Sign In</h1>
+
 				<form className="flex flex-col justify-start items-start gap-5 w-full">
 					<div className="flex flex-row justify-between items-start gap-5 lg:gap-10 w-full">
 						<div className="flex flex-col justify-start items-start gap-5 w-full">
@@ -104,15 +128,15 @@ export default function SigningIn({ handleRegistrationChange }) {
 									/>
 									<Image
 										onClick={() => setPasswordVisible(!passwordVisible)}
-										className="absolute top-2 right-3 cursor-pointer"
+										className="absolute top-1 -right-5 bg-white p-1 rounded-full min-w-[18px] min-h-[18px] cursor-pointer"
 										src={
 											passwordVisible
 												? "/icons/visibility.svg"
 												: "/icons/visibility_off.svg"
 										}
 										alt="visibility"
-										width={18}
-										height={18}
+										width={25}
+										height={25}
 									/>
 								</div>
 							</div>

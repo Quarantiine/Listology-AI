@@ -32,9 +32,13 @@ export default function SubTodos({
 	todolistFolder,
 }) {
 	const { auth } = FirebaseApi();
-	const { todoLoading, grammaticallyFixedTodo, readTodoDifficulty } =
-		GeminiAPI();
-	const [moreState, moreDispatch] = useReducer(moreReducer, {
+	const {
+		grammaticallyFixedTodo,
+		geminiCreateTodos: { todoLoading },
+		geminiDifficultyAssessment: { readTodoDifficulty },
+	} = GeminiAPI();
+
+	const [_, moreDispatch] = useReducer(moreReducer, {
 		subTodoDropdown: "",
 	});
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
@@ -80,14 +84,14 @@ export default function SubTodos({
 			setEditTextActive(false);
 			todoLists.updatingSubTodoEdit(
 				subTodo.id,
-				await grammaticallyFixedTodo(subTodoText),
+				await grammaticallyFixedTodo(subTodoText)
 			);
 
 			const subTodos = todoLists.allSubTodos
 				.filter(
 					(value) =>
 						value.todoID === todolist.id &&
-						value.userID === auth.currentUser.uid,
+						value.userID === auth.currentUser.uid
 				)
 				.map((subTodo) => subTodo.todo)
 				.toString();
@@ -100,8 +104,8 @@ export default function SubTodos({
 					todolist.todo,
 					"No Start Date",
 					"No End Date",
-					subTodos,
-				),
+					subTodos
+				)
 			);
 		}
 	};
@@ -130,7 +134,7 @@ export default function SubTodos({
 
 		todoLists.updatingSubTodoDeletionIndicator(
 			subTodo.id,
-			todoIndicator.current ? true : false,
+			todoIndicator.current ? true : false
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -262,8 +266,8 @@ export default function SubTodos({
 									subTodo.completed || todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-											? "/icons/checkbox-empty-white.svg"
-											: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 								}
 								alt="checkbox"
 								width={25}
@@ -382,7 +386,9 @@ export default function SubTodos({
 						</>
 					) : (
 						<p
-							className={`w-full ${user.themeColor ? "text-[#999]" : "text-gray-500"} ${
+							className={`w-full ${
+								user.themeColor ? "text-[#999]" : "text-gray-500"
+							} ${
 								subTodo.completed ||
 								(todolist.completed && "line-through select-all")
 							}`}

@@ -37,8 +37,12 @@ export default function TodosContent({
 	subTodoSearchInput,
 }) {
 	const { auth, todoLists } = FirebaseApi();
-	const { readTodoDifficulty, todoLoading, grammaticallyFixedTodo } =
-		GeminiAPI();
+	const {
+		geminiDifficultyAssessment: { readTodoDifficulty },
+		geminiCreateTodos: { todoLoading },
+		grammaticallyFixedTodo,
+	} = GeminiAPI();
+
 	const { user } = useContext(UserCredentialCtx);
 	const { clickedFolder, clickedTodoFolder } = useContext(StateCtx);
 	const [moreState, moreDispatch] = useReducer(moreReducer, {

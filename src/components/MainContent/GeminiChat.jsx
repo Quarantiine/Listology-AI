@@ -9,11 +9,18 @@ import ReactMarkdown from "react-markdown";
 
 export default function GeminiChat({ user }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
-	const { messageHistory, setMessageHistory, geminiChatLoading, geminiChat } =
-		GeminiAPI();
+	const {
+		geminiChatSystem: {
+			messageHistory,
+			setMessageHistory,
+			geminiChatLoading,
+			geminiChat,
+		},
+	} = GeminiAPI();
+
 	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
 	const [openGeminiChat, setOpenGeminiChat] = useState(false);
-	const [message, setMessage] = useState("Hello");
+	const [message, setMessage] = useState("");
 	const messageBoxRef = useRef();
 
 	const handleOpenGeminiChat = () => {
@@ -72,7 +79,7 @@ export default function GeminiChat({ user }) {
 	const handleClearChat = (e) => {
 		e.preventDefault();
 		setMessageHistory([]);
-		setMessage("Hello");
+		setMessage("");
 	};
 
 	useEffect(() => {
@@ -90,7 +97,7 @@ export default function GeminiChat({ user }) {
 					<>
 						<div className="modal-base">
 							<div className="bg-gray-100 w-full sm:w-fit h-full sm:h-fit rounded-lg p-4 flex flex-col gap-3 justify-start items-start">
-								<div className="flex justify-bewteen items-center gap-1 w-full">
+								<div className="flex justify-between items-center gap-1 w-full">
 									<h1 className="h1-base">Chat With Gemini</h1>
 									<button
 										onClick={handleOpenGeminiChat}
@@ -196,12 +203,14 @@ export default function GeminiChat({ user }) {
 										name="message"
 										placeholder="Send Message"
 										value={message}
+										autoFocus={true}
+										autoComplete="off"
 									/>
 
 									{geminiChatLoading ? (
 										<>
 											<button
-												className="base-btn w-full !bg-gray-500 cursor-not-allowed"
+												className="base-btn w-full !bg-gray-500 !cursor-not-allowed"
 												disabled
 											>
 												Send Message

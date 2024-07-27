@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import Providers from "./Providers";
 
 const SigningUp = ({
 	handleInputChanging,
@@ -59,15 +58,15 @@ const SigningUp = ({
 							/>
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}
-								className="absolute top-9 right-3 cursor-pointer"
+								className="absolute top-8 -right-5 bg-white p-1 rounded-full min-w-[18px] min-h-[18px] cursor-pointer"
 								src={
 									passwordVisible
 										? "/icons/visibility.svg"
 										: "/icons/visibility_off.svg"
 								}
 								alt="visibility"
-								width={18}
-								height={18}
+								width={25}
+								height={25}
 							/>
 						</div>
 						<div className="flex flex-col justify-normal items-start gap-1 w-full relative">
@@ -85,15 +84,15 @@ const SigningUp = ({
 							/>
 							<Image
 								onClick={() => setPasswordVisible(!passwordVisible)}
-								className="absolute top-9 right-3 cursor-pointer"
+								className="absolute top-8 -right-5 bg-white p-1 rounded-full min-w-[18px] min-h-[18px] cursor-pointer"
 								src={
 									passwordVisible
 										? "/icons/visibility.svg"
 										: "/icons/visibility_off.svg"
 								}
 								alt="visibility"
-								width={18}
-								height={18}
+								width={25}
+								height={25}
 							/>
 						</div>
 					</div>
