@@ -10,7 +10,6 @@ import TodoFoldersDashboard from "./TodoFoldersDashboard";
 import Image from "next/image";
 import ImportantTodos from "./ImportantTodos";
 import TimelineTodos from "./TimelineTodos";
-import NotificationAPI from "../../pages/api/notificationApi";
 
 export default function MainContent() {
 	const {
@@ -24,7 +23,6 @@ export default function MainContent() {
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, todolistFolders, todoLists, folders } = FirebaseApi();
-	const { pushNotification } = NotificationAPI();
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
@@ -214,13 +212,6 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
-	const handleNotificationAPI = () => {
-		pushNotification(
-			"Listology",
-			"to-do timeline",
-			"Hello welcome to Listology!",
-		);
-	};
 	return (
 		<>
 			<div
@@ -271,13 +262,6 @@ export default function MainContent() {
 											})
 									) : (
 										<>
-											{/* <button
-												className="base-btn"
-												onClick={handleNotificationAPI}
-											>
-												Push Notification
-											</button> */}
-
 											<div
 												className={`flex flex-col justify-start items-start w-full transition-all gap-5`}
 											>

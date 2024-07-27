@@ -46,7 +46,7 @@ export default function TodoFoldersDashboard({
 			?.filter(
 				(value) =>
 					value.folderName === todoFolder.folderName &&
-					auth.currentUser?.uid === value.userID
+					auth.currentUser?.uid === value.userID,
 			)
 			.map((folder) => folders.updatingCreatedTime(folder.id));
 		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
@@ -76,7 +76,7 @@ export default function TodoFoldersDashboard({
 			?.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser?.uid === value.userID
+					auth.currentUser?.uid === value.userID,
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
@@ -84,7 +84,7 @@ export default function TodoFoldersDashboard({
 			?.filter(
 				(value) =>
 					value.folderID === todoFolder.id &&
-					auth.currentUser?.uid === value.userID
+					auth.currentUser?.uid === value.userID,
 			)
 			?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 
@@ -134,7 +134,7 @@ export default function TodoFoldersDashboard({
 	const handleHideTodoFolder = () => {
 		todolistFolders.hideFolder(
 			todoFolder.id,
-			todoFolder.folderHidden ? !todoFolder.folderHidden : true
+			todoFolder.folderHidden ? !todoFolder.folderHidden : true,
 		);
 	};
 
@@ -146,7 +146,7 @@ export default function TodoFoldersDashboard({
 						value.folderID === todoFolder.id &&
 						value.userID === auth.currentUser?.uid &&
 						value.completed === true &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todo) => todo).length /
 			todoLists.allTodoLists
@@ -154,7 +154,7 @@ export default function TodoFoldersDashboard({
 					(value) =>
 						value.folderID === todoFolder.id &&
 						value.userID === auth.currentUser?.uid &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todo) => todo).length;
 
@@ -169,7 +169,7 @@ export default function TodoFoldersDashboard({
 						value.folderID === todoFolder.id &&
 						value.userID === auth.currentUser?.uid &&
 						value.completed === true &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todo) => todo).length /
 			todoLists.allTodoLists
@@ -177,7 +177,7 @@ export default function TodoFoldersDashboard({
 					(value) =>
 						value.folderID === todoFolder.id &&
 						value.userID === auth.currentUser?.uid &&
-						!value.ignoreTodo
+						!value.ignoreTodo,
 				)
 				?.map((todo) => todo).length;
 
@@ -214,7 +214,7 @@ export default function TodoFoldersDashboard({
 							</p>
 						</div>
 					</>,
-					document.body
+					document.body,
 				)}
 			{pinAddedMesg &&
 				createPortal(
@@ -224,7 +224,7 @@ export default function TodoFoldersDashboard({
 							{todoFolder.folderTitle}
 						</p>
 					</div>,
-					document.body
+					document.body,
 				)}
 
 			<button
@@ -302,8 +302,8 @@ export default function TodoFoldersDashboard({
 											totalCompletionPercentage() > 0.59
 												? "text-yellow-600"
 												: totalCompletionPercentage() < 0.6
-												? "text-red-500"
-												: ""
+													? "text-red-500"
+													: ""
 										}`}
 									>
 										{totalCompletionPercentage().toFixed(2).replace("0.", "")}%
@@ -327,14 +327,14 @@ export default function TodoFoldersDashboard({
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid
+										value.userID === auth.currentUser?.uid,
 								)
 								?.map((todo) => todo).length > 0 ? (
 							todoLists.allTodoLists
 								?.filter(
 									(value) =>
 										value.folderID === todoFolder.id &&
-										value.userID === auth.currentUser?.uid
+										value.userID === auth.currentUser?.uid,
 								)
 								?.map((todo) => todo.ignoreTodo)
 								.includes(false) ? (
@@ -438,7 +438,7 @@ export default function TodoFoldersDashboard({
 						handleEnteringTodoFolder={handleEnteringTodoFolder}
 						setUnlockTodoFolder={setUnlockTodoFolder}
 					/>,
-					document.body
+					document.body,
 				)}
 
 			{beforeRemoving &&
@@ -448,7 +448,7 @@ export default function TodoFoldersDashboard({
 						handleBeforeRemovingPin={handleBeforeRemovingPin}
 						handleRemovePin={handleRemovePin}
 					/>,
-					document.body
+					document.body,
 				)}
 
 			{openDeletionModal &&
@@ -458,7 +458,7 @@ export default function TodoFoldersDashboard({
 						handleDeletion={handleDeletion}
 						handleOpenDeletionTodoModal={handleOpenDeletionTodoModal}
 					/>,
-					document.body
+					document.body,
 				)}
 
 			{openAddPinModal &&
@@ -469,7 +469,7 @@ export default function TodoFoldersDashboard({
 						pinAddedIndicator={pinAddedIndicator}
 						setPinAddedMesg={setPinAddedMesg}
 					/>,
-					document.body
+					document.body,
 				)}
 		</div>
 	);

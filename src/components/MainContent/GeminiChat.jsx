@@ -22,6 +22,7 @@ export default function GeminiChat({ user }) {
 	const [openGeminiChat, setOpenGeminiChat] = useState(false);
 	const [message, setMessage] = useState("");
 	const messageBoxRef = useRef();
+	const geminiChatRef = useRef();
 
 	const handleOpenGeminiChat = () => {
 		setOpenGeminiChat(!openGeminiChat);
@@ -39,7 +40,7 @@ export default function GeminiChat({ user }) {
 						(value) =>
 							value.userID === auth.currentUser.uid &&
 							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder
+							value.id === clickedTodoFolder,
 					)
 					.map((value) => value.folderTitle)
 					.toString(),
@@ -48,7 +49,7 @@ export default function GeminiChat({ user }) {
 						(value) =>
 							value.userID === auth.currentUser.uid &&
 							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder
+							value.id === clickedTodoFolder,
 					)
 					.map((value) => value.folderDescription)
 					.toString(),
@@ -57,19 +58,19 @@ export default function GeminiChat({ user }) {
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder
+								value.folderID === clickedTodoFolder,
 						)
-						.map((value) => value)
+						.map((value) => value),
 				),
 				JSON.stringify(
 					todoLists.allSubTodos
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder
+								value.folderID === clickedTodoFolder,
 						)
-						.map((value) => value)
-				)
+						.map((value) => value),
+				),
 			);
 
 			setMessage("");
@@ -120,7 +121,7 @@ export default function GeminiChat({ user }) {
 										messageHistory
 											?.filter(
 												(value) =>
-													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj")
+													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj"),
 											)
 											.map((message, index) => {
 												return (
@@ -160,7 +161,7 @@ export default function GeminiChat({ user }) {
 																				<button
 																					onClick={() =>
 																						handleCopyModelText(
-																							message.parts[0]?.text
+																							message.parts[0]?.text,
 																						)
 																					}
 																					className="text-btn text-sm text-gray-500 ml-auto"
@@ -196,16 +197,33 @@ export default function GeminiChat({ user }) {
 								</div>
 
 								<form className="flex flex-col justify-center items-center w-full gap-2">
-									<input
-										onChange={(e) => setMessage(e.target.value)}
-										className="input-field !bg-white"
-										type="text"
-										name="message"
-										placeholder="Send Message"
-										value={message}
-										autoFocus={true}
-										autoComplete="off"
-									/>
+									<>
+										<input
+											onChange={(e) => setMessage(e.target.value)}
+											className="input-field !bg-white hidden md:block"
+											type="text"
+											name="message"
+											placeholder="Send Message"
+											value={message}
+											autoFocus={true}
+											autoComplete="off"
+										/>
+
+										<input
+											onChange={(e) => setMessage(e.target.value)}
+											className="input-field !bg-white block md:hidden"
+											type="text"
+											name="message"
+											placeholder="Send Message"
+											value={message}
+											autoFocus={true}
+											onKeyUp={(e) =>
+												e.key === "Enter" && geminiChatRef?.current?.blur()
+											}
+											autoComplete="off"
+											ref={geminiChatRef}
+										/>
+									</>
 
 									{geminiChatLoading ? (
 										<>
@@ -239,7 +257,7 @@ export default function GeminiChat({ user }) {
 							</div>
 						</div>
 					</>,
-					document.body
+					document.body,
 				)}
 
 			<div
