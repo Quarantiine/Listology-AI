@@ -214,8 +214,6 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
-<<<<<<< HEAD
-=======
 	const handleNotificationAPI = () => {
 		pushNotification(
 			"Listology",
@@ -223,8 +221,6 @@ export default function MainContent() {
 			"Hello welcome to Listology!",
 		);
 	};
-
->>>>>>> 91047f6317df739ed5dff355ffaf61f68901cb3d
 	return (
 		<>
 			<div
@@ -275,15 +271,12 @@ export default function MainContent() {
 											})
 									) : (
 										<>
-<<<<<<< HEAD
-=======
 											{/* <button
 												className="base-btn"
 												onClick={handleNotificationAPI}
 											>
 												Push Notification
 											</button> */}
->>>>>>> 91047f6317df739ed5dff355ffaf61f68901cb3d
 
 											<div
 												className={`flex flex-col justify-start items-start w-full transition-all gap-5`}
