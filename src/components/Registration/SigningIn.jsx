@@ -43,7 +43,6 @@ export default function SigningIn({ handleRegistrationChange }) {
 			setAccountError(false);
 			registration.signingIn(email.current.value, password.current.value);
 		} else {
-			console.log();
 			setEmailError(true);
 			emailErrorRef.current = setTimeout(() => {
 				setEmailError(false);

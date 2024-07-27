@@ -11,7 +11,6 @@ import FirebaseApi from "../../pages/api/firebaseApi";
 import { UserCredentialCtx } from "../../pages";
 import { StateCtx } from "../Layout";
 import shortenUrl from "shorten-url";
-import NotificationAPI from "../../pages/api/notificationApi";
 
 const moreReducer = (state, { payload, type }) => {
 	switch (type) {
@@ -40,14 +39,13 @@ export default function TimelineTodos({
 		setOpenTodoSearchInput,
 		filterDispatch,
 	} = useContext(StateCtx);
-	const { pushNotification } = NotificationAPI();
 
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		todoDropdown: "",
 	});
 	const [editTextActive, setEditTextActive] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
-	const [deletedTodo, setDeletedTodo] = useState("");
+	const [deletedTodo, _] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
 
@@ -125,6 +123,7 @@ export default function TimelineTodos({
 		if (matches && matches.length > 0) {
 			return matches[0];
 		}
+
 		return null;
 	}
 
@@ -279,19 +278,6 @@ export default function TimelineTodos({
 		(differenceInEndMilliseconds / millisecondsPerDay) *
 		24
 	).toFixed(0);
-
-	// useEffect(() => {
-	// 	switch (Math.round(differenceInEndHours / 24)) {
-	// 		case Math.round(differenceInEndHours / 24) < 32:
-	// 			pushNotification(
-	// 				"To-do Date",
-	// 				"to-do timeline",
-	// 				`Days Left (${Math.round(differenceInEndHours / 24)})`,
-	// 			);
-	// 		default:
-	// 			console.log("Default");
-	// 	}
-	// }, []);
 
 	return (
 		<div className="flex flex-col w-full h-auto">
