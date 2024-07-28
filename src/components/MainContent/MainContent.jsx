@@ -20,6 +20,7 @@ export default function MainContent() {
 		clickedTodoFolder,
 		setClickedFolder,
 		setOpenTodolistSidebar,
+		handleCloseSidebar,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, todolistFolders, todoLists, folders } = FirebaseApi();
@@ -117,6 +118,8 @@ export default function MainContent() {
 
 	const handleCreateTodoFolder = () => {
 		setOpenTodolistSidebar(true);
+		handleCloseSidebar();
+
 		setClickedFolder(
 			folders.allFolders
 				?.filter((value) => value.userID === auth.currentUser.uid)
@@ -1208,14 +1211,14 @@ export default function MainContent() {
 														?.map((folder) => folder).length > 0 ? (
 														<button
 															onClick={handleCreateTodoFolder}
-															className="base-btn"
+															className="sidebar todolist-sidebar base-btn"
 														>
 															Create To-do Folder
 														</button>
 													) : (
 														<button
 															onClick={handleFolderCreation}
-															className="base-btn"
+															className="sidebar base-btn"
 														>
 															Create Main Folder
 														</button>
