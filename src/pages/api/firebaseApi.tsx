@@ -36,8 +36,6 @@ import {
 } from "firebase/auth";
 import { apiKeys } from "../../../config";
 
-console.log(apiKeys.firebaseAPIKey)
-
 // Firebase configuration
 const firebaseConfig = {
 	apiKey: apiKeys.firebaseAPIKey,
