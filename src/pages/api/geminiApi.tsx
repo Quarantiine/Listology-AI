@@ -4,7 +4,8 @@ import React, { useRef, useState } from "react";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import { apiKeys } from "../../../config";
 
-const genAI = new GoogleGenerativeAI(apiKeys.geminiAPIKey);
+const { geminiAPIKey } = apiKeys;
+const genAI = new GoogleGenerativeAI(geminiAPIKey);
 
 const model = genAI.getGenerativeModel({
 	model: "gemini-1.5-pro",
