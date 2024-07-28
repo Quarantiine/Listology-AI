@@ -34,13 +34,10 @@ import {
 	updateEmail,
 	deleteUser,
 } from "firebase/auth";
-import { apiKeys } from "../../../config";
-
-const { firebaseAPIKey } = apiKeys;
 
 // Firebase configuration
 const firebaseConfig = {
-	apiKey: firebaseAPIKey,
+	apiKey: "AIzaSyDetapdvyXWk9GParxqPi1YudSyCOnSbyc",
 	authDomain: "todo-list-web-app-3329a.firebaseapp.com",
 	projectId: "todo-list-web-app-3329a",
 	storageBucket: "todo-list-web-app-3329a.appspot.com",
