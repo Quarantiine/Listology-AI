@@ -10,7 +10,6 @@ import TodoFoldersDashboard from "./TodoFoldersDashboard";
 import Image from "next/image";
 import ImportantTodos from "./ImportantTodos";
 import TimelineTodos from "./TimelineTodos";
-import NotificationAPI from "../../pages/api/notificationApi";
 
 export default function MainContent() {
 	const {
@@ -21,10 +20,10 @@ export default function MainContent() {
 		clickedTodoFolder,
 		setClickedFolder,
 		setOpenTodolistSidebar,
+		handleCloseSidebar,
 	} = useContext(StateCtx);
 	const { user } = useContext(UserCredentialCtx);
 	const { auth, todolistFolders, todoLists, folders } = FirebaseApi();
-	const { pushNotification } = NotificationAPI();
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
@@ -119,6 +118,8 @@ export default function MainContent() {
 
 	const handleCreateTodoFolder = () => {
 		setOpenTodolistSidebar(true);
+		handleCloseSidebar();
+
 		setClickedFolder(
 			folders.allFolders
 				?.filter((value) => value.userID === auth.currentUser.uid)
@@ -214,6 +215,7 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
+<<<<<<< HEAD
 	const handleNotificationAPI = () => {
 		pushNotification(
 			"Listology",
@@ -222,6 +224,8 @@ export default function MainContent() {
 		);
 	};
 
+=======
+>>>>>>> fdf4672946220930b45d335c6b16128a2725705c
 	return (
 		<>
 			<div
@@ -1218,14 +1222,14 @@ export default function MainContent() {
 														?.map((folder) => folder).length > 0 ? (
 														<button
 															onClick={handleCreateTodoFolder}
-															className="base-btn"
+															className="sidebar todolist-sidebar base-btn"
 														>
 															Create To-do Folder
 														</button>
 													) : (
 														<button
 															onClick={handleFolderCreation}
-															className="base-btn"
+															className="sidebar base-btn"
 														>
 															Create Main Folder
 														</button>

@@ -1,3 +1,4 @@
+"use client";
 import Head from "next/head";
 import FirebaseApi from "./api/firebaseApi";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -19,6 +20,7 @@ export default function Home() {
 			<Head>
 				<title>Listology</title>
 			</Head>
+
 			<>
 				{/* Loader */}
 				<div className="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center z-[-5] gap-3">

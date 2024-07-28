@@ -39,12 +39,13 @@ export default function TimelineTodos({
 		setOpenTodoSearchInput,
 		filterDispatch,
 	} = useContext(StateCtx);
+
 	const [moreState, moreDispatch] = useReducer(moreReducer, {
 		todoDropdown: "",
 	});
 	const [editTextActive, setEditTextActive] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
-	const [deletedTodo, setDeletedTodo] = useState("");
+	const [deletedTodo, _] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
 
@@ -122,6 +123,7 @@ export default function TimelineTodos({
 		if (matches && matches.length > 0) {
 			return matches[0];
 		}
+
 		return null;
 	}
 
