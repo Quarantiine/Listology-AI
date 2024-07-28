@@ -215,17 +215,6 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
-<<<<<<< HEAD
-	const handleNotificationAPI = () => {
-		pushNotification(
-			"Listology",
-			"to-do timeline",
-			"Hello welcome to Listology!"
-		);
-	};
-
-=======
->>>>>>> fdf4672946220930b45d335c6b16128a2725705c
 	return (
 		<>
 			<div
