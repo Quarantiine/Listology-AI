@@ -665,6 +665,15 @@ export default function TodoFoldersDashboard({
 								</p>
 							)}
 
+							{!todoFolder.completed && todoFolder.senderUID && (
+								<p
+									onClick={null}
+									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
+								>
+									Copy
+								</p>
+							)}
+
 							<p
 								onClick={handleHideTodoFolder}
 								className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"

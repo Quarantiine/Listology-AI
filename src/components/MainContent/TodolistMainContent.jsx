@@ -591,12 +591,10 @@ export default function TodolistMainContent({
 												})}
 											{!savedUserUIDs.allSavedUsers
 												?.filter(
-													(value) =>
-														value.accountUID === todolistFolder.senderUID
+													(value) => value.accountUID === todolistFolder.userID
 												)
 												?.map(
-													(value) =>
-														value.accountUID === todolistFolder.senderUID
+													(value) => value.accountUID === todolistFolder.userID
 												)
 												.includes(true) ? (
 												<button
