@@ -187,7 +187,8 @@ export default function TodolistSidebar() {
 								value.folderName === clickedFolder
 						)
 						?.map(
-							(todolistFolder) => todolistFolder.userID === auth.currentUser.uid
+							(todolistFolder) =>
+								todolistFolder.userID === auth?.currentUser?.uid
 						)
 						.includes(true) &&
 						todolistFolders.allTodoFolders
@@ -235,7 +236,8 @@ export default function TodolistSidebar() {
 								value.folderName === clickedFolder
 						)
 						?.map(
-							(todolistFolder) => todolistFolder.userID === auth.currentUser.uid
+							(todolistFolder) =>
+								todolistFolder.userID === auth?.currentUser?.uid
 						)
 						.includes(true) &&
 						todolistFolders.allTodoFolders

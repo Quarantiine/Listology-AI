@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import shortenUrl from "shorten-url";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import GeminiAPI from "../../pages/api/geminiApi";
@@ -9,6 +9,7 @@ export default function CreateAISubTodoList({
 	clickedTodoFolder,
 	clickedFolder,
 	setChatStyle,
+	todolistFolder,
 }) {
 	const { auth, todoLists, todolistFolders } = FirebaseApi();
 
@@ -35,7 +36,7 @@ export default function CreateAISubTodoList({
 
 	function extractLink(value) {
 		var pattern = /(https?:\/\/[^\s]+)/;
-		var matches = value.match(pattern);
+		var matches = value?.match(pattern);
 
 		if (matches && matches.length > 0) {
 			return matches[0];
@@ -56,10 +57,19 @@ export default function CreateAISubTodoList({
 
 	const handleCreateSubTodoListWithAI = async (e) => {
 		e.preventDefault();
+		const todoSenderID = todoLists.allTodoLists
+			?.filter(
+				(value) =>
+					value.folderID === todolistFolder.senderTodoFolderID &&
+					value.id === clickedTodo
+			)
+			?.map((value) => value.senderTodoID)
+			.toString();
 
 		if (subTodoPrompt) {
 			await createSubTodoListWithAI(
 				subTodoPrompt,
+
 				todolistFolders.allTodoFolders
 					.filter(
 						(value) =>
@@ -123,15 +133,6 @@ export default function CreateAISubTodoList({
 
 	const handleSaveListOfSubTodos = async () => {
 		try {
-			AIListOfSubTodos?.reverse()?.map((todoItem) =>
-				todoLists.addingSubTodosGemini(
-					todoItem.todo,
-					clickedTodo,
-					clickedTodoFolder,
-					clickedFolder
-				)
-			);
-
 			const todo = todoLists.allTodoLists
 				.filter(
 					(value) =>
@@ -164,8 +165,7 @@ export default function CreateAISubTodoList({
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.id === clickedTodoFolder &&
-								value.folderName === clickedFolder
+								value.id === clickedTodoFolder
 						)
 						.map((value) => value.folderTitle)
 						.toString(),
@@ -174,8 +174,7 @@ export default function CreateAISubTodoList({
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.id === clickedTodoFolder &&
-								value.folderName === clickedFolder
+								value.id === clickedTodoFolder
 						)
 						.map((value) => value.folderDescription)
 						.toString(),
@@ -189,6 +188,24 @@ export default function CreateAISubTodoList({
 						.toString()
 				)
 			);
+
+			todolistFolder.senderTodoFolderID
+				? await AIListOfSubTodos?.reverse()?.map((todoItem) =>
+						todoLists.addingSubTodosGemini(
+							todoItem.todo,
+							clickedTodo,
+							clickedTodoFolder,
+							[]
+						)
+				  )
+				: await AIListOfSubTodos?.reverse()?.map((todoItem) =>
+						todoLists.addingSubTodosGemini(
+							todoItem.todo,
+							clickedTodo,
+							clickedTodoFolder,
+							clickedFolder
+						)
+				  );
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -216,7 +233,16 @@ export default function CreateAISubTodoList({
 								value.folderID === clickedTodoFolder &&
 								!value.completed
 						)
-						?.map((value) => value).length > 5 && (
+						?.map((value) => value).length +
+						todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser.uid &&
+									value.folderID === todolistFolder.senderTodoFolderID &&
+									!value.completed
+							)
+							?.map((value) => value).length >
+						5 && (
 						<input
 							className="input-field w-full"
 							type="search"
@@ -284,6 +310,54 @@ export default function CreateAISubTodoList({
 							?.filter(
 								(value) =>
 									value.userID === auth.currentUser.uid &&
+									value.folderID === todolistFolder.senderTodoFolderID &&
+									!value.completed
+							)
+							?.map((value, index) => {
+								if (
+									value.todo
+										.normalize("NFD")
+										.replace(/\p{Diacritic}/gu, "")
+										.toLowerCase()
+										.includes(searchQuery.toLowerCase())
+								) {
+									return (
+										<React.Fragment key={value.id}>
+											<button
+												onClick={(e) => handleClickedTodo(e, value.id)}
+												className="text-btn text-start flex flex-col justify-start items-start gap-1 w-full bg-gray-200 px-2 py-1 rounded-lg"
+											>
+												<p className="font-bold min-w-[50px]">
+													<span>{index + 1}. </span>
+													To-do:
+												</p>
+
+												{!extractLink(value.todo) && (
+													<div className="line-clamp-2">
+														<ReactMarkdown>{value.todo}</ReactMarkdown>
+													</div>
+												)}
+
+												{extractLink(value.todo) && (
+													<p>
+														{value.todo.replace(extractLink(value.todo), "")}{" "}
+														<span className="text-gray-500">
+															{shortenUrl(extractLink(value.todo), -30)
+																.replace("", "[Link]")
+																.slice(0, 6)}
+														</span>
+													</p>
+												)}
+											</button>
+										</React.Fragment>
+									);
+								}
+							})}
+
+						{todoLists.allTodoLists
+							?.filter(
+								(value) =>
+									value.userID === auth.currentUser.uid &&
 									value.folderID === clickedTodoFolder &&
 									!value.completed &&
 									value.todo
@@ -292,9 +366,21 @@ export default function CreateAISubTodoList({
 										.toLowerCase()
 										.includes(searchQuery.toLowerCase())
 							)
-							?.map((value) => value).length < 1 && (
-							<p className="text-gray-500">No Search Results</p>
-						)}
+							?.map((value) => value).length +
+							todoLists.allTodoLists
+								?.filter(
+									(value) =>
+										value.userID === auth.currentUser.uid &&
+										value.folderID === todolistFolder.senderTodoFolderID &&
+										!value.completed &&
+										value.todo
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+								)
+								?.map((value) => value).length <
+							1 && <p className="text-gray-500">No Search Results</p>}
 					</div>
 
 					<button
@@ -389,6 +475,39 @@ export default function CreateAISubTodoList({
 									(value) =>
 										value.userID === auth.currentUser.uid &&
 										value.folderID === clickedTodoFolder &&
+										value.id === clickedTodo
+								)
+								.map((value) => {
+									return (
+										<React.Fragment key={value.id}>
+											<div className="flex justify-center items-center gap-1 w-full bg-gray-100 px-2 py-1 rounded-lg">
+												<p className="font-bold min-w-[50px]">To-do: </p>
+												{!extractLink(value.todo) && (
+													<div className="line-clamp-3">
+														<ReactMarkdown>{value.todo}</ReactMarkdown>
+													</div>
+												)}
+
+												{extractLink(value.todo) && (
+													<p>
+														{value.todo.replace(extractLink(value.todo), "")}{" "}
+														<span className="text-gray-500">
+															{shortenUrl(extractLink(value.todo), -30)
+																.replace("", "[Link]")
+																.slice(0, 6)}
+														</span>
+													</p>
+												)}
+											</div>
+										</React.Fragment>
+									);
+								})}
+
+							{todoLists.allTodoLists
+								.filter(
+									(value) =>
+										value.userID === auth.currentUser.uid &&
+										value.folderID === todolistFolder.senderTodoFolderID &&
 										value.id === clickedTodo
 								)
 								.map((value) => {

@@ -33,7 +33,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 			.filter(
 				(value) =>
 					auth.currentUser?.uid === value.userID &&
-					folder.folderName.includes(value.mainFolder[0]),
+					folder.folderName.includes(value.mainFolder[0])
 			)
 			?.map((todoSub) => todoLists.deletingSubTodo(todoSub.id));
 
@@ -41,7 +41,8 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 			.filter(
 				(value) =>
 					auth.currentUser?.uid === value.userID &&
-					folder.folderName.includes(value.mainFolder[0]),
+					value.mainFolder &&
+					folder?.folderName?.includes(value.mainFolder[0])
 			)
 			?.map((todoList) => todoLists.deletingTodolist(todoList.id));
 
@@ -49,10 +50,10 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 			.filter(
 				(value) =>
 					auth.currentUser?.uid === value.userID &&
-					value.folderName === clickedFolder,
+					value.folderName === clickedFolder
 			)
 			?.map((todolistFolder) =>
-				todolistFolders.deletingTodoFolder(todolistFolder.id),
+				todolistFolders.deletingTodoFolder(todolistFolder.id)
 			);
 
 		folders.deletingFolder(folder.id);
@@ -104,8 +105,8 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 								folder.completed
 									? "/icons/completed-folder.svg"
 									: user.themeColor
-										? "/icons/checkbox-empty-white.svg"
-										: "/icons/checkbox-empty-black.svg"
+									? "/icons/checkbox-empty-white.svg"
+									: "/icons/checkbox-empty-black.svg"
 							}
 							alt="completed"
 							width={20}
@@ -140,7 +141,7 @@ const AllFolders = ({ setClickedFolder, folder }) => {
 									</div>
 								</div>
 							</>,
-							document.body,
+							document.body
 						)}
 					<button onClick={handleDeleteWarning}>
 						<Image

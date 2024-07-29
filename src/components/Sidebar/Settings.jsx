@@ -1,8 +1,8 @@
-import React, { useContext, useReducer } from "react";
-import { UserCredentialCtx } from "../../pages";
+import React, { useReducer } from "react";
 import PersonalInfoSection from "./PersonalInfoSection";
 import ActivitySection from "./ActivitySection";
 import DeleteAccount from "./DeleteAccount";
+import FirebaseApi from "../../pages/api/firebaseApi";
 
 const navigatorReducer = (state, { type, payload }) => {
 	switch (type) {
@@ -17,8 +17,11 @@ const navigatorReducer = (state, { type, payload }) => {
 	}
 };
 
-export default function Settings() {
-	const { user } = useContext(UserCredentialCtx);
+export default function Settings({ user }) {
+	const {
+		auth,
+		savedUserUIDs: { allSavedUsers, deletingUserUID },
+	} = FirebaseApi();
 
 	const [navigatorState, navigatorDispatch] = useReducer(navigatorReducer, {
 		navigate: "Personal Info",
@@ -32,6 +35,14 @@ export default function Settings() {
 				value: value,
 			},
 		});
+	};
+
+	const handleDeleteSavedUser = (id) => {
+		deletingUserUID(id);
+	};
+
+	const handleCopyUID = (uidText) => {
+		navigator.clipboard.writeText(uidText);
 	};
 
 	return (
@@ -62,33 +73,88 @@ export default function Settings() {
 								Personal Info
 							</button>
 
-							{/* <button
+							<button
 								onClick={(e) => handleNavigation(e.target.textContent)}
 								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
-									navigatorState.navigate === "Activity"
+									navigatorState.navigate === "Saved UIDs"
 										? "base-bg text-white rounded-md"
 										: ""
 								}`}
 							>
-								Activity
-							</button> */}
-
-							{/* <button
-								onClick={(e) => handleNavigation(e.target.textContent)}
-								className={`w-fit sm:w-full transition-all px-2 py-1 text-start whitespace-nowrap ${
-									navigatorState.navigate === "Delete Account"
-										? "base-bg text-white rounded-md"
-										: ""
-								}`}
-							>
-								Delete Account
-							</button> */}
+								Saved UIDs
+							</button>
 						</div>
 
 						<div className="w-full h-full">
 							{navigatorState.navigate === "Personal Info" && (
 								<>
 									<PersonalInfoSection user={user} />
+								</>
+							)}
+
+							{navigatorState.navigate === "Saved UIDs" && (
+								<>
+									<div className="w-full h-full flex flex-col gap-7 relative">
+										<h1 className="text-2xl text-gray-400 font-medium px-3">
+											Saved User UIDs
+										</h1>
+
+										<div className="flex flex-col gap-2 justify-start items-start">
+											{allSavedUsers
+												?.filter((value) => value.uid === auth.currentUser.uid)
+												?.map((value) => {
+													return (
+														<div
+															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-center w-full px-3 py-2 rounded-lg ${
+																user.themeColor
+																	? "hover:bg-[#333]"
+																	: "hover:bg-gray-100"
+															}`}
+															key={value.id}
+														>
+															<div className="flex flex-col justify-start items-start">
+																<p>Username: {value.username}</p>
+																<p className="line-clamp-1">
+																	UID: {value.accountUID}
+																</p>
+
+																<button
+																	onClick={() =>
+																		handleCopyUID(value.accountUID)
+																	}
+																	className={`text-btn text-sm ${
+																		user.themeColor
+																			? "text-[#555]"
+																			: "text-gray-500"
+																	}`}
+																>
+																	Copy UID
+																</button>
+															</div>
+
+															<button
+																onClick={() => handleDeleteSavedUser(value.id)}
+																className="base-btn !bg-red-500 text-sm"
+															>
+																Delete
+															</button>
+														</div>
+													);
+												})}
+
+											{allSavedUsers
+												?.filter((value) => value.uid === auth.currentUser.uid)
+												?.map((value) => value).length < 1 && (
+												<p
+													className={`px-3 ${
+														user.themeColor ? "text-[#555]" : "text-gray-500"
+													}`}
+												>
+													No Saved User UIDs
+												</p>
+											)}
+										</div>
+									</div>
 								</>
 							)}
 

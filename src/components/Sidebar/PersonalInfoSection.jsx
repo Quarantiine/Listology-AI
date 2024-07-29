@@ -1,5 +1,11 @@
 import Image from "next/image";
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, {
+	useContext,
+	useEffect,
+	useState,
+	useCallback,
+	useRef,
+} from "react";
 import GalleryModal from "../MainContent/GalleryModal";
 import { createPortal } from "react-dom";
 import { StateCtx } from "../Layout";
@@ -268,7 +274,9 @@ const ChangingInfoSection = ({ user }) => {
 	const [changeUsername, setChangeUsername] = useState(false);
 	const [email, setEmail] = useState("");
 	const [changingEmail, setChangingEmail] = useState(false);
-	const [countDownDisplay, setCountDownDisplay] = useState("");
+	const [_, setCountDownDisplay] = useState("");
+	const [copied, setCopied] = useState(false);
+	const copiedRef = useRef();
 
 	const currentDate = new Date();
 	const emailChangeWaitTime = new Date();
@@ -300,15 +308,15 @@ const ChangingInfoSection = ({ user }) => {
 		}
 	};
 
-	const handleChangingEmail = () => {
-		setChangingEmail(!changingEmail);
-	};
+	// const handleChangingEmail = () => {
+	// 	setChangingEmail(!changingEmail);
+	// };
 
-	const handleChangeUserEmail = () => {
-		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-			registration.updatingUserEmail(email);
-		}
-	};
+	// const handleChangeUserEmail = () => {
+	// 	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+	// 		registration.updatingUserEmail(email);
+	// 	}
+	// };
 
 	function calculateTimeDifference(currentTime, desiredTime) {
 		const timeDifference = desiredTime - currentTime;
@@ -345,9 +353,46 @@ const ChangingInfoSection = ({ user }) => {
 		}
 	}, [currentDate, countdownInterval]);
 
+	const handleCopyAccountID = async () => {
+		clearTimeout(copiedRef.current);
+		setCopied(true);
+
+		copiedRef.current = setTimeout(() => {
+			setCopied(false);
+		}, 2000);
+
+		await navigator.clipboard.writeText(user.userID);
+	};
+
 	return (
 		<>
 			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-end w-full gap-3">
+				<div className="flex flex-col justify-center items-start gap-1">
+					<h1 className="text-lg font-semibold">Account ID</h1>
+
+					<div className="flex flex-col sm:flex-row justify-start sm:justify-start items-start sm:items-center gap-2">
+						<p className="">{`ID: ${user.userID}`}</p>
+						<button
+							className={`text-sm ${
+								user.themeColor ? "text-[#888]" : "text-gray-500"
+							}`}
+							onClick={handleCopyAccountID}
+						>
+							{copied ? "COPIED" : "COPY"}
+						</button>
+					</div>
+
+					<p
+						className={`text-sm pt-1 ${
+							user.themeColor ? "text-[#888]" : "text-gray-500"
+						}`}
+					>
+						This is mainly used to share to-do folders with other users.
+					</p>
+				</div>
+			</div>
+
+			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center gap-3 w-full">
 				<div className="flex flex-col justify-center items-start w-full">
 					<h1 className="text-lg font-semibold">Username</h1>
 					{changeUsername ? (
@@ -368,6 +413,14 @@ const ChangingInfoSection = ({ user }) => {
 					) : (
 						<p>{user.username}</p>
 					)}
+
+					<p
+						className={`text-sm pt-1 ${
+							user.themeColor ? "text-[#888]" : "text-gray-500"
+						}`}
+					>
+						Change your username to anything you like.
+					</p>
 				</div>
 
 				<div className="flex flex-col w-full sm:w-fit h-auto sm:flex-row justify-center items-center gap-2">

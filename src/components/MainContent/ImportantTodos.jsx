@@ -40,7 +40,7 @@ export default function ImportantTodos({ todolist }) {
 	});
 	const [editTextActive, setEditTextActive] = useState(false);
 	const [openLinkDropdown, setOpenLinkDropdown] = useState(false);
-	const [deletedTodo, setDeletedTodo] = useState("");
+	const [deletedTodo, _] = useState("");
 	let [deletionIntervals, setDeletionIntervals] = useState(5000);
 	const [openMoreDropdown, setOpenMoreDropdown] = useState(false);
 	const [hideCalendarPopUp, setHideCalendarPopUp] = useState(false);
@@ -84,7 +84,7 @@ export default function ImportantTodos({ todolist }) {
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false,
+			todoIndicator.current ? true : false
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -97,8 +97,9 @@ export default function ImportantTodos({ todolist }) {
 			todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID,
+						(value.todoID === todolist.id ||
+							value.todoID === todolist.senderTodoID) &&
+						auth.currentUser?.uid === value.userID
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -217,7 +218,7 @@ export default function ImportantTodos({ todolist }) {
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -315,17 +316,45 @@ export default function ImportantTodos({ todolist }) {
 
 	return (
 		<div className="flex flex-col w-full">
-			<p className="text-[10px] text-gray-400">
-				{
-					todolistFolders.allTodoFolders
+			{todolistFolders.allTodoFolders
+				?.filter(
+					(value) =>
+						value.userID === auth.currentUser?.uid &&
+						value.senderTodoFolderID === todolist.folderID
+				)
+				.map((value) => value.senderTodoFolderID === todolist.folderID)
+				.includes(true)
+				? todolistFolders.allTodoFolders
 						?.filter(
 							(value) =>
 								value.userID === auth.currentUser?.uid &&
-								value.id === todolist.folderID,
+								value.senderTodoFolderID === todolist.folderID
 						)
-						.map((todoListFolder) => todoListFolder.folderTitle)[0]
-				}
-			</p>
+						.map((todoListFolder) => {
+							return (
+								<React.Fragment key={todoListFolder.id}>
+									<p className="text-[10px] text-gray-400">
+										{todoListFolder.folderTitle}
+									</p>
+								</React.Fragment>
+							);
+						})
+				: todolistFolders.allTodoFolders
+						?.filter(
+							(value) =>
+								value.userID === auth.currentUser?.uid &&
+								value.id === todolist.folderID
+						)
+						.map((todoListFolder) => {
+							return (
+								<React.Fragment key={todoListFolder.id}>
+									<p className="text-[10px] text-gray-400">
+										{todoListFolder.folderTitle}
+									</p>
+								</React.Fragment>
+							);
+						})}
+
 			<div
 				id={
 					todolist.ignoreTodo === false
@@ -341,10 +370,10 @@ export default function ImportantTodos({ todolist }) {
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
-							? user.themeColor
-								? "bg-[#292929]"
-								: "bg-[#eee]"
-							: ""
+						? user.themeColor
+							? "bg-[#292929]"
+							: "bg-[#eee]"
+						: ""
 				}`}
 			>
 				{todolist.ignoreTodo ? (
@@ -355,12 +384,12 @@ export default function ImportantTodos({ todolist }) {
 							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
 								: todolist.difficulty?.includes("Intermediate")
-									? "bg-yellow-500"
-									: todolist.difficulty?.includes("Easy")
-										? "bg-green-500"
-										: user.themeColor
-											? "bg-[#444]"
-											: "bg-[#ccc]"
+								? "bg-yellow-500"
+								: todolist.difficulty?.includes("Easy")
+								? "bg-green-500"
+								: user.themeColor
+								? "bg-[#444]"
+								: "bg-[#ccc]"
 						}`}
 					/>
 				)}
@@ -377,8 +406,8 @@ export default function ImportantTodos({ todolist }) {
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-											? "/icons/checkbox-empty-white.svg"
-											: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}
@@ -686,7 +715,7 @@ export default function ImportantTodos({ todolist }) {
 						{!todolist.ignoreTodo && (
 							<>
 								{todolist.favorited ? (
-									<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
+									<button className="min-w-[23px] text-btn relative right-[1px] flex justify-center items-center">
 										<Image
 											onClick={handleFavorited}
 											className="w-auto h-[20px] text-btn"

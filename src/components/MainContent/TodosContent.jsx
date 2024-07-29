@@ -117,7 +117,9 @@ export default function TodosContent({
 			const subTodos = todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id && value.uid === auth.currentUser.uid
+						(value.todoID === todolist.id ||
+							value.todoID === todolist.senderTodoID) &&
+						value.uid === auth.currentUser.uid
 				)
 				.map((subTodo) => subTodo.todo)
 				.toString();
@@ -216,7 +218,8 @@ export default function TodosContent({
 			todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id &&
+						(value.todoID === todolist.id ||
+							value.todoID === todolist.senderTodoID) &&
 						auth.currentUser?.uid === value.userID
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
@@ -1115,7 +1118,7 @@ export default function TodosContent({
 						{!todolist.ignoreTodo && (
 							<>
 								{todolist.favorited ? (
-									<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
+									<button className="min-w-[23px] text-btn relative right-[1px] flex justify-center items-center">
 										<Image
 											onClick={handleFavorited}
 											className="w-auto h-[20px] text-btn"
@@ -1168,11 +1171,17 @@ export default function TodosContent({
 				{todoLists?.allSubTodos
 					?.filter(
 						(value) =>
-							value.folderID === todolistFolder.id &&
+							(value.folderID === clickedTodoFolder ||
+								value.folderID === todolistFolder.senderTodoFolderID) &&
 							value.userID === auth.currentUser?.uid &&
-							value.todoID === todolist.id
+							(value.todoID === todolist.id ||
+								value.todoID === todolist.senderTodoID)
 					)
-					.map((subTodo) => subTodo.todoID === todolist.id)
+					.map(
+						(subTodo) =>
+							subTodo.todoID === todolist.id ||
+							subTodo.todoID === todolist.senderTodoID
+					)
 					.includes(true) && (
 					<button
 						onClick={handleCloseSubTodos}
@@ -1198,18 +1207,20 @@ export default function TodosContent({
 						/>
 					</button>
 				)}
+
 				{todoLists?.allSubTodos
 					?.filter(
 						(value) =>
-							value.folderID === todolistFolder.id &&
+							(value.folderID === todolistFolder.id ||
+								value.folderID === todolistFolder.senderTodoFolderID) &&
+							(value.todoID === todolist.id ||
+								value.todoID === todolist.senderTodoID) &&
 							value.userID === auth.currentUser?.uid
 					)
 					.map((subTodo) => {
 						if (
-							subTodo.folderID === clickedTodoFolder &&
-							subTodo.todoID === todolist.id &&
 							subTodo.todo
-								.normalize("NFD")
+								?.normalize("NFD")
 								.replace(/\p{Diacritic}/gu, "")
 								.toLowerCase()
 								.includes(subTodoSearchInput.toLowerCase())

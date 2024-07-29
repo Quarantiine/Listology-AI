@@ -54,7 +54,7 @@ export default function Layout({ children }) {
 	const [filterState, filterDispatch] = useReducer(filterReducer, {
 		filterCategories: "All",
 	});
-	const [closeSidebar, setCloseSidebar] = useState(false);
+	const [closeSidebar, setCloseSidebar] = useState(true);
 	const [bannerImage, setBannerImage] = useState("");
 	const [clickedImageLoading, setClickedImageLoading] = useState(false);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
@@ -106,19 +106,6 @@ export default function Layout({ children }) {
 		});
 	}, []);
 
-	useEffect(() => {
-		const mobileSidebar = () => {
-			if (window.innerWidth < 1024) {
-				setCloseSidebar(true);
-			} else {
-				setCloseSidebar(false);
-			}
-		};
-
-		window.addEventListener("resize", mobileSidebar);
-		return () => window.removeEventListener("resize", mobileSidebar);
-	}, []);
-
 	const handleCloseSidebar = () => {
 		setCloseSidebar(!closeSidebar);
 	};
@@ -133,7 +120,7 @@ export default function Layout({ children }) {
 			"",
 			"Untitled",
 			folderDescriptionText,
-			clickedFolder,
+			clickedFolder
 		);
 	};
 

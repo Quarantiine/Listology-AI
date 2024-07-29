@@ -88,7 +88,7 @@ export default function TimelineTodos({
 
 		todoLists.updatingDeletionIndicator(
 			todolist.id,
-			todoIndicator.current ? true : false,
+			todoIndicator.current ? true : false
 		);
 		clearTimeout(deleteDelay.current);
 
@@ -101,8 +101,9 @@ export default function TimelineTodos({
 			todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id &&
-						auth.currentUser?.uid === value.userID,
+						(value.todoID === todolist.id ||
+							value.todoID === todolist.senderTodoID) &&
+						auth.currentUser?.uid === value.userID
 				)
 				?.map((subTodo) => todoLists.deletingSubTodo(subTodo.id));
 		}, deleteDelayInterval);
@@ -222,7 +223,7 @@ export default function TimelineTodos({
 	const handleIgnoreTodo = () => {
 		todoLists.updatingIgnoreTodo(
 			todolist.id,
-			todolist.ignoreTodo ? !todolist.ignoreTodo : true,
+			todolist.ignoreTodo ? !todolist.ignoreTodo : true
 		);
 
 		todoLists.updatingTodolistFavorite(todolist.id, false);
@@ -299,14 +300,14 @@ export default function TimelineTodos({
 								differenceInEndHours >= -1
 									? "text-yellow-500"
 									: user.themeColor
-										? "text-[#888]"
-										: "text-gray-400"
+									? "text-[#888]"
+									: "text-gray-400"
 							} ${
 								differenceInEndHours <= -1
 									? "text-red-500"
 									: user.themeColor
-										? "text-[#888]"
-										: "text-gray-400"
+									? "text-[#888]"
+									: "text-gray-400"
 							}`}
 						>
 							{differenceInEndHours <= -1 ? (
@@ -349,10 +350,10 @@ export default function TimelineTodos({
 					todolist.ignoreTodo
 						? "bg-[#0e52ff1f] ignore-todo"
 						: todolist.favorited
-							? user.themeColor
-								? "bg-[#292929]"
-								: "bg-[#eee]"
-							: ""
+						? user.themeColor
+							? "bg-[#292929]"
+							: "bg-[#eee]"
+						: ""
 				}`}
 			>
 				{todolist.ignoreTodo ? (
@@ -363,12 +364,12 @@ export default function TimelineTodos({
 							todolist && todolist.difficulty?.includes("Hard")
 								? "bg-red-500"
 								: todolist.difficulty?.includes("Intermediate")
-									? "bg-yellow-500"
-									: todolist.difficulty?.includes("Easy")
-										? "bg-green-500"
-										: user.themeColor
-											? "bg-[#444]"
-											: "bg-[#ccc]"
+								? "bg-yellow-500"
+								: todolist.difficulty?.includes("Easy")
+								? "bg-green-500"
+								: user.themeColor
+								? "bg-[#444]"
+								: "bg-[#ccc]"
 						}`}
 					/>
 				)}
@@ -385,8 +386,8 @@ export default function TimelineTodos({
 									todolist.completed
 										? "/icons/completed-todo.svg"
 										: user.themeColor
-											? "/icons/checkbox-empty-white.svg"
-											: "/icons/checkbox-empty-black.svg"
+										? "/icons/checkbox-empty-white.svg"
+										: "/icons/checkbox-empty-black.svg"
 								}
 								alt="completed"
 								width={25}
@@ -656,10 +657,10 @@ export default function TimelineTodos({
 						{!todolist.ignoreTodo && (
 							<>
 								{todolist.favorited ? (
-									<button className="min-w-[20px] text-btn relative right-[1px] flex justify-center items-center">
+									<button className="min-w-[23px] text-btn relative right-[1px] flex justify-center items-center">
 										<Image
 											onClick={handleFavorited}
-											className="w-auto h-[20px] text-btn"
+											className="w-auto h-[23px] text-btn"
 											src={
 												user.themeColor
 													? "/icons/favorite-white.svg"

@@ -20,9 +20,9 @@ export default function Sidebar({ navState, navDispatch }) {
 	useEffect(() => {
 		const handleCloseSidebar = (e) => {
 			if (!e.target.closest(".sidebar")) {
-				if (window.innerWidth < 1024) {
-					setCloseSidebar(true);
-				}
+				setCloseSidebar(true);
+				// if (window.innerWidth < 1024) {
+				// }
 			}
 		};
 
@@ -46,7 +46,7 @@ export default function Sidebar({ navState, navDispatch }) {
 		<>
 			{!closeSidebar ? (
 				<div
-					className={`sidebar todolist-sidebar z-50 transition-colors duration-300 fixed md:sticky top-0 left-0 min-w-[280px] max-w-[280px] h-full flex flex-col justify-start items-start border-r-2 ${
+					className={`sidebar todolist-sidebar z-50 transition-colors duration-300 fixed lg:sticky top-0 left-0 min-w-[280px] max-w-[280px] h-full flex flex-col justify-start items-start border-r-2 ${
 						user.themeColor ? "bg-[#222]" : "bg-white"
 					} ${user.themeColor ? "border-[#333]" : "border-gray-200"}`}
 				>

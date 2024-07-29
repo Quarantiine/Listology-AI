@@ -15,9 +15,10 @@ export default function Placeholders({ user, todolistFolder }) {
 				?.filter((value) => value.userID === auth.currentUser?.uid)
 				?.map(
 					(todolist) =>
-						todolist.folderID === clickedTodoFolder &&
+						(todolist.folderID === todolistFolder.senderTodoFolderID ||
+							todolist.folderID === clickedTodoFolder) &&
 						todolist.completed === false &&
-						!todolist.ignoreTodo,
+						!todolist.ignoreTodo
 				)
 				.includes(true) &&
 				!completedTodos &&
@@ -35,9 +36,10 @@ export default function Placeholders({ user, todolistFolder }) {
 				?.filter((value) => value.userID === auth.currentUser?.uid)
 				?.map(
 					(todolist) =>
-						todolist.folderID === clickedTodoFolder &&
+						(todolist.folderID === todolistFolder.senderTodoFolderID ||
+							todolist.folderID === clickedTodoFolder) &&
 						todolist.favorited === true &&
-						todolist.completed === false,
+						todolist.completed === false
 				)
 				.includes(true) &&
 				filterState.filterCategories === "Favorites" && (
@@ -54,9 +56,10 @@ export default function Placeholders({ user, todolistFolder }) {
 					?.filter((value) => value.userID === auth.currentUser?.uid)
 					?.map(
 						(todolist) =>
-							todolist.folderID === clickedTodoFolder &&
+							(todolist.folderID === todolistFolder.senderTodoFolderID ||
+								todolist.folderID === clickedTodoFolder) &&
 							todolist.difficulty?.includes("Easy") &&
-							todolist.completed === false,
+							todolist.completed === false
 					)
 					.includes(true) &&
 					filterState.filterCategories.value === "Difficulty" &&
@@ -72,9 +75,10 @@ export default function Placeholders({ user, todolistFolder }) {
 					?.filter((value) => value.userID === auth.currentUser?.uid)
 					?.map(
 						(todolist) =>
-							todolist.folderID === clickedTodoFolder &&
+							(todolist.folderID === todolistFolder.senderTodoFolderID ||
+								todolist.folderID === clickedTodoFolder) &&
 							todolist.difficulty?.includes("Intermediate") &&
-							todolist.completed === false,
+							todolist.completed === false
 					)
 					.includes(true) &&
 					filterState.filterCategories.value === "Difficulty" &&
@@ -90,9 +94,10 @@ export default function Placeholders({ user, todolistFolder }) {
 					?.filter((value) => value.userID === auth.currentUser?.uid)
 					?.map(
 						(todolist) =>
-							todolist.folderID === clickedTodoFolder &&
+							(todolist.folderID === todolistFolder.senderTodoFolderID ||
+								todolist.folderID === clickedTodoFolder) &&
 							todolist.difficulty?.includes("Hard") &&
-							todolist.completed === false,
+							todolist.completed === false
 					)
 					.includes(true) &&
 					filterState.filterCategories.value === "Difficulty" &&
@@ -111,15 +116,15 @@ export default function Placeholders({ user, todolistFolder }) {
 				todoLists.allTodoLists
 					?.filter(
 						(value) =>
-							value.folderID === todolistFolder.id &&
 							value.userID === auth.currentUser?.uid &&
 							value.completed === completedTodos &&
-							value.folderID === clickedTodoFolder &&
+							(value.folderID === todolistFolder.senderTodoFolderID ||
+								value.folderID === clickedTodoFolder) &&
 							value.todo
 								.normalize("NFD")
 								.replace(/\p{Diacritic}/gu, "")
 								.toLowerCase()
-								.includes(todoSearchInput.toLowerCase()),
+								.includes(todoSearchInput.toLowerCase())
 					)
 					?.map((todolist) => todolist).length < 1 &&
 				!completedTodos && (
@@ -137,13 +142,14 @@ export default function Placeholders({ user, todolistFolder }) {
 				?.filter((value) => value.userID === auth.currentUser?.uid)
 				?.map(
 					(todolist) =>
-						todolist.folderID === clickedTodoFolder &&
+						(todolist.folderID === todolistFolder.senderTodoFolderID ||
+							todolist.folderID === clickedTodoFolder) &&
 						todolist.completed === true &&
 						todolist.todo
 							.normalize("NFD")
 							.replace(/\p{Diacritic}/gu, "")
 							.toLowerCase()
-							.includes(todoSearchInput.toLowerCase()),
+							.includes(todoSearchInput.toLowerCase())
 				)
 				.includes(true) &&
 				completedTodos && (

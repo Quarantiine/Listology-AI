@@ -7,7 +7,7 @@ import FirebaseAPI from "../../pages/api/firebaseApi";
 import { StateCtx } from "../../components/Layout";
 import ReactMarkdown from "react-markdown";
 
-export default function GeminiChat({ user }) {
+export default function GeminiChat({ user, todolistFolder }) {
 	const { auth, todoLists, todolistFolders } = FirebaseAPI();
 	const {
 		geminiChatSystem: {
@@ -18,7 +18,7 @@ export default function GeminiChat({ user }) {
 		},
 	} = GeminiAPI();
 
-	const { clickedTodoFolder, clickedFolder } = useContext(StateCtx);
+	const { clickedTodoFolder } = useContext(StateCtx);
 	const [openGeminiChat, setOpenGeminiChat] = useState(false);
 	const [message, setMessage] = useState("");
 	const messageBoxRef = useRef();
@@ -39,8 +39,7 @@ export default function GeminiChat({ user }) {
 					.filter(
 						(value) =>
 							value.userID === auth.currentUser.uid &&
-							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder,
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderTitle)
 					.toString(),
@@ -48,8 +47,7 @@ export default function GeminiChat({ user }) {
 					.filter(
 						(value) =>
 							value.userID === auth.currentUser.uid &&
-							value.folderName === clickedFolder &&
-							value.id === clickedTodoFolder,
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderDescription)
 					.toString(),
@@ -58,19 +56,28 @@ export default function GeminiChat({ user }) {
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder,
+								value.folderID === clickedTodoFolder
 						)
-						.map((value) => value),
+						.map((value) => value)
 				),
 				JSON.stringify(
 					todoLists.allSubTodos
 						.filter(
 							(value) =>
 								value.userID === auth.currentUser.uid &&
-								value.folderID === clickedTodoFolder,
+								value.folderID === clickedTodoFolder
 						)
-						.map((value) => value),
+						.map((value) => value)
 				),
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === todolistFolder.senderTodoFolderID
+						)
+						.map((value) => value)
+				)
 			);
 
 			setMessage("");
@@ -121,7 +128,7 @@ export default function GeminiChat({ user }) {
 										messageHistory
 											?.filter(
 												(value) =>
-													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj"),
+													!value.parts[0]?.text.includes("*^GIbi*&&Bgfdr3ECj")
 											)
 											.map((message, index) => {
 												return (
@@ -161,7 +168,7 @@ export default function GeminiChat({ user }) {
 																				<button
 																					onClick={() =>
 																						handleCopyModelText(
-																							message.parts[0]?.text,
+																							message.parts[0]?.text
 																						)
 																					}
 																					className="text-btn text-sm text-gray-500 ml-auto"
@@ -257,7 +264,7 @@ export default function GeminiChat({ user }) {
 							</div>
 						</div>
 					</>,
-					document.body,
+					document.body
 				)}
 
 			<div

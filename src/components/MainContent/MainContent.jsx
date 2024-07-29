@@ -28,8 +28,8 @@ export default function MainContent() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [openHiddenFoldersDropdown, setOpenHiddenFoldersDropdown] =
 		useState(false);
-	const [importantTodosDropdown, setImportantTodosDropdown] = useState(true);
-	const [todoTimelineDropdown, setTodoTimelineDropdown] = useState(true);
+	const [importantTodosDropdown, setImportantTodosDropdown] = useState(false);
+	const [todoTimelineDropdown, setTodoTimelineDropdown] = useState(false);
 	const [inputTxt, setInputTxt] = useState("");
 	const [showMoreDates, setShowMoreDates] = useState(6);
 	const [showMoreDateBtn, setShowMoreDateBtn] = useState(false);
@@ -47,7 +47,7 @@ export default function MainContent() {
 				(value.userID === auth.currentUser?.uid &&
 					!value.folderHidden &&
 					value.folderName
-						.normalize("NFD")
+						?.normalize("NFD")
 						.replace(/\p{Diacritic}/gu, "")
 						.toLowerCase()
 						.includes(searchQuery.toLowerCase()))
@@ -122,7 +122,7 @@ export default function MainContent() {
 
 		setClickedFolder(
 			folders.allFolders
-				?.filter((value) => value.userID === auth.currentUser.uid)
+				?.filter((value) => value.userID === auth?.currentUser?.uid)
 				.slice(0, 1)
 				.map((folder) => folder.folderName)[0]
 		);
@@ -133,7 +133,7 @@ export default function MainContent() {
 			todoLists.allTodoLists
 				?.filter(
 					(todolist) =>
-						todolist.userID === auth.currentUser.uid &&
+						todolist.userID === auth?.currentUser?.uid &&
 						todolist.startDate &&
 						todolist.endDate &&
 						!todolist.completed
@@ -153,7 +153,7 @@ export default function MainContent() {
 			todoLists.allTodoLists
 				?.filter(
 					(todolist) =>
-						todolist.userID === auth.currentUser.uid &&
+						todolist.userID === auth?.currentUser?.uid &&
 						todolist.startDate &&
 						todolist.endDate &&
 						!todolist.completed
@@ -166,7 +166,7 @@ export default function MainContent() {
 				todoLists.allTodoLists
 					?.filter(
 						(todolist) =>
-							todolist.userID === auth.currentUser.uid &&
+							todolist.userID === auth?.currentUser?.uid &&
 							todolist.startDate &&
 							todolist.endDate &&
 							!todolist.completed
@@ -179,30 +179,69 @@ export default function MainContent() {
 
 	useEffect(() => {
 		const completionPercentage =
-			todoLists.allTodoLists
+			(todoLists.allTodoLists
 				?.filter(
 					(value) =>
 						value.folderID === clickedTodoFolder &&
-						value.userID === auth.currentUser?.uid &&
+						value.userID === auth?.currentUser?.uid &&
 						value.completed === true &&
 						!value.ignoreTodo
 				)
-				?.map((todo) => todo).length /
-			todoLists.allTodoLists
+				?.map((todo) => todo).length +
+				todoLists.allTodoLists
+					?.filter(
+						(value) =>
+							value.folderID ===
+								todolistFolders.allTodoFolders
+									?.filter(
+										(sharedTodoFolderID) =>
+											sharedTodoFolderID.userID === auth?.currentUser?.uid &&
+											value.folderID === sharedTodoFolderID.senderTodoFolderID
+									)
+									.map(
+										(sharedTodoFolderID) =>
+											sharedTodoFolderID.senderTodoFolderID
+									)
+									.toString() &&
+							value.userID === auth.currentUser?.uid &&
+							value.completed === true &&
+							!value.ignoreTodo
+					)
+					?.map((todo) => todo).length) /
+			(todoLists.allTodoLists
 				?.filter(
 					(value) =>
 						value.folderID === clickedTodoFolder &&
 						value.userID === auth.currentUser?.uid &&
 						!value.ignoreTodo
 				)
-				?.map((todo) => todo).length;
+				?.map((todo) => todo).length +
+				todoLists.allTodoLists
+					?.filter(
+						(value) =>
+							value.folderID ===
+								todolistFolders.allTodoFolders
+									?.filter(
+										(sharedTodoFolderID) =>
+											sharedTodoFolderID.userID === auth?.currentUser?.uid &&
+											value.folderID === sharedTodoFolderID.senderTodoFolderID
+									)
+									.map(
+										(sharedTodoFolderID) =>
+											sharedTodoFolderID.senderTodoFolderID
+									)
+									.toString() &&
+							value.userID === auth.currentUser?.uid &&
+							!value.ignoreTodo
+					)
+					?.map((todo) => todo).length);
 
-		if (completionPercentage >= 1) {
+		if (completionPercentage >= 1 && clickedTodoFolder) {
 			todolistFolders.updatingCompletion(clickedTodoFolder, true);
 			todolistFolders.allTodoFolders
 				.filter(
 					(value) =>
-						value.userID === auth.currentUser.uid &&
+						value.userID === auth?.currentUser?.uid &&
 						value.id === clickedTodoFolder
 				)
 				.map((todoFolder) => todoFolder.pinned)
@@ -210,7 +249,7 @@ export default function MainContent() {
 				todolistFolders.updatingPinnedIndicator(clickedTodoFolder, false);
 		}
 
-		if (completionPercentage < 1) {
+		if (completionPercentage < 1 && clickedTodoFolder) {
 			todolistFolders.updatingCompletion(clickedTodoFolder, false);
 		}
 	}, [todolistFolders, clickedTodoFolder]);
@@ -272,7 +311,7 @@ export default function MainContent() {
 													{todoLists.allTodoLists
 														?.filter(
 															(todolist) =>
-																todolist.userID === auth.currentUser.uid &&
+																todolist.userID === auth?.currentUser?.uid &&
 																todolist.startDate &&
 																todolist.endDate &&
 																!todolist.completed
@@ -294,7 +333,7 @@ export default function MainContent() {
 																			?.filter(
 																				(todolist) =>
 																					todolist.userID ===
-																						auth.currentUser.uid &&
+																						auth?.currentUser?.uid &&
 																					todolist.startDate &&
 																					todolist.endDate &&
 																					!todolist.completed
@@ -325,7 +364,7 @@ export default function MainContent() {
 																			?.filter(
 																				(todolist) =>
 																					todolist.userID ===
-																						auth.currentUser.uid &&
+																						auth?.currentUser?.uid &&
 																					todolist.startDate &&
 																					todolist.endDate &&
 																					!todolist.completed
@@ -339,7 +378,7 @@ export default function MainContent() {
 																		?.filter(
 																			(todolist) =>
 																				todolist.userID ===
-																					auth.currentUser.uid &&
+																					auth?.currentUser?.uid &&
 																				todolist.startDate &&
 																				todolist.endDate &&
 																				!todolist.completed
@@ -384,7 +423,7 @@ export default function MainContent() {
 																		?.filter(
 																			(todolist) =>
 																				todolist.userID ===
-																					auth.currentUser.uid &&
+																					auth?.currentUser?.uid &&
 																				todolist.startDate &&
 																				todolist.endDate &&
 																				!todolist.completed
@@ -405,7 +444,7 @@ export default function MainContent() {
 																		?.filter(
 																			(todolist) =>
 																				todolist.userID ===
-																					auth.currentUser.uid &&
+																					auth?.currentUser?.uid &&
 																				todolist.startDate &&
 																				todolist.endDate &&
 																				!todolist.completed
@@ -416,7 +455,7 @@ export default function MainContent() {
 																			?.filter(
 																				(todolist) =>
 																					todolist.userID ===
-																						auth.currentUser.uid &&
+																						auth?.currentUser?.uid &&
 																					todolist.startDate &&
 																					todolist.endDate &&
 																					!todolist.completed
@@ -447,18 +486,18 @@ export default function MainContent() {
 													>
 														<div>
 															<h1 className="text-2xl font-semibold">
-																Important Todos:{" "}
+																Important To-dos:{" "}
 																<span>
 																	{
 																		todoLists.allTodoLists
 																			.filter(
 																				(value) =>
 																					value.userID ===
-																						auth.currentUser.uid &&
+																						auth?.currentUser?.uid &&
 																					value.markImportant &&
 																					!value.completed
 																			)
-																			.map((t) => t).length
+																			.map((value) => value).length
 																	}
 																</span>
 															</h1>
@@ -485,7 +524,7 @@ export default function MainContent() {
 																todoLists.allTodoLists
 																	?.filter(
 																		(value) =>
-																			value.userID === auth.currentUser.uid &&
+																			value.userID === auth?.currentUser?.uid &&
 																			value.markImportant &&
 																			!value.completed
 																	)
@@ -497,7 +536,7 @@ export default function MainContent() {
 															{todoLists.allTodoLists
 																.filter(
 																	(value) =>
-																		value.userID === auth.currentUser.uid &&
+																		value.userID === auth?.currentUser?.uid &&
 																		!value.ignoreTodo &&
 																		!value.completed
 																)
@@ -515,7 +554,7 @@ export default function MainContent() {
 															{todoLists.allTodoLists
 																.filter(
 																	(value) =>
-																		value.userID === auth.currentUser.uid &&
+																		value.userID === auth?.currentUser?.uid &&
 																		value.ignoreTodo &&
 																		!value.completed
 																)
@@ -533,7 +572,7 @@ export default function MainContent() {
 															{!todoLists.allTodoLists
 																.filter(
 																	(value) =>
-																		value.userID === auth.currentUser.uid &&
+																		value.userID === auth?.currentUser?.uid &&
 																		!value.completed
 																)
 																.map((todolist) =>
@@ -547,7 +586,7 @@ export default function MainContent() {
 																			: "text-gray-400"
 																	}`}
 																>
-																	No Important Todos to Complete
+																	No Important To-dos to Complete
 																</p>
 															)}
 														</div>
@@ -654,7 +693,7 @@ export default function MainContent() {
 																				?.filter(
 																					(value) =>
 																						value.userID ===
-																						auth.currentUser.uid
+																						auth?.currentUser?.uid
 																				)
 																				?.map(
 																					(todoFolder) =>
@@ -675,7 +714,8 @@ export default function MainContent() {
 																		{todolistFolders.allTodoFolders
 																			.filter(
 																				(value) =>
-																					value.userID === auth.currentUser.uid
+																					value.userID ===
+																					auth?.currentUser?.uid
 																			)
 																			.map((todoFolder) => {
 																				if (todoFolder.folderHidden === true) {
@@ -763,7 +803,8 @@ export default function MainContent() {
 																	{!todolistFolders.allTodoFolders
 																		?.filter(
 																			(value) =>
-																				value.userID === auth.currentUser.uid &&
+																				value.userID ===
+																					auth?.currentUser?.uid &&
 																				value.folderTitle
 																					.normalize("NFD")
 																					.replace(/\p{Diacritic}/gu, "")
@@ -788,7 +829,7 @@ export default function MainContent() {
 
 													{todolistFolders.allTodoFolders
 														?.filter(
-															(value) => value.userID === auth.currentUser.uid
+															(value) => value.userID === auth?.currentUser?.uid
 														)
 														?.map((todoFolder) => !todoFolder.folderHidden)
 														.includes(true) ? null : (
@@ -825,7 +866,7 @@ export default function MainContent() {
 																					auth.currentUser?.uid &&
 																					!value.folderHidden &&
 																					value.folderName
-																						.normalize("NFD")
+																						?.normalize("NFD")
 																						.replace(/\p{Diacritic}/gu, "")
 																						.toLowerCase()
 																						.includes(
@@ -859,7 +900,7 @@ export default function MainContent() {
 																				auth.currentUser?.uid &&
 																				!todoFolder.folderHidden &&
 																				todoFolder.folderName
-																					.normalize("NFD")
+																					?.normalize("NFD")
 																					.replace(/\p{Diacritic}/gu, "")
 																					.toLowerCase()
 																					.includes(searchQuery.toLowerCase()))
@@ -896,7 +937,7 @@ export default function MainContent() {
 																			(value.userID === auth.currentUser?.uid &&
 																				!value.folderHidden &&
 																				value.folderName
-																					.normalize("NFD")
+																					?.normalize("NFD")
 																					.replace(/\p{Diacritic}/gu, "")
 																					.toLowerCase()
 																					.includes(searchQuery.toLowerCase()))
@@ -905,7 +946,7 @@ export default function MainContent() {
 																	todolistFolders.allTodoFolders
 																		?.filter(
 																			(value) =>
-																				value.userID === auth.currentUser.uid
+																				value.userID === auth?.currentUser?.uid
 																		)
 																		?.map(
 																			(todoFolder) => !todoFolder.folderHidden
@@ -1032,7 +1073,8 @@ export default function MainContent() {
 																					auth.currentUser?.uid &&
 																				!value.folderHidden &&
 																				value.completed === false &&
-																				!value.pinned
+																				!value.pinned &&
+																				!value.senderUID
 																		)
 																		?.map((value) => value).length < 1 && (
 																		<p
@@ -1055,7 +1097,8 @@ export default function MainContent() {
 																							auth.currentUser?.uid &&
 																						!value.folderHidden &&
 																						value.completed === false &&
-																						!value.pinned
+																						!value.pinned &&
+																						!value.senderUID
 																				)
 																				?.map((t) => t).length < 1
 																				? "grid-cols-1"
@@ -1069,14 +1112,16 @@ export default function MainContent() {
 																						auth.currentUser?.uid &&
 																					!value.folderHidden &&
 																					value.completed === false &&
-																					!value.pinned
+																					!value.pinned &&
+																					!value.senderUID
 																			)
 																			?.map((todoFolder) => {
 																				if (
 																					todoFolder.userID ===
 																						auth.currentUser?.uid &&
 																					!todoFolder.folderHidden &&
-																					todoFolder.folderTitle
+																					todoFolder.folderTitle &&
+																					!todoFolder.senderUID
 																				) {
 																					return (
 																						<React.Fragment key={todoFolder.id}>
@@ -1163,6 +1208,64 @@ export default function MainContent() {
 																							</React.Fragment>
 																						);
 																					}
+																				})}
+																		</div>
+																	</div>
+																)}
+
+																{todolistFolders.allTodoFolders
+																	?.filter(
+																		(value) =>
+																			value.userID === auth.currentUser?.uid &&
+																			value.senderUID &&
+																			!value.folderHidden &&
+																			value.completed === false &&
+																			!value.pinned
+																	)
+																	?.map((value) => value).length > 0 && (
+																	<div className="w-full h-auto flex flex-col gap-3 justify-start items-start">
+																		<h1 className="text-lg text-gray-400">
+																			Shared To-do Folders
+																		</h1>
+
+																		<div
+																			className={`grid w-full justify-start items-center gap-5 flex-wrap transition-all relative ${
+																				todolistFolders.allTodoFolders
+																					?.filter(
+																						(value) =>
+																							value.userID ===
+																								auth.currentUser?.uid &&
+																							value.senderUID
+																					)
+																					?.map((value) => value).length < 1
+																					? "grid-cols-1"
+																					: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+																			}`}
+																		>
+																			{todolistFolders.allTodoFolders
+																				?.filter(
+																					(value) =>
+																						value.userID ===
+																							auth.currentUser?.uid &&
+																						value.senderUID
+																				)
+																				?.map((todoFolder) => {
+																					return (
+																						<React.Fragment key={todoFolder.id}>
+																							<TodoFoldersDashboard
+																								todoFolder={todoFolder}
+																								user={user}
+																								setClickedTodoFolder={
+																									setClickedTodoFolder
+																								}
+																								setClickedFolder={
+																									setClickedFolder
+																								}
+																								auth={auth}
+																								searchQuery={searchQuery}
+																							/>
+																						</React.Fragment>
+																					);
 																				})}
 																		</div>
 																	</div>

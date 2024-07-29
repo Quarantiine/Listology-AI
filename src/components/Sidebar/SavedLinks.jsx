@@ -148,7 +148,7 @@ export default function SavedLinks({ user }) {
 								</div>
 							</div>
 						</>,
-						document.body,
+						document.body
 					)}
 
 				{openSavedLinks && (
@@ -230,17 +230,17 @@ export default function SavedLinks({ user }) {
 							{personalURLsSystem.allPersonalURLs
 								.filter(
 									(value) =>
-										value.uid === auth.currentUser.uid &&
+										value.uid === auth?.currentUser?.uid &&
 										value.title
 											.normalize("NFD")
 											.replace(/\p{Diacritic}/gu, "")
 											.toLowerCase()
-											.includes(searchResults.toLowerCase()),
+											.includes(searchResults.toLowerCase())
 								)
 								.map((personalURL) => personalURL).length > 0 ? (
 								<>
 									{personalURLsSystem.allPersonalURLs
-										.filter((value) => value.uid === auth.currentUser.uid)
+										.filter((value) => value.uid === auth?.currentUser?.uid)
 										.map((personalURL) => {
 											if (
 												personalURL.title

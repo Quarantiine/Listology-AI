@@ -75,7 +75,9 @@ export default function Home() {
 										<ThemeChanger />
 										{<Sidebar navState={navState} navDispatch={navDispatch} />}
 										{navState.navigatorLink == "Dashboard" && <MainContent />}
-										{navState.navigatorLink == "Settings" && <Settings />}
+										{navState.navigatorLink == "Settings" && (
+											<Settings user={user} />
+										)}
 									</main>
 								</UserCredentialCtx.Provider>
 							</React.Fragment>

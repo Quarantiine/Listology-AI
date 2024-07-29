@@ -90,7 +90,8 @@ export default function SubTodos({
 			const subTodos = todoLists.allSubTodos
 				.filter(
 					(value) =>
-						value.todoID === todolist.id &&
+						(value.todoID === todolist.id ||
+							value.todoID === todolist.senderTodoID) &&
 						value.userID === auth.currentUser.uid
 				)
 				.map((subTodo) => subTodo.todo)

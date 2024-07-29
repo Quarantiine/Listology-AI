@@ -9,6 +9,7 @@ export default function AskGeminiComponent({
 	handleOpenGeminiTodoModal,
 	clickedTodoFolder,
 	clickedFolder,
+	todolistFolder,
 }) {
 	const { auth, todoLists } = FirebaseApi();
 
@@ -93,7 +94,15 @@ export default function AskGeminiComponent({
 											value.userID === auth.currentUser.uid &&
 											value.folderID === clickedTodoFolder
 									)
-									?.map((value) => value).length > 0 ? (
+									?.map((value) => value).length +
+									todoLists.allTodoLists
+										?.filter(
+											(value) =>
+												value.userID === auth.currentUser.uid &&
+												value.folderID === todolistFolder.senderTodoFolderID
+										)
+										?.map((value) => value).length >
+								0 ? (
 									<button
 										onClick={handleChatStyleSubTodo}
 										className="base-btn w-full"
@@ -115,6 +124,7 @@ export default function AskGeminiComponent({
 							clickedTodoFolder={clickedTodoFolder}
 							clickedFolder={clickedFolder}
 							setChatStyle={setChatStyle}
+							todolistFolder={todolistFolder}
 						/>
 					)}
 
@@ -124,6 +134,7 @@ export default function AskGeminiComponent({
 							clickedTodoFolder={clickedTodoFolder}
 							clickedFolder={clickedFolder}
 							setChatStyle={setChatStyle}
+							todolistFolder={todolistFolder}
 						/>
 					)}
 				</div>

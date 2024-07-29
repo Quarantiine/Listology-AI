@@ -48,7 +48,7 @@ class GeminiChatSystem {
 		errorLoadingSubTodoListRef: any,
 		setAIListOfSubTodos: React.Dispatch<React.SetStateAction<any>>,
 		loadingDifficulty: boolean,
-		setLoadingDifficulty: React.Dispatch<React.SetStateAction<boolean>>,
+		setLoadingDifficulty: React.Dispatch<React.SetStateAction<boolean>>
 	) {
 		this.setTodoLoading = setTodoLoading;
 		this.setGeminiLoadingTodos = setGeminiLoadingTodos;
@@ -74,7 +74,7 @@ class GeminiChatSystem {
 		todoEndDate: string,
 		todoSubTodo: string,
 		ignoredTodo: boolean,
-		createdSubTodos: string,
+		createdSubTodos: string
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -102,7 +102,7 @@ class GeminiChatSystem {
 				- Sub To-dos: ${todoSubTodo}, ${createdSubTodos && createdSubTodos}
 				
 				What is the difficulty of the to-do based on the given information?
-				`,
+				`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -136,7 +136,7 @@ class GeminiChatSystem {
 		try {
 			this.setTodoLoading(true);
 			await chatSession.sendMessage(
-				`Change this text and make it better according to the instructions given above: ${text}`,
+				`Change this text and make it better according to the instructions given above: ${text}`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -159,6 +159,7 @@ class GeminiChatSystem {
 		todoFolderDescription: string,
 		todos: string,
 		subTodos: string,
+		sharedTodos: string
 	) {
 		try {
 			this.setGeminiChatLoading(true);
@@ -180,7 +181,9 @@ class GeminiChatSystem {
 
 						Instruction: You are meant to be a helpful assistant. Answer any questions the user may have. You will have access to the user's to-do folder information, which includes the to-do folder's title, description, and the user's to-dos and sub to-dos. This information will be stored in memory to assist with answering related questions. The user's to-do folder information will be provided in a JSON object string format. Use this information to help the user, whether their questions relate to their to-do folder or not.
 
-						Instruction: Store the following user data as a memory for future reference: User's To-do folder info - To-do folder title: ${todoFolderTitle} and description: ${todoFolderDescription} | To-dos: ${todos}, Sub To-dos: ${subTodos}
+						Instruction: Store the following user data as a memory for future reference: User's To-do folder info - To-do folder title: ${todoFolderTitle} and description: ${todoFolderDescription} | To-dos: ${todos}, Sub To-dos: ${subTodos} ${
+							sharedTodos ? `More To-dos: ${sharedTodos}` : ""
+						}
 
 						Instruction: Extract these items from the user's to-dos and their types. Use this information to assist the user. Items marked with /ignore are sensitive and should not be shared unless explicitly asked about by the user. If they ask about ignored items, explain that it is sensitive information.
 
@@ -268,6 +271,8 @@ class GeminiChatSystem {
 		userExistingTodos: string,
 		userExistingSubTodos: string,
 		userExistingCompletedTodos: string,
+		sharedTodos: string,
+		sharedTodosCompletedTodos: string
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -337,7 +342,11 @@ class GeminiChatSystem {
 					userExistingCompletedTodos
 						? userExistingCompletedTodos
 						: "No Completed To-dos"
-				}`,
+				} | ${
+					sharedTodos
+						? `More Todos: ${sharedTodos}, More Completed Todos: ${sharedTodosCompletedTodos}`
+						: ""
+				}`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -369,7 +378,7 @@ class GeminiChatSystem {
 		todoFolderDescription: string,
 		userTodo: string,
 		userSubTodos: string,
-		userCompletedSubTodos: string,
+		userCompletedSubTodos: string
 	) {
 		const chatSession = model.startChat({
 			generationConfig,
@@ -423,7 +432,7 @@ class GeminiChatSystem {
 			this.setGeminiLoadingSubTodos(true);
 
 			await chatSession.sendMessage(
-				`Make a sub to-do list with this prompt: ${prompt}`,
+				`Make a sub to-do list with this prompt: ${prompt}`
 			);
 
 			const response: Content[] = await chatSession.getHistory();
@@ -483,7 +492,7 @@ export default function GeminiAPI() {
 		errorLoadingSubTodoListRef,
 		setAIListOfSubTodos,
 		loadingDifficulty,
-		setLoadingDifficulty,
+		setLoadingDifficulty
 	);
 
 	GCS.readTodoDifficulty;

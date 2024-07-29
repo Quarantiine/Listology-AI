@@ -55,7 +55,7 @@ const auth: Auth = getAuth(app);
 const colRefRegistration: CollectionReference = collection(
 	db,
 	"registration",
-	"",
+	""
 );
 
 const colRefFolders: CollectionReference = collection(db, "folders", "");
@@ -64,31 +64,38 @@ const queFolders: Query = query(colRefFolders, orderBy("createdTime"));
 const colRefTodoFolders: CollectionReference = collection(
 	db,
 	"todo-folders",
-	"",
+	""
 );
 const queTodoFolders: Query = query(colRefTodoFolders, orderBy("createdTime"));
 
 const colRefTodoLists: CollectionReference = collection(db, "todo-lists", "");
 const queTodoLists: Query = query(
 	colRefTodoLists,
-	orderBy("createdTime", "asc"),
+	orderBy("createdTime", "asc")
 );
 
 const colRefSubTodoLists: CollectionReference = collection(
 	db,
 	"sub-todo-lists",
-	"",
+	""
 );
 const queSubTodoLists: Query = query(
 	colRefSubTodoLists,
-	orderBy("createdTime"),
+	orderBy("createdTime")
 );
 
 const colRefPersonalURLs: CollectionReference = collection(db, "urls", "");
 const quePersonalURLs: Query = query(
 	colRefPersonalURLs,
-	orderBy("createdTime"),
+	orderBy("createdTime")
 );
+
+const colRefSavedUsers: CollectionReference = collection(
+	db,
+	"saved-users-uid",
+	""
+);
+const queSavedUsers: Query = query(colRefSavedUsers, orderBy("createdTime"));
 
 // ==================
 
@@ -105,6 +112,7 @@ export default function FirebaseApi() {
 	const [allTodoFolders, setAllTodoFolders] = useState<any>();
 	const [allSubTodos, setAllSubTodos] = useState<any>();
 	const [allPersonalURLs, setPersonalURLs] = useState<any>();
+	const [allSavedUsers, setAllSavedUsers] = useState<any>();
 
 	// Registration System ======
 	useEffect(() => {
@@ -208,6 +216,22 @@ export default function FirebaseApi() {
 		return () => unsubscribe();
 	}, []);
 
+	useEffect(() => {
+		const unsubscribe = onSnapshot(queSavedUsers, (ss) => {
+			const savedUsers: any = [];
+			setAllSavedUsers(savedUsers);
+
+			ss.docs.map((doc) => {
+				savedUsers.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+		});
+
+		return () => unsubscribe();
+	}, []);
+
 	class RegistrationSystem {
 		constructor() {}
 
@@ -216,7 +240,7 @@ export default function FirebaseApi() {
 				const user: UserCredential = await createUserWithEmailAndPassword(
 					auth,
 					email,
-					password,
+					password
 				);
 				await sendEmailVerification(user.user);
 			} catch (err) {
@@ -312,7 +336,7 @@ export default function FirebaseApi() {
 					user.email &&
 					allusers
 						?.map((users: any) =>
-							users.email.toString() === user.email ? true : false,
+							users.email.toString() === user.email ? true : false
 						)
 						.includes(true)
 						? console.log("Signing In")
@@ -324,7 +348,7 @@ export default function FirebaseApi() {
 								bannerImage: "",
 								bannerSize: false,
 								photoURL: user.photoURL,
-							});
+						  });
 				});
 			} catch (err) {
 				console.log(`Google sign in Error |`, err.message);
@@ -473,7 +497,7 @@ export default function FirebaseApi() {
 			folderEmoji: string,
 			folderTitle: string,
 			folderDescription: string,
-			folderName: string,
+			folderName: string
 		) => {
 			await addDoc(colRefTodoFolders, {
 				folderEmoji: folderEmoji || "",
@@ -516,7 +540,7 @@ export default function FirebaseApi() {
 
 		updatingFolderDescription = async (
 			id: string,
-			folderDescription: string,
+			folderDescription: string
 		) => {
 			const docRef = doc(colRefTodoFolders, id);
 			await updateDoc(docRef, {
@@ -599,7 +623,7 @@ export default function FirebaseApi() {
 			mainFolder: string,
 			todo: string,
 			difficulty: string,
-			ignoreTodo: boolean,
+			ignoreTodo: boolean
 		) => {
 			try {
 				await addDoc(colRefTodoLists, {
@@ -608,9 +632,9 @@ export default function FirebaseApi() {
 					folderID: folderID,
 					favorited: false,
 					completed: false,
-					userID: auth.currentUser?.uid,
 					ignoreTodo: ignoreTodo,
 					difficulty: difficulty,
+					userID: auth.currentUser?.uid,
 					createdTime: serverTimestamp(),
 				});
 			} catch (err) {
@@ -622,14 +646,14 @@ export default function FirebaseApi() {
 			todo: string,
 			todoID: string,
 			folderID: string,
-			mainFolder: string,
+			mainFolder: string
 		) => {
 			try {
 				await addDoc(colRefSubTodoLists, {
 					todo: todo,
 					todoID: todoID,
 					folderID: folderID,
-					mainFolder,
+					mainFolder: mainFolder || [],
 					favorited: false,
 					completed: false,
 					userID: auth.currentUser?.uid,
@@ -670,16 +694,16 @@ export default function FirebaseApi() {
 		addSubTodo = async (
 			mainFolder: string,
 			folderID: string,
-			todoID: string,
+			todoID: string
 		) => {
 			try {
 				await addDoc(colRefSubTodoLists, {
 					todo: "Untitled Sub Todo",
+					favorited: false,
+					completed: false,
 					mainFolder,
 					folderID: folderID,
 					todoID: todoID,
-					favorited: false,
-					completed: false,
 					userID: auth.currentUser?.uid,
 					createdTime: serverTimestamp(),
 				});
@@ -760,8 +784,8 @@ export default function FirebaseApi() {
 
 		updatingTodoCompletionDates = async (
 			id: string,
-			startDate: string,
-			endDate: string,
+			startDate: any,
+			endDate: any
 		) => {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 
@@ -773,7 +797,7 @@ export default function FirebaseApi() {
 
 		updatingDeletionIndicator = async (
 			id: string,
-			deletionIndicator: boolean,
+			deletionIndicator: boolean
 		) => {
 			const docRef: DocumentReference = doc(colRefTodoLists, id);
 
@@ -784,7 +808,7 @@ export default function FirebaseApi() {
 
 		updatingSubTodoDeletionIndicator = async (
 			id: string,
-			deletionIndicator: boolean,
+			deletionIndicator: boolean
 		) => {
 			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
 
@@ -833,10 +857,342 @@ export default function FirebaseApi() {
 			await deleteDoc(docRef);
 		};
 	}
-
 	const PURLsS = new PersonalURLsSystem();
 	const addURL = PURLsS.addURL;
 	const deleteURL = PURLsS.deleteURL;
+
+	class SharingTodoFolderSystem {
+		constructor() {}
+
+		shareTodoFolder = async (
+			receiverAccountID: string,
+			senderTodoFolderID: string,
+			folderEmoji: string,
+			folderTitle: string,
+			folderDescription: string
+		) => {
+			await addDoc(colRefTodoFolders, {
+				folderEmoji: folderEmoji || "",
+				folderTitle: folderTitle,
+				folderDescription: folderDescription || "No Description",
+				completed: false,
+				senderTodoFolderID: senderTodoFolderID,
+				userID: receiverAccountID,
+				senderUID: auth.currentUser?.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		shareTodos = async (
+			receiverAccountID: string,
+			senderFolderID: string,
+			todo: string,
+			favorited: boolean,
+			completed: boolean,
+			ignoreTodo: boolean,
+			difficulty: string,
+			endDate: any,
+			startDate: any,
+			markImportant: boolean,
+			senderTodoID: string
+		) => {
+			await addDoc(colRefTodoLists, {
+				todo: todo,
+				favorited: favorited,
+				completed: completed,
+				ignoreTodo: ignoreTodo,
+				difficulty: difficulty || "",
+				startDate: startDate || "",
+				endDate: endDate || "",
+				markImportant: markImportant || false,
+				deletionIndicator: false,
+				senderTodoID: senderTodoID,
+				folderID: senderFolderID,
+				userID: receiverAccountID,
+				senderUID: auth.currentUser?.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		shareSubTodos = async (
+			receiverAccountID: string,
+			senderFolderID: string,
+			todo: string,
+			favorited: boolean,
+			completed: boolean,
+			todoID: string
+		) => {
+			await addDoc(colRefSubTodoLists, {
+				todo: todo,
+				favorited: favorited,
+				completed: completed,
+				deletionIndicator: false,
+				todoID: todoID,
+				folderID: senderFolderID,
+				userID: receiverAccountID,
+				senderUID: auth.currentUser?.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		// TODO: See how to make changes to the to-do folder that's
+		// being shared between each user, so the users can see the changes from both sides
+
+		// TODO: Only run the functions below if the to-do folder is
+		// shared by checking if the to-do folder is shared using
+		// todoList.folderID === todoListFolder.id && subTodo.folderID === todoListFolder.id
+
+		addingSharedTodos = async (
+			folderID: string,
+			mainFolder: string,
+			senderTodoFolderID: string
+		) => {
+			await addDoc(colRefTodoLists, {
+				todo: "Untitled To-do Text",
+				mainFolder,
+				favorited: false,
+				completed: false,
+				ignoreTodo: false,
+				userID: auth.currentUser?.uid,
+				folderID: folderID,
+				senderTodoFolderID: senderTodoFolderID,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		addingSharedSubTodo = async (
+			mainFolder: string,
+			folderID: string,
+			todoID: string,
+			senderTodoFolderID: string
+		) => {
+			try {
+				await addDoc(colRefSubTodoLists, {
+					todo: "Untitled Sub Todo",
+					favorited: false,
+					completed: false,
+					mainFolder,
+					folderID: folderID,
+					todoID: todoID,
+					senderTodoFolderID: senderTodoFolderID,
+					userID: auth.currentUser?.uid,
+					createdTime: serverTimestamp(),
+				});
+			} catch (err) {
+				console.log(`Sub To-do Error | ${err.message}`);
+			}
+		};
+
+		addingSharedTodosGemini = async (
+			folderID: string,
+			todo: string,
+			difficulty: string,
+			ignoreTodo: boolean,
+			senderTodoFolderID: string
+		) => {
+			try {
+				await addDoc(colRefTodoLists, {
+					todo: todo,
+					favorited: false,
+					completed: false,
+					ignoreTodo: ignoreTodo,
+					difficulty: difficulty,
+					folderID: folderID,
+					senderTodoFolderID: senderTodoFolderID,
+					userID: auth.currentUser?.uid,
+					createdTime: serverTimestamp(),
+				});
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		addingSharedSubTodosGemini = async (
+			todo: string,
+			todoID: string,
+			folderID: string,
+			senderTodoFolderID: string
+		) => {
+			try {
+				await addDoc(colRefSubTodoLists, {
+					todo: todo,
+					favorited: false,
+					completed: false,
+					todoID: todoID,
+					folderID: folderID,
+					senderTodoFolderID: senderTodoFolderID,
+					userID: auth.currentUser?.uid,
+					createdTime: serverTimestamp(),
+				});
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		updatingSharedTodolist = async (id: string, todo: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+			await updateDoc(docRef, {
+				todo: todo,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		updatingSharedTodolistFavorite = async (id: string, favorited: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+			await updateDoc(docRef, {
+				favorited: favorited,
+			});
+		};
+
+		updatingSharedTodolistCompleted = async (id: string, completed: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+			await updateDoc(docRef, {
+				completed: completed,
+			});
+		};
+
+		deletingSharedTodolist = async (id: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+			await deleteDoc(docRef);
+		};
+
+		updatingSharedSubTodoCompleted = async (id: string, completed: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				completed: completed,
+			});
+		};
+
+		updatingSharedSubTodoEdit = async (id: string, todo: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				todo: todo,
+			});
+		};
+
+		updatingSharedSubTodoFavorite = async (id: string, favorited: boolean) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				favorited: favorited,
+			});
+		};
+
+		deletingSharedSubTodo = async (id: string) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await deleteDoc(docRef);
+		};
+
+		updatingSharedTodoDifficulty = async (id: string, difficulty: string) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				difficulty: difficulty || "",
+			});
+		};
+
+		updatingSharedIgnoreTodo = async (id: string, ignoreTodo: boolean) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				ignoreTodo: ignoreTodo,
+			});
+		};
+
+		updatingSharedMarkAsImportant = async (
+			id: string,
+			markImportant: boolean
+		) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				markImportant: markImportant,
+			});
+		};
+
+		updatingSharedTodoCompletionDates = async (
+			id: string,
+			startDate: any,
+			endDate: any
+		) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				startDate: startDate,
+				endDate: endDate,
+			});
+		};
+
+		updatingSharedDeletionIndicator = async (
+			id: string,
+			deletionIndicator: boolean
+		) => {
+			const docRef: DocumentReference = doc(colRefTodoLists, id);
+
+			await updateDoc(docRef, {
+				deletionIndicator: deletionIndicator,
+			});
+		};
+
+		updatingSharedSubTodoDeletionIndicator = async (
+			id: string,
+			deletionIndicator: boolean
+		) => {
+			const docRef: DocumentReference = doc(colRefSubTodoLists, id);
+
+			await updateDoc(docRef, {
+				deletionIndicator: deletionIndicator,
+			});
+		};
+	}
+	const STFS = new SharingTodoFolderSystem();
+	const shareTodos = STFS.shareTodos;
+	const shareTodoFolder = STFS.shareTodoFolder;
+	const shareSubTodos = STFS.shareSubTodos;
+	const addingSharedTodos = STFS.addingSharedTodos;
+	const addingSharedSubTodo = STFS.addingSharedSubTodo;
+	const addingSharedTodosGemini = STFS.addingSharedTodosGemini;
+	const addingSharedSubTodosGemini = STFS.addingSharedSubTodosGemini;
+	const updatingSharedTodolist = STFS.updatingSharedTodolist;
+	const updatingSharedTodolistFavorite = STFS.updatingSharedTodolistFavorite;
+	const updatingSharedTodolistCompleted = STFS.updatingSharedTodolistCompleted;
+	const deletingSharedTodolist = STFS.deletingSharedTodolist;
+	const updatingSharedSubTodoCompleted = STFS.updatingSharedSubTodoCompleted;
+	const updatingSharedSubTodoEdit = STFS.updatingSharedSubTodoEdit;
+	const updatingSharedSubTodoFavorite = STFS.updatingSharedSubTodoFavorite;
+	const deletingSharedSubTodo = STFS.deletingSharedSubTodo;
+	const updatingSharedTodoDifficulty = STFS.updatingSharedTodoDifficulty;
+	const updatingSharedIgnoreTodo = STFS.updatingSharedIgnoreTodo;
+	const updatingSharedMarkAsImportant = STFS.updatingSharedMarkAsImportant;
+	const updatingSharedTodoCompletionDates =
+		STFS.updatingSharedTodoCompletionDates;
+	const updatingSharedDeletionIndicator = STFS.updatingSharedDeletionIndicator;
+	const updatingSharedSubTodoDeletionIndicator =
+		STFS.updatingSharedSubTodoDeletionIndicator;
+
+	class SavedUsersUIDSystem {
+		constructor() {}
+
+		savingUserUID = async (username: string, accountUID: string) => {
+			await addDoc(colRefSavedUsers, {
+				username: username,
+				accountUID: accountUID,
+				uid: auth?.currentUser?.uid,
+				createdTime: serverTimestamp(),
+			});
+		};
+
+		deletingUserUID = async (id: string) => {
+			const docRef = doc(colRefSavedUsers, id);
+			await deleteDoc(docRef);
+		};
+	}
+	const SUIDS = new SavedUsersUIDSystem();
+	const savingUserUID = SUIDS.savingUserUID;
+	const deletingUserUID = SUIDS.deletingUserUID;
 
 	return {
 		auth,
@@ -914,6 +1270,36 @@ export default function FirebaseApi() {
 			allPersonalURLs,
 			addURL,
 			deleteURL,
+		},
+
+		sharingTodoFolder: {
+			shareTodos,
+			shareTodoFolder,
+			shareSubTodos,
+			addingSharedTodos,
+			addingSharedSubTodo,
+			addingSharedTodosGemini,
+			addingSharedSubTodosGemini,
+			updatingSharedTodolist,
+			updatingSharedTodolistFavorite,
+			updatingSharedTodolistCompleted,
+			deletingSharedTodolist,
+			updatingSharedSubTodoCompleted,
+			updatingSharedSubTodoEdit,
+			updatingSharedSubTodoFavorite,
+			deletingSharedSubTodo,
+			updatingSharedTodoDifficulty,
+			updatingSharedIgnoreTodo,
+			updatingSharedMarkAsImportant,
+			updatingSharedTodoCompletionDates,
+			updatingSharedDeletionIndicator,
+			updatingSharedSubTodoDeletionIndicator,
+		},
+
+		savedUserUIDs: {
+			allSavedUsers,
+			savingUserUID,
+			deletingUserUID,
 		},
 	};
 }

@@ -8,8 +8,9 @@ export default function CreateAITodoList({
 	clickedTodoFolder,
 	clickedFolder,
 	setChatStyle,
+	todolistFolder,
 }) {
-	const { auth, todoLists, todolistFolders } = FirebaseApi();
+	const { auth, todoLists, todolistFolders, sharingTodoFolder } = FirebaseApi();
 
 	const {
 		geminiCreateTodos: {
@@ -33,8 +34,7 @@ export default function CreateAITodoList({
 					.filter(
 						(value) =>
 							value.userID === auth.currentUser.uid &&
-							value.id === clickedTodoFolder &&
-							value.folderName === clickedFolder
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderTitle)
 					.toString(),
@@ -43,8 +43,7 @@ export default function CreateAITodoList({
 					.filter(
 						(value) =>
 							value.userID === auth.currentUser.uid &&
-							value.id === clickedTodoFolder &&
-							value.folderName === clickedFolder
+							value.id === clickedTodoFolder
 					)
 					.map((value) => value.folderDescription)
 					.toString(),
@@ -80,6 +79,28 @@ export default function CreateAITodoList({
 								value.completed
 						)
 						.map((value) => value.todo)
+				),
+
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === todolistFolder.senderTodoFolderID &&
+								!value.completed
+						)
+						.map((value) => value.todo)
+				),
+
+				JSON.stringify(
+					todoLists.allTodoLists
+						.filter(
+							(value) =>
+								value.userID === auth.currentUser.uid &&
+								value.folderID === todolistFolder.senderTodoFolderID &&
+								value.completed
+						)
+						.map((value) => value.todo)
 				)
 			);
 
@@ -93,15 +114,25 @@ export default function CreateAITodoList({
 
 	const handleSaveListOfTodos = () => {
 		try {
-			AIListOfTodos?.reverse()?.map((todoItem) =>
-				todoLists.addingTodosGemini(
-					clickedTodoFolder,
-					clickedFolder,
-					todoItem.todo,
-					todoItem.difficulty,
-					todoItem.ignoreTodo
-				)
-			);
+			todolistFolder.senderTodoFolderID
+				? AIListOfTodos?.reverse()?.map((todoItem) =>
+						todoLists.addingTodosGemini(
+							clickedTodoFolder,
+							[],
+							todoItem.todo,
+							todoItem.difficulty,
+							todoItem.ignoreTodo || false
+						)
+				  )
+				: AIListOfTodos?.reverse()?.map((todoItem) =>
+						todoLists.addingTodosGemini(
+							clickedTodoFolder,
+							clickedFolder,
+							todoItem.todo,
+							todoItem.difficulty,
+							todoItem.ignoreTodo || false
+						)
+				  );
 		} catch (error) {
 			console.log(error);
 		} finally {
