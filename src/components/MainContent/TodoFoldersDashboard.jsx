@@ -292,9 +292,6 @@ export default function TodoFoldersDashboard({
 			}, 3000);
 		}
 
-		// TODO: Make sure the user can see the sub to-dos on the first share
-		// TODO: Allow the user to copy shared to-do folders into uncompleted to-do folders
-
 		clearTimeout(sharingTodoFolderErrorRef.current);
 
 		if (

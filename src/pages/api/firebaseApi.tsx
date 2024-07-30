@@ -935,13 +935,6 @@ export default function FirebaseApi() {
 			});
 		};
 
-		// TODO: See how to make changes to the to-do folder that's
-		// being shared between each user, so the users can see the changes from both sides
-
-		// TODO: Only run the functions below if the to-do folder is
-		// shared by checking if the to-do folder is shared using
-		// todoList.folderID === todoListFolder.id && subTodo.folderID === todoListFolder.id
-
 		addingSharedTodos = async (
 			folderID: string,
 			mainFolder: string,
