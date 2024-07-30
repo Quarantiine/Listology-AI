@@ -61,6 +61,7 @@ export default function Misc({ user, handleNavigator }) {
 								Dashboard
 							</button>
 						)}
+
 						<button
 							onClick={(e) =>
 								handleNavigator("navigatorLink", e.target.textContent)
@@ -75,6 +76,7 @@ export default function Misc({ user, handleNavigator }) {
 						>
 							Settings
 						</button>
+
 						<button
 							onClick={null}
 							className={`cursor-not-allowed hover:opacity-80 ${

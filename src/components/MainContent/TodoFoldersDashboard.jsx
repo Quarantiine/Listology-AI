@@ -18,6 +18,7 @@ export default function TodoFoldersDashboard({
 		todolistFolders,
 		folders,
 		sharingTodoFolder,
+		savedUserUIDs,
 	} = FirebaseApi();
 	const {
 		filterDispatch,
@@ -36,7 +37,9 @@ export default function TodoFoldersDashboard({
 	const [openTransferModal, setOpenTransferModal] = useState(false);
 	const [accountID, setAccountID] = useState("");
 	const [sharingTodoFolderError, setSharingTodoFolderError] = useState("");
+	const [userBlockedYou, setUserBlockedYou] = useState(false);
 
+	const userBlockedYouRef = useRef();
 	const todoFolderDeletionRef = useRef();
 	const removePinIndicator = useRef();
 	const pinAddedIndicator = useRef();
@@ -261,6 +264,7 @@ export default function TodoFoldersDashboard({
 
 	const handleShareTodoFolder = async (e) => {
 		e.preventDefault();
+		clearTimeout(userBlockedYouRef.current);
 
 		const checkUserAccountID = registration?.allusers
 			?.map((value) => value.userID === accountID)
@@ -275,6 +279,19 @@ export default function TodoFoldersDashboard({
 			?.map((value) => value.senderTodoFolderID === todoFolder.id)
 			.includes(true);
 
+		const checkIfBlocked = savedUserUIDs.allSavedUsers
+			?.filter((value) => value.uid === accountID && value.blocked === true)
+			?.map((value) => value.uid === accountID && value.blocked === true)
+			.includes(true);
+
+		if (checkIfBlocked) {
+			setUserBlockedYou(true);
+
+			userBlockedYouRef.current = setTimeout(() => {
+				setUserBlockedYou(false);
+			}, 3000);
+		}
+
 		// TODO: Make sure the user can see the sub to-dos on the first share
 		// TODO: Allow the user to copy shared to-do folders into uncompleted to-do folders
 
@@ -284,7 +301,8 @@ export default function TodoFoldersDashboard({
 			accountID &&
 			checkUserAccountID &&
 			accountID !== auth?.currentUser.uid &&
-			!checkIfTodoFolderIDExist
+			!checkIfTodoFolderIDExist &&
+			!checkIfBlocked
 		) {
 			await todoLists.allSubTodos
 				?.filter(
@@ -582,9 +600,13 @@ export default function TodoFoldersDashboard({
 						<div className="modal-base">
 							<div className="todo-transfer-modal bg-gray-100 w-[90%] sm:w-[400px] h-fit rounded-lg p-4 flex flex-col gap-3 justify-start items-start">
 								{sharingTodoFolderError === "404" && (
-									<p className="bg-red-500 px-2 py-1 text-center w-full text-white rounded-lg">
-										Invalid Account ID
-									</p>
+									<div className="bg-red-500 px-2 py-1 text-center w-full text-white rounded-lg flex flex-col justify-center items-center">
+										<p>
+											{userBlockedYou
+												? "(User blocked you)"
+												: "Invalid Account ID"}
+										</p>
+									</div>
 								)}
 
 								<div className="flex justify-between items-start gap-1 w-full">

@@ -33,6 +33,7 @@ export default function AllTodoFolders({
 				setDeletionWarning(false);
 			}
 		};
+
 		document.addEventListener("mousedown", closeTodoFoldersModal);
 		return () =>
 			document.removeEventListener("mousedown", closeTodoFoldersModal);
@@ -88,6 +89,7 @@ export default function AllTodoFolders({
 		todolistFolders.updatingClickTimeStamp(todoFolder.id, timeStamp());
 		setClickedTodoFolder(todoFolder.id);
 		setOpenTodolistSidebar(false);
+
 		folders.allFolders
 			.filter(
 				(value) =>

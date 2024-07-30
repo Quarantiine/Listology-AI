@@ -13,10 +13,12 @@ export default function TodolistSidebar() {
 	const { user } = useContext(UserCredentialCtx);
 	const {
 		clickedFolder,
+		clickedTodoFolder,
 		openTodolistSidebarModal,
 		setOpenTodolistSidebarModal,
 		handleCreateTodos,
 		handleCreateFolder,
+		setCloseSidebar,
 	} = useContext(StateCtx);
 	const { openTodolistSidebar, setOpenTodolistSidebar, setClickedTodoFolder } =
 		useContext(StateCtx);

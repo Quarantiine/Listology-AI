@@ -1179,6 +1179,7 @@ export default function FirebaseApi() {
 		savingUserUID = async (username: string, accountUID: string) => {
 			await addDoc(colRefSavedUsers, {
 				username: username,
+				blocked: false,
 				accountUID: accountUID,
 				uid: auth?.currentUser?.uid,
 				createdTime: serverTimestamp(),
@@ -1189,10 +1190,19 @@ export default function FirebaseApi() {
 			const docRef = doc(colRefSavedUsers, id);
 			await deleteDoc(docRef);
 		};
+
+		blockUser = async (blocked: boolean, id: string) => {
+			const docRef: DocumentReference = doc(colRefSavedUsers, id);
+
+			await updateDoc(docRef, {
+				blocked: blocked,
+			});
+		};
 	}
 	const SUIDS = new SavedUsersUIDSystem();
 	const savingUserUID = SUIDS.savingUserUID;
 	const deletingUserUID = SUIDS.deletingUserUID;
+	const blockUser = SUIDS.blockUser;
 
 	return {
 		auth,
@@ -1300,6 +1310,7 @@ export default function FirebaseApi() {
 			allSavedUsers,
 			savingUserUID,
 			deletingUserUID,
+			blockUser,
 		},
 	};
 }

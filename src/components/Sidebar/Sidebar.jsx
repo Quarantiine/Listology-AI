@@ -18,7 +18,7 @@ export default function Sidebar({ navState, navDispatch }) {
 	} = useContext(StateCtx);
 
 	useEffect(() => {
-		const handleCloseSidebar = (e) => {
+		const handleCloseMainSidebar = (e) => {
 			if (!e.target.closest(".sidebar")) {
 				setCloseSidebar(true);
 				// if (window.innerWidth < 1024) {
@@ -26,12 +26,14 @@ export default function Sidebar({ navState, navDispatch }) {
 			}
 		};
 
-		document.addEventListener("mousedown", handleCloseSidebar);
-		return () => document.removeEventListener("mousedown", handleCloseSidebar);
+		document.addEventListener("mousedown", handleCloseMainSidebar);
+		return () =>
+			document.removeEventListener("mousedown", handleCloseMainSidebar);
 	}, [setCloseSidebar]);
 
 	const handleNavigator = (key, value) => {
 		setOpenTodolistSidebar(false);
+		handleCloseSidebar();
 
 		navDispatch({
 			type: "sidebar-navigation-link",

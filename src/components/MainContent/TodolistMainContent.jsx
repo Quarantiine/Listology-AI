@@ -522,6 +522,12 @@ export default function TodolistMainContent({
 		savedUserUIDs.savingUserUID(username, userAccountID);
 	};
 
+	useEffect(() => {
+		if (clickedTodoFolder) {
+			setCloseSidebar(true);
+		}
+	}, [clickedTodoFolder]);
+
 	return (
 		<>
 			<GeminiChat user={user} todolistFolder={todolistFolder} />

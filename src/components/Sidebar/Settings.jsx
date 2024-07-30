@@ -20,7 +20,7 @@ const navigatorReducer = (state, { type, payload }) => {
 export default function Settings({ user }) {
 	const {
 		auth,
-		savedUserUIDs: { allSavedUsers, deletingUserUID },
+		savedUserUIDs: { allSavedUsers, deletingUserUID, blockUser },
 	} = FirebaseApi();
 
 	const [navigatorState, navigatorDispatch] = useReducer(navigatorReducer, {
@@ -51,6 +51,10 @@ export default function Settings({ user }) {
 		copiedRef.current = setTimeout(() => {
 			setCopied(false);
 		}, 2000);
+	};
+
+	const handleBlockUser = (blocked, id) => {
+		blockUser(blocked ? !blocked : true, id);
 	};
 
 	return (
@@ -109,11 +113,14 @@ export default function Settings({ user }) {
 
 										<div className="flex flex-col gap-2 justify-start items-start">
 											{allSavedUsers
-												?.filter((value) => value.uid === auth.currentUser.uid)
+												?.filter(
+													(value) =>
+														value.uid === auth.currentUser.uid && !value.blocked
+												)
 												?.map((value) => {
 													return (
 														<div
-															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-center w-full px-3 py-2 rounded-lg ${
+															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg ${
 																user.themeColor
 																	? "hover:bg-[#333]"
 																	: "hover:bg-gray-100"
@@ -126,18 +133,33 @@ export default function Settings({ user }) {
 																	UID: {value.accountUID}
 																</p>
 
-																<button
-																	onClick={() =>
-																		handleCopyButton(value.accountUID)
-																	}
-																	className={`text-btn text-sm ${
-																		user.themeColor
-																			? "text-[#555]"
-																			: "text-gray-500"
-																	}`}
-																>
-																	<p>{copied ? "Copied" : "Copy UID"}</p>
-																</button>
+																<div className="flex justify-start items-center gap-2 pt-1">
+																	<button
+																		onClick={() =>
+																			handleCopyButton(value.accountUID)
+																		}
+																		className={`base-btn text-sm ${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-500"
+																		}`}
+																	>
+																		<p>{copied ? "Copied" : "Copy UID"}</p>
+																	</button>
+
+																	<button
+																		onClick={() =>
+																			handleBlockUser(value.blocked, value.id)
+																		}
+																		className={`base-btn !bg-red-500 text-sm ${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-500"
+																		}`}
+																	>
+																		<p>{value.blocked ? "Unblock" : "Block"}</p>
+																	</button>
+																</div>
 															</div>
 
 															<button
@@ -146,6 +168,57 @@ export default function Settings({ user }) {
 															>
 																Delete
 															</button>
+														</div>
+													);
+												})}
+
+											{allSavedUsers
+												?.filter(
+													(value) =>
+														value.uid === auth.currentUser.uid && value.blocked
+												)
+												?.map((value) => {
+													return (
+														<div
+															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg opacity-60 ${
+																user.themeColor ? "bg-[#333]" : "bg-gray-100"
+															}`}
+															key={value.id}
+														>
+															<div className="flex flex-col justify-start items-start">
+																<p>Username: {value.username}</p>
+																<p className="line-clamp-1">
+																	UID: {value.accountUID}
+																</p>
+
+																<div className="flex justify-start items-center gap-2 pt-1">
+																	<button
+																		onClick={() =>
+																			handleCopyButton(value.accountUID)
+																		}
+																		className={`base-btn text-sm ${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-500"
+																		}`}
+																	>
+																		<p>{copied ? "Copied" : "Copy UID"}</p>
+																	</button>
+
+																	<button
+																		onClick={() =>
+																			handleBlockUser(value.blocked, value.id)
+																		}
+																		className={`base-btn !bg-red-500 text-sm ${
+																			user.themeColor
+																				? "text-[#555]"
+																				: "text-gray-500"
+																		}`}
+																	>
+																		<p>{value.blocked ? "Unblock" : "Block"}</p>
+																	</button>
+																</div>
+															</div>
 														</div>
 													);
 												})}
