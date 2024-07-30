@@ -566,27 +566,49 @@ export default function TodolistMainContent({
 												user.themeColor ? "text-[#555]" : "text-gray-400"
 											}`}
 										>
-											<h3>Shared Folder From:</h3>{" "}
 											{registration?.allusers
 												?.filter(
 													(value) => value.userID === todolistFolder.senderUID
 												)
 												?.map((value) => {
 													return (
-														<React.Fragment key={value.id}>
-															<span className="text-blue-500">
-																{value.username}
-															</span>{" "}
-															| ID:{" "}
-															{
-																<span
-																	onClick={handleHideAccountID}
-																	className="text-blue-500 text-btn"
-																>
-																	{hideAccount ? "Show ID" : value.userID}
-																</span>
-															}
-														</React.Fragment>
+														<div
+															className="flex flex-col sm:flex-row gap-1"
+															key={value.id}
+														>
+															<p>
+																Shared Folder From:{" "}
+																<span className="text-blue-500">
+																	{value.username}
+																</span>{" "}
+															</p>
+															{!savedUserUIDs.allSavedUsers
+																?.filter(
+																	(value) =>
+																		value.accountUID === todolistFolder.userID
+																)
+																?.map(
+																	(value) =>
+																		value.accountUID === todolistFolder.userID
+																)
+																.includes(true) && (
+																<p className="flex justify-start items-center gap-1">
+																	| ID:{" "}
+																	<span
+																		onClick={handleHideAccountID}
+																		className="text-blue-500 text-btn"
+																	>
+																		{hideAccount ? "Show ID" : value.userID}
+																	</span>
+																	<span
+																		onClick={handleSaveUserUID}
+																		className="text-btn text-sm pl-2 block sm:hidden"
+																	>
+																		Save ID
+																	</span>
+																</p>
+															)}
+														</div>
 													);
 												})}
 											{!savedUserUIDs.allSavedUsers
@@ -596,15 +618,13 @@ export default function TodolistMainContent({
 												?.map(
 													(value) => value.accountUID === todolistFolder.userID
 												)
-												.includes(true) ? (
+												.includes(true) && (
 												<button
 													onClick={handleSaveUserUID}
-													className="text-btn text-sm pl-2"
+													className="text-btn text-sm pl-2 hidden sm:block"
 												>
 													Save ID
 												</button>
-											) : (
-												<p className="text-sm pl-2">ID Saved</p>
 											)}
 										</div>
 									</div>

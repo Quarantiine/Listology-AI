@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import PersonalInfoSection from "./PersonalInfoSection";
 import ActivitySection from "./ActivitySection";
 import DeleteAccount from "./DeleteAccount";
@@ -26,6 +26,8 @@ export default function Settings({ user }) {
 	const [navigatorState, navigatorDispatch] = useReducer(navigatorReducer, {
 		navigate: "Personal Info",
 	});
+	const [copied, setCopied] = useState(false);
+	const copiedRef = useRef();
 
 	const handleNavigation = (value) => {
 		navigatorDispatch({
@@ -41,8 +43,14 @@ export default function Settings({ user }) {
 		deletingUserUID(id);
 	};
 
-	const handleCopyUID = (uidText) => {
+	const handleCopyButton = (uidText) => {
+		clearTimeout(copiedRef.current);
+		setCopied(true);
+
 		navigator.clipboard.writeText(uidText);
+		copiedRef.current = setTimeout(() => {
+			setCopied(false);
+		}, 2000);
 	};
 
 	return (
@@ -120,7 +128,7 @@ export default function Settings({ user }) {
 
 																<button
 																	onClick={() =>
-																		handleCopyUID(value.accountUID)
+																		handleCopyButton(value.accountUID)
 																	}
 																	className={`text-btn text-sm ${
 																		user.themeColor
@@ -128,7 +136,7 @@ export default function Settings({ user }) {
 																			: "text-gray-500"
 																	}`}
 																>
-																	Copy UID
+																	<p>{copied ? "Copied" : "Copy UID"}</p>
 																</button>
 															</div>
 

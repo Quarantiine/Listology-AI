@@ -423,13 +423,27 @@ export default function TodoFoldersDashboard({
 							</span>
 						</h1>
 					) : (
-						<h1
+						<div
 							className={`text-sm line-clamp-1 ${
 								user.themeColor ? "text-[#666]" : "text-[#aaa]"
 							}`}
 						>
-							Shared Folder
-						</h1>
+							{registration?.allusers
+								?.filter((value) => value.userID === todoFolder.senderUID)
+								?.map((value) => {
+									return (
+										<div
+											className="flex flex-col sm:flex-row gap-1"
+											key={value.id}
+										>
+											<h1 className="flex justify-center items-center gap-1">
+												Shared Folder From:{" "}
+												<p className="text-blue-500">{value.username}</p>
+											</h1>
+										</div>
+									);
+								})}
+						</div>
 					)}
 
 					<div className="flex justify-between items-center w-full">
@@ -665,14 +679,14 @@ export default function TodoFoldersDashboard({
 								</p>
 							)}
 
-							{!todoFolder.completed && todoFolder.senderUID && (
+							{/* {!todoFolder.completed && todoFolder.senderUID && (
 								<p
 									onClick={null}
 									className="px-2 py-1 hover:bg-[#0E51FF] hover:text-white"
 								>
 									Copy
 								</p>
-							)}
+							)} */}
 
 							<p
 								onClick={handleHideTodoFolder}

@@ -69,7 +69,7 @@ export default function AskGeminiComponent({
 
 						<button onClick={handleOpenGeminiTodoModal} className="text-btn">
 							<Image
-								className="min-h-[25px] max-h-[25px] w-auto cursor-default md:cursor-pointer rotate-90"
+								className="min-h-[25px] max-h-[25px] w-auto cursor-pointer rotate-90"
 								src={"/icons/close.svg"}
 								alt="close"
 								width={30}
