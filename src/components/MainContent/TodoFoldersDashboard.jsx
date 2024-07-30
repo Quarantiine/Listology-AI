@@ -454,7 +454,7 @@ export default function TodoFoldersDashboard({
 											className="flex flex-col sm:flex-row gap-1"
 											key={value.id}
 										>
-											<h1 className="flex justify-center items-center gap-1">
+											<h1 className="flex justify-start items-center gap-1">
 												Shared Folder From:{" "}
 												<p className="text-blue-500">{value.username}</p>
 											</h1>

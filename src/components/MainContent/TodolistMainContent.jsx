@@ -506,22 +506,6 @@ export default function TodolistMainContent({
 		setHideAccount(!hideAccount);
 	};
 
-	const handleSaveUserUID = (e) => {
-		e.preventDefault();
-
-		const username = registration?.allusers
-			?.filter((value) => value.userID === todolistFolder.senderUID)
-			?.map((value) => value.username)
-			.toString();
-
-		const userAccountID = registration?.allusers
-			?.filter((value) => value.userID === todolistFolder.senderUID)
-			?.map((value) => value.userID)
-			.toString();
-
-		savedUserUIDs.savingUserUID(username, userAccountID);
-	};
-
 	useEffect(() => {
 		if (clickedTodoFolder) {
 			setCloseSidebar(true);
@@ -586,52 +570,11 @@ export default function TodolistMainContent({
 																Shared Folder From:{" "}
 																<span className="text-blue-500">
 																	{value.username}
-																</span>{" "}
+																</span>
 															</p>
-															{!savedUserUIDs.allSavedUsers
-																?.filter(
-																	(value) =>
-																		value.accountUID === todolistFolder.userID
-																)
-																?.map(
-																	(value) =>
-																		value.accountUID === todolistFolder.userID
-																)
-																.includes(true) && (
-																<p className="flex justify-start items-center gap-1">
-																	| ID:{" "}
-																	<span
-																		onClick={handleHideAccountID}
-																		className="text-blue-500 text-btn"
-																	>
-																		{hideAccount ? "Show ID" : value.userID}
-																	</span>
-																	<span
-																		onClick={handleSaveUserUID}
-																		className="text-btn text-sm pl-2 block sm:hidden"
-																	>
-																		Save ID
-																	</span>
-																</p>
-															)}
 														</div>
 													);
 												})}
-											{!savedUserUIDs.allSavedUsers
-												?.filter(
-													(value) => value.accountUID === todolistFolder.userID
-												)
-												?.map(
-													(value) => value.accountUID === todolistFolder.userID
-												)
-												.includes(true) && (
-												<button
-													onClick={handleSaveUserUID}
-													className="text-btn text-sm pl-2 hidden sm:block"
-												>
-													Save ID
-												</button>
-											)}
 										</div>
 									</div>
 								) : (

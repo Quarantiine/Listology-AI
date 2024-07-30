@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import PersonalInfoSection from "./PersonalInfoSection";
 import ActivitySection from "./ActivitySection";
 import DeleteAccount from "./DeleteAccount";
@@ -20,14 +20,19 @@ const navigatorReducer = (state, { type, payload }) => {
 export default function Settings({ user }) {
 	const {
 		auth,
-		savedUserUIDs: { allSavedUsers, deletingUserUID, blockUser },
+		savedUserUIDs: { allSavedUsers, deletingUserUID, blockUser, savingUserUID },
+		registration,
 	} = FirebaseApi();
+
+	const [userUIDText, setUserUIDText] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+	const [searchUIDByUsername, setSearchUIDByUsername] = useState("");
+
+	const errorMessageRef = useRef();
 
 	const [navigatorState, navigatorDispatch] = useReducer(navigatorReducer, {
 		navigate: "Personal Info",
 	});
-	const [copied, setCopied] = useState(false);
-	const copiedRef = useRef();
 
 	const handleNavigation = (value) => {
 		navigatorDispatch({
@@ -39,22 +44,69 @@ export default function Settings({ user }) {
 		});
 	};
 
-	const handleDeleteSavedUser = (id) => {
-		deletingUserUID(id);
-	};
+	const handleSaveUserUID = (e) => {
+		e.preventDefault();
+		clearTimeout(errorMessageRef.current);
 
-	const handleCopyButton = (uidText) => {
-		clearTimeout(copiedRef.current);
-		setCopied(true);
+		const username = registration.allusers
+			?.filter(
+				(value) =>
+					value.userID !== auth?.currentUser?.uid &&
+					value.userID === userUIDText
+			)
+			?.map((value) => value.username)
+			.toString();
 
-		navigator.clipboard.writeText(uidText);
-		copiedRef.current = setTimeout(() => {
-			setCopied(false);
-		}, 2000);
-	};
+		const userAccountID = registration.allusers
+			?.filter(
+				(value) =>
+					value.userID !== auth?.currentUser?.uid && value.userID == userUIDText
+			)
+			?.map((value) => value.userID)
+			.toString();
 
-	const handleBlockUser = (blocked, id) => {
-		blockUser(blocked ? !blocked : true, id);
+		const checkAlreadyHaveUserUID = allSavedUsers
+			?.filter(
+				(value) =>
+					value.uid === auth?.currentUser?.uid &&
+					value.accountUID === userUIDText
+			)
+			?.map((value) => value.accountUID === userUIDText)
+			.includes(true);
+
+		const checkAccountUIDExist = registration.allusers
+			?.filter((value) => value.userID !== auth?.currentUser?.uid)
+			?.map((value) => value.userID === userUIDText)
+			.includes(true);
+
+		if (
+			!checkAlreadyHaveUserUID &&
+			userUIDText !== auth?.currentUser?.uid &&
+			userUIDText.length > 0 &&
+			checkAccountUIDExist
+		) {
+			setUserUIDText("");
+			savingUserUID(username, userAccountID);
+		} else {
+			userUIDText === "" && setErrorMessage("Error: Empty Input");
+
+			userUIDText === user.userID &&
+				setErrorMessage("Error: Can't save your own UID");
+
+			checkAlreadyHaveUserUID &&
+				userUIDText !== "" &&
+				checkAccountUIDExist &&
+				setErrorMessage("Error: User UID already exist");
+
+			checkAccountUIDExist === false &&
+				userUIDText !== "" &&
+				userUIDText !== user.userID &&
+				setErrorMessage("Error: User UID Doesn't Exist");
+
+			errorMessageRef.current = setTimeout(() => {
+				setErrorMessage("");
+			}, 4000);
+		}
 	};
 
 	return (
@@ -111,65 +163,68 @@ export default function Settings({ user }) {
 											Saved User UIDs
 										</h1>
 
-										<div className="flex flex-col gap-2 justify-start items-start">
+										<form className="flex flex-col w-full gap-2 px-4">
+											{errorMessage && (
+												<div className="bg-red-500 px-2 py-1 text-white rounded-lg w-full">
+													<p className="text-center">{errorMessage}</p>
+												</div>
+											)}
+
+											<h1>Add User UID</h1>
+											<input
+												onChange={(e) => setUserUIDText(e.target.value)}
+												className="input-field w-full text-black"
+												placeholder="AI09cy9q8dJUIUGuj839u3boishe96"
+												type="text"
+												value={userUIDText}
+											/>
+
+											<button onClick={handleSaveUserUID} className="base-btn">
+												Add
+											</button>
+										</form>
+
+										<div className="flex flex-col gap-2 justify-start items-start w-full">
+											{allSavedUsers
+												?.filter(
+													(value) => value.uid === auth?.currentUser?.uid
+												)
+												?.map((value) => value).length > 4 && (
+												<div className="flex flex-col justify-start items-start gap-1 px-3 w-full">
+													<h1>Search Users</h1>
+													<input
+														onChange={(e) =>
+															setSearchUIDByUsername(e.target.value)
+														}
+														className="input-field w-full text-black"
+														placeholder="Search by username"
+														type="search"
+														value={searchUIDByUsername}
+													/>
+												</div>
+											)}
+
 											{allSavedUsers
 												?.filter(
 													(value) =>
 														value.uid === auth.currentUser.uid && !value.blocked
 												)
 												?.map((value) => {
-													return (
-														<div
-															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg ${
-																user.themeColor
-																	? "hover:bg-[#333]"
-																	: "hover:bg-gray-100"
-															}`}
-															key={value.id}
-														>
-															<div className="flex flex-col justify-start items-start">
-																<p>Username: {value.username}</p>
-																<p className="line-clamp-1">
-																	UID: {value.accountUID}
-																</p>
-
-																<div className="flex justify-start items-center gap-2 pt-1">
-																	<button
-																		onClick={() =>
-																			handleCopyButton(value.accountUID)
-																		}
-																		className={`base-btn text-sm ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-500"
-																		}`}
-																	>
-																		<p>{copied ? "Copied" : "Copy UID"}</p>
-																	</button>
-
-																	<button
-																		onClick={() =>
-																			handleBlockUser(value.blocked, value.id)
-																		}
-																		className={`base-btn !bg-red-500 text-sm ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-500"
-																		}`}
-																	>
-																		<p>{value.blocked ? "Unblock" : "Block"}</p>
-																	</button>
-																</div>
-															</div>
-
-															<button
-																onClick={() => handleDeleteSavedUser(value.id)}
-																className="base-btn !bg-red-500 text-sm"
-															>
-																Delete
-															</button>
-														</div>
-													);
+													if (
+														value?.username
+															?.normalize("NFD")
+															.replace(/\p{Diacritic}/gu, "")
+															.toLowerCase()
+															.includes(searchUIDByUsername.toLowerCase())
+													) {
+														return (
+															<UserUIDs
+																key={value.id}
+																value={value}
+																user={user}
+															/>
+														);
+													}
 												})}
 
 											{allSavedUsers
@@ -178,60 +233,40 @@ export default function Settings({ user }) {
 														value.uid === auth.currentUser.uid && value.blocked
 												)
 												?.map((value) => {
-													return (
-														<div
-															className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg opacity-60 ${
-																user.themeColor ? "bg-[#333]" : "bg-gray-100"
-															}`}
-															key={value.id}
-														>
-															<div className="flex flex-col justify-start items-start">
-																<p>Username: {value.username}</p>
-																<p className="line-clamp-1">
-																	UID: {value.accountUID}
-																</p>
-
-																<div className="flex justify-start items-center gap-2 pt-1">
-																	<button
-																		onClick={() =>
-																			handleCopyButton(value.accountUID)
-																		}
-																		className={`base-btn text-sm ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-500"
-																		}`}
-																	>
-																		<p>{copied ? "Copied" : "Copy UID"}</p>
-																	</button>
-
-																	<button
-																		onClick={() =>
-																			handleBlockUser(value.blocked, value.id)
-																		}
-																		className={`base-btn !bg-red-500 text-sm ${
-																			user.themeColor
-																				? "text-[#555]"
-																				: "text-gray-500"
-																		}`}
-																	>
-																		<p>{value.blocked ? "Unblock" : "Block"}</p>
-																	</button>
-																</div>
-															</div>
-														</div>
-													);
+													if (
+														value?.username
+															?.normalize("NFD")
+															.replace(/\p{Diacritic}/gu, "")
+															.toLowerCase()
+															.includes(searchUIDByUsername.toLowerCase())
+													) {
+														return (
+															<BlockedUserUIDs
+																key={value.id}
+																value={value}
+																user={user}
+															/>
+														);
+													}
 												})}
 
 											{allSavedUsers
-												?.filter((value) => value.uid === auth.currentUser.uid)
+												?.filter(
+													(value) =>
+														value.uid === auth.currentUser.uid &&
+														value?.username
+															?.normalize("NFD")
+															.replace(/\p{Diacritic}/gu, "")
+															.toLowerCase()
+															.includes(searchUIDByUsername.toLowerCase())
+												)
 												?.map((value) => value).length < 1 && (
 												<p
 													className={`px-3 ${
 														user.themeColor ? "text-[#555]" : "text-gray-500"
 													}`}
 												>
-													No Saved User UIDs
+													No User UIDs
 												</p>
 											)}
 										</div>
@@ -257,3 +292,126 @@ export default function Settings({ user }) {
 		</>
 	);
 }
+
+const UserUIDs = ({ value, user }) => {
+	const {
+		savedUserUIDs: { deletingUserUID, blockUser },
+	} = FirebaseApi();
+	const [copied, setCopied] = useState(false);
+	const copiedRef = useRef();
+
+	const handleDeleteSavedUser = () => {
+		deletingUserUID(value.id);
+	};
+
+	const handleCopyButton = () => {
+		clearTimeout(copiedRef.current);
+		setCopied(true);
+
+		navigator.clipboard.writeText(value.accountUID);
+		copiedRef.current = setTimeout(() => {
+			setCopied(false);
+		}, 2000);
+	};
+
+	const handleBlockUser = () => {
+		blockUser(value.blocked ? !value.blocked : true, value.id);
+	};
+
+	return (
+		<div
+			className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg ${
+				user.themeColor ? "hover:bg-[#333]" : "hover:bg-gray-100"
+			}`}
+			key={value.id}
+		>
+			<div className="flex flex-col justify-start items-start">
+				<p>Username: {value.username}</p>
+				<p className="line-clamp-1">UID: {value.accountUID}</p>
+
+				<div className="flex justify-start items-center gap-2 pt-1">
+					<button
+						onClick={handleCopyButton}
+						className={`base-btn text-sm ${
+							user.themeColor ? "text-[#555]" : "text-gray-500"
+						}`}
+					>
+						<p>{copied ? "Copied" : "Copy UID"}</p>
+					</button>
+
+					<button
+						onClick={handleBlockUser}
+						className={`base-btn !bg-red-500 text-sm ${
+							user.themeColor ? "text-[#555]" : "text-gray-500"
+						}`}
+					>
+						<p>{value.blocked ? "Unblock" : "Block"}</p>
+					</button>
+				</div>
+			</div>
+
+			<button
+				onClick={handleDeleteSavedUser}
+				className="base-btn !bg-red-500 text-sm"
+			>
+				Delete
+			</button>
+		</div>
+	);
+};
+
+const BlockedUserUIDs = ({ value, user }) => {
+	const {
+		savedUserUIDs: { blockUser },
+	} = FirebaseApi();
+	const [copied, setCopied] = useState(false);
+
+	const copiedRef = useRef();
+
+	const handleCopyButton = () => {
+		clearTimeout(copiedRef.current);
+		setCopied(true);
+
+		navigator.clipboard.writeText(value.accountUID);
+		copiedRef.current = setTimeout(() => {
+			setCopied(false);
+		}, 2000);
+	};
+
+	const handleBlockUser = () => {
+		blockUser(value.blocked ? !value.blocked : true, value.id);
+	};
+
+	return (
+		<div
+			className={`flex flex-col sm:flex-row gap-2 sm:gap-1 justify-start sm:justify-between items-start sm:items-end w-full px-3 py-2 rounded-lg opacity-60 ${
+				user.themeColor ? "bg-[#333]" : "bg-gray-100"
+			}`}
+		>
+			<div className="flex flex-col justify-start items-start">
+				<p>Username: {value.username}</p>
+				<p className="line-clamp-1">UID: {value.accountUID}</p>
+
+				<div className="flex justify-start items-center gap-2 pt-1">
+					<button
+						onClick={handleCopyButton}
+						className={`base-btn text-sm ${
+							user.themeColor ? "text-[#555]" : "text-gray-500"
+						}`}
+					>
+						<p>{copied ? "Copied" : "Copy UID"}</p>
+					</button>
+
+					<button
+						onClick={handleBlockUser}
+						className={`base-btn !bg-red-500 text-sm ${
+							user.themeColor ? "text-[#555]" : "text-gray-500"
+						}`}
+					>
+						<p>{value.blocked ? "Unblock" : "Block"}</p>
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+};
