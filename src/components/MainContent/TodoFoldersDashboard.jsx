@@ -308,6 +308,7 @@ export default function TodoFoldersDashboard({
 						(value.folderID === todoFolder.id ||
 							value.folderID === todoFolder.senderTodoFolderID)
 				)
+				?.reverse()
 				?.map((value) =>
 					sharingTodoFolder.shareSubTodos(
 						accountID,
@@ -326,6 +327,7 @@ export default function TodoFoldersDashboard({
 						(value.folderID === todoFolder.id ||
 							value.folderID === todoFolder.senderTodoFolderID)
 				)
+				?.reverse()
 				?.map((value) =>
 					sharingTodoFolder.shareTodos(
 						accountID,

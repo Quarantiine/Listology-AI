@@ -122,3 +122,12 @@
 	background-color: #999;
 	border-radius: 100px;
 }
+
+.tutorial-overflow::-webkit-scrollbar {
+	height: 5px;
+}
+
+.tutorial-overflow::-webkit-scrollbar-thumb {
+	background-color: #999;
+	border-radius: 100px;
+}

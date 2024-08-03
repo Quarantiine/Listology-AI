@@ -97,13 +97,19 @@ export default function Layout({ children }) {
 	const queryClient = new QueryClient();
 
 	useEffect(() => {
-		onAuthStateChanged(auth, (user) => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
-				router.push("/");
+				if (router.pathname === "/registration") {
+					router.push("/");
+				}
 			} else {
-				router.push("/registration");
+				if (router.pathname === "/") {
+					router.push("/registration");
+				}
 			}
 		});
+
+		return () => unsubscribe();
 	}, []);
 
 	const handleCloseSidebar = () => {

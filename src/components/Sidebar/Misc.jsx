@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { StateCtx } from "../Layout";
+import { useRouter } from "next/router";
 
 export default function Misc({ user, handleNavigator }) {
 	const { registration } = FirebaseApi();
@@ -11,12 +12,17 @@ export default function Misc({ user, handleNavigator }) {
 		navState,
 		navDispatch,
 	} = useContext(StateCtx);
+	const router = useRouter();
 
 	const handleSigningOut = (e) => {
 		e.preventDefault();
 		setOpenTodolistSidebar(false);
 		setClickedFolder("");
 		setClickedTodoFolder("");
+
+		setTimeout(() => {
+			router.push("/registration");
+		}, 1000);
 
 		navDispatch({
 			type: "sidebar-navigation-link",
@@ -78,15 +84,8 @@ export default function Misc({ user, handleNavigator }) {
 						</button>
 
 						<button
-							onClick={null}
-							className={`cursor-not-allowed hover:opacity-80 ${
-								user.themeColor ? "text-[#444]" : "text-gray-400"
-							} ${
-								navState.navigatorLink === "Tutorials"
-									? "bg-[#0E51FF] rounded-md px-2 py-1"
-									: ""
-							}`}
-							disabled
+							onClick={() => router.push("/tutorials")}
+							className={`text-btn text-white`}
 						>
 							Tutorials
 						</button>

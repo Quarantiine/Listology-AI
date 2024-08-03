@@ -2,15 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import FirebaseApi from "../../pages/api/firebaseApi";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import Providers from "./Providers";
+import { useRouter } from "next/router";
 
 export default function SigningIn({ handleRegistrationChange }) {
 	const { registration } = FirebaseApi();
+	const router = useRouter();
 
 	const email = useRef();
 	const [modalEmail, setModalEmail] = useState();
 	const [resetPassword, setResetPassword] = useState(false);
-	const [emailExist, setEmailExist] = useState(false);
+	const [emailExist, _] = useState(false);
 	const [accountError, setAccountError] = useState(false);
 	const [passwordVisible, setPasswordVisible] = useState(false);
 	const [emailError, setEmailError] = useState(false);
@@ -42,6 +43,10 @@ export default function SigningIn({ handleRegistrationChange }) {
 		) {
 			setAccountError(false);
 			registration.signingIn(email.current.value, password.current.value);
+
+			setTimeout(() => {
+				router.push("/");
+			}, 1000);
 		} else {
 			setEmailError(true);
 			emailErrorRef.current = setTimeout(() => {

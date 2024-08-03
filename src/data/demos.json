@@ -1,0 +1,45 @@
+[
+	{
+		"id": 2,
+		"title": "Gemini AI",
+		"videos": [
+			{
+				"id": 0,
+				"src": "https://firebasestorage.googleapis.com/v0/b/todo-list-web-app-3329a.appspot.com/o/Gemini%20AI_%20Creating%20and%20Chatting%20With%20Gemini.mp4?alt=media&token=c548bc70-4d29-4784-acd0-56aa8f7a9041",
+				"title": "Chatting & Creating with Gemini"
+			},
+			{
+				"id": 1,
+				"src": "https://firebasestorage.googleapis.com/v0/b/todo-list-web-app-3329a.appspot.com/o/Gemini%20Grammatical%20%26%20Difficulty%20System%20.mp4?alt=media&token=e768adb9-cb12-43aa-88ca-861dd335050a",
+				"title": "AI Difficulty Assessment & Grammatically Correction"
+			}
+		]
+	},
+	{
+		"id": 0,
+		"title": "Main/To-do Folders",
+		"videos": [
+			{
+				"id": 0,
+				"src": "https://firebasestorage.googleapis.com/v0/b/todo-list-web-app-3329a.appspot.com/o/Creating%20Main-To-do%20folders.mp4?alt=media&token=a50f744b-e7f6-4141-9116-2b4da1476722",
+				"title": "Creating a Main & To-do Folders"
+			},
+			{
+				"id": 1,
+				"src": "https://firebasestorage.googleapis.com/v0/b/todo-list-web-app-3329a.appspot.com/o/To-do%20folder%20functionality.mp4?alt=media&token=6d038dae-8733-4832-a68c-063b2e7da3fa",
+				"title": "How to use To-do Folders"
+			}
+		]
+	},
+	{
+		"id": 1,
+		"title": "To-do/Sub To-do List",
+		"videos": [
+			{
+				"id": 0,
+				"src": "https://firebasestorage.googleapis.com/v0/b/todo-list-web-app-3329a.appspot.com/o/To-dos%20Functionailty.mp4?alt=media&token=acba5aa7-30f4-4131-acc8-d94feda74522",
+				"title": "How to create, edit, delete to-dos, and more"
+			}
+		]
+	}
+]

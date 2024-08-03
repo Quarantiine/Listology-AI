@@ -371,7 +371,7 @@ const ChangingInfoSection = ({ user }) => {
 					<h1 className="text-lg font-semibold">Account ID</h1>
 
 					<div className="flex flex-col sm:flex-row justify-start sm:justify-start items-start sm:items-center gap-2">
-						<p className="">{`ID: ${user.userID}`}</p>
+						<p className="line-clamp-1">{`ID: ${user.userID}`}</p>
 						<button
 							className={`text-sm ${
 								user.themeColor ? "text-[#888]" : "text-gray-500"

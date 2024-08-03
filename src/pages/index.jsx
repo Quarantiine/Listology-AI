@@ -18,7 +18,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Listology</title>
+				<title>Dashboard</title>
 			</Head>
 
 			<>

@@ -325,11 +325,11 @@ const UserUIDs = ({ value, user }) => {
 			}`}
 			key={value.id}
 		>
-			<div className="flex flex-col justify-start items-start">
+			<div className="flex flex-col justify-start items-start w-full">
 				<p>Username: {value.username}</p>
 				<p className="line-clamp-1">UID: {value.accountUID}</p>
 
-				<div className="flex justify-start items-center gap-2 pt-1">
+				<div className="flex justify-start items-center gap-2 pt-1 w-full">
 					<button
 						onClick={handleCopyButton}
 						className={`base-btn text-sm ${
@@ -347,15 +347,15 @@ const UserUIDs = ({ value, user }) => {
 					>
 						<p>{value.blocked ? "Unblock" : "Block"}</p>
 					</button>
+
+					<button
+						onClick={handleDeleteSavedUser}
+						className="base-btn !bg-red-500 text-sm ml-auto"
+					>
+						Delete
+					</button>
 				</div>
 			</div>
-
-			<button
-				onClick={handleDeleteSavedUser}
-				className="base-btn !bg-red-500 text-sm"
-			>
-				Delete
-			</button>
 		</div>
 	);
 };
