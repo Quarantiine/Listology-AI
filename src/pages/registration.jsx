@@ -98,9 +98,12 @@ export default function Registration() {
 				<title>Registration</title>
 			</Head>
 
-			<div className="z-50 text-btn absolute top-10 right-0 px-4 py-2 base-bg text-white rounded-l-lg">
-				<button onClick={() => router.push("/tutorials")}>Demos</button>
-			</div>
+			<button
+				onClick={() => router.push("/tutorials")}
+				className="z-50 text-btn absolute top-10 right-0 px-4 py-2 base-bg text-white rounded-l-lg"
+			>
+				Demos
+			</button>
 
 			<div className="absolute top-0 left-0 w-full h-full flex md:grid md:grid-cols-[40%_60%] justify-between items-center gap-0">
 				<SlideShow />
