@@ -157,37 +157,37 @@ export default function CreateAISubTodoList({
 				.map((value) => value.todo)
 				.toString();
 
-			todoLists.updatingTodoDifficulty(
-				clickedTodo,
+			// CANCEL todoLists.updatingTodoDifficulty(
+			// 	clickedTodo,
 
-				await readTodoDifficulty(
-					todolistFolders.allTodoFolders
-						.filter(
-							(value) =>
-								value.userID === auth.currentUser.uid &&
-								value.id === clickedTodoFolder
-						)
-						.map((value) => value.folderTitle)
-						.toString(),
+			// 	await readTodoDifficulty(
+			// 		todolistFolders.allTodoFolders
+			// 			.filter(
+			// 				(value) =>
+			// 					value.userID === auth.currentUser.uid &&
+			// 					value.id === clickedTodoFolder
+			// 			)
+			// 			.map((value) => value.folderTitle)
+			// 			.toString(),
 
-					todolistFolders.allTodoFolders
-						.filter(
-							(value) =>
-								value.userID === auth.currentUser.uid &&
-								value.id === clickedTodoFolder
-						)
-						.map((value) => value.folderDescription)
-						.toString(),
-					`What the topic is: ${todo}`,
-					"No Start Date",
-					"No End Date",
-					subTodos,
-					todoIgnored,
-					AIListOfSubTodos?.reverse()
-						?.map((todoItem) => todoItem.todo)
-						.toString()
-				)
-			);
+			// 		todolistFolders.allTodoFolders
+			// 			.filter(
+			// 				(value) =>
+			// 					value.userID === auth.currentUser.uid &&
+			// 					value.id === clickedTodoFolder
+			// 			)
+			// 			.map((value) => value.folderDescription)
+			// 			.toString(),
+			// 		`What the topic is: ${todo}`,
+			// 		"No Start Date",
+			// 		"No End Date",
+			// 		subTodos,
+			// 		todoIgnored,
+			// 		AIListOfSubTodos?.reverse()
+			// 			?.map((todoItem) => todoItem.todo)
+			// 			.toString()
+			// 	)
+			// );
 
 			todolistFolder.senderTodoFolderID
 				? await AIListOfSubTodos?.reverse()?.map((todoItem) =>

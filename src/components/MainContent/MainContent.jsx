@@ -33,6 +33,7 @@ export default function MainContent() {
 	const [inputTxt, setInputTxt] = useState("");
 	const [showMoreDates, setShowMoreDates] = useState(6);
 	const [showMoreDateBtn, setShowMoreDateBtn] = useState(false);
+	const [closeWarning, setCloseWarning] = useState(false);
 
 	const lengthOfSearchedFolders = todolistFolders.allTodoFolders
 		?.filter(
@@ -254,6 +255,10 @@ export default function MainContent() {
 		}
 	}, [todolistFolders, clickedTodoFolder]);
 
+	const handleCloseWarning = () => {
+		setCloseWarning(!closeWarning);
+	};
+
 	return (
 		<>
 			<div
@@ -275,6 +280,22 @@ export default function MainContent() {
 								: "h-full"
 						} p-12 gap-10`}
 					>
+						{!closeWarning && (
+							<div className="flex flex-col justify-center items-center px-3 py-2 w-fit bg-yellow-500 rounded-lg">
+								<p className="text-white">
+									Gemini AI is on hold for the moment. Everything else is still
+									in use
+								</p>
+
+								<button
+									onClick={handleCloseWarning}
+									className="text-white text-btn ml-auto font-bold text-lg"
+								>
+									Close
+								</button>
+							</div>
+						)}
+
 						<>
 							{todolistFolders.allTodoFolders
 								?.map(

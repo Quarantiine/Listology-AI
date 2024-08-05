@@ -84,7 +84,8 @@ export default function SubTodos({
 			setEditTextActive(false);
 			todoLists.updatingSubTodoEdit(
 				subTodo.id,
-				await grammaticallyFixedTodo(subTodoText)
+				subTodoText
+				// await grammaticallyFixedTodo(subTodoText)
 			);
 
 			const subTodos = todoLists.allSubTodos
@@ -97,17 +98,17 @@ export default function SubTodos({
 				.map((subTodo) => subTodo.todo)
 				.toString();
 
-			todoLists.updatingTodoDifficulty(
-				todolist.id,
-				await readTodoDifficulty(
-					todolistFolder.folderTitle,
-					todolistFolder.folderDescription,
-					todolist.todo,
-					"No Start Date",
-					"No End Date",
-					subTodos
-				)
-			);
+			// CANCEL todoLists.updatingTodoDifficulty(
+			// 	todolist.id,
+			// 	await readTodoDifficulty(
+			// 		todolistFolder.folderTitle,
+			// 		todolistFolder.folderDescription,
+			// 		todolist.todo,
+			// 		"No Start Date",
+			// 		"No End Date",
+			// 		subTodos
+			// 	)
+			// );
 		}
 	};
 

@@ -965,14 +965,14 @@ export default function TodolistMainContent({
 						)}
 					</button>
 
-					{!completedTodos && (
+					{/* CANCEL {!completedTodos && (
 						<button
 							onClick={handleOpenGeminiTodoModal}
 							className="base-btn w-full md:w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 block sm:hidden"
 						>
 							Create with Gemini
 						</button>
-					)}
+					)} */}
 
 					<div
 						className={`md:ml-auto flex flex-col justify-center items-center md:items-end ${
@@ -1179,14 +1179,14 @@ export default function TodolistMainContent({
 												: "justify-end"
 										}`}
 									>
-										{!completedTodos && (
+										{/* CANCEL {!completedTodos && (
 											<button
 												onClick={handleOpenGeminiTodoModal}
 												className="base-btn w-fit !bg-gradient-to-r from-blue-500 via-purple-500 to-red-500 hidden sm:block"
 											>
 												Create with Gemini
 											</button>
-										)}
+										)} */}
 
 										<>
 											{totalCompletionPercentage() ? (
@@ -1291,7 +1291,7 @@ export default function TodolistMainContent({
 
 					<Placeholders user={user} todolistFolder={todolistFolder} />
 
-					<div className="w-full flex flex-col justify-center gap-1">
+					{/* CANCEL <div className="w-full flex flex-col justify-center gap-1">
 						{openGeminiTodoModal &&
 							createPortal(
 								<AskGeminiComponent
@@ -1302,7 +1302,7 @@ export default function TodolistMainContent({
 								/>,
 								document.body
 							)}
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</>
