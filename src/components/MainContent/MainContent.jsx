@@ -281,10 +281,10 @@ export default function MainContent() {
 						} p-12 gap-10`}
 					>
 						{!closeWarning && (
-							<div className="flex flex-col justify-center items-center px-3 py-2 w-fit bg-yellow-500 rounded-lg">
+							<div className="flex flex-col sm:flex-row justify-center items-center px-3 py-2 bg-yellow-500 rounded-lg w-full">
 								<p className="text-white">
-									Gemini AI is on hold for the moment. Everything else is still
-									in use
+									Gemini AI Grammatical & Difficulty System are on hold. Other
+									AI features are still in use
 								</p>
 
 								<button

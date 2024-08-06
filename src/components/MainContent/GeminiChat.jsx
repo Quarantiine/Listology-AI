@@ -267,7 +267,7 @@ export default function GeminiChat({ user, todolistFolder }) {
 					document.body
 				)}
 
-			{/* CANCEL <div
+			<div
 				onClick={handleOpenGeminiChat}
 				className={`z-40 fixed top-1/2 translate-y-2 rounded-l-lg right-[5px] px-5 pt-3 flex flex-col gap-1 ${
 					user.themeColor ? "text-white" : "text-black"
@@ -351,7 +351,7 @@ export default function GeminiChat({ user, todolistFolder }) {
 						</g>
 					</svg>
 				</button>
-			</div> */}
+			</div>
 		</>
 	);
 }
