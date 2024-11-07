@@ -12,9 +12,10 @@ const SigningUp = ({
 		<div className="flex flex-col justify-start items-start gap-7 w-full">
 			<h1 className="text-3xl font-semibold">Sign Up</h1>
 			<form className="flex flex-col justify-start items-start gap-5 w-full relative">
-				<div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center p-3 rounded-xl">
+				<div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center p-3 rounded-xl z-50">
 					<p>Not Taking Logins. View demos for more information.</p>
 				</div>
+
 				<div className="flex flex-row justify-between items-start gap-5 lg:gap-10 w-full">
 					<div className="flex flex-col justify-start items-start gap-5 w-full">
 						<div className="flex flex-col justify-normal items-start gap-1 w-full">
