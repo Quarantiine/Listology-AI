@@ -142,7 +142,7 @@ export default function Registration() {
 							</p>
 						</div>
 
-						<div className="flex justify-center items-center p-3">
+						<div className="flex justify-center items-center">
 							<p>Not Taking Logins. View demos for more information.</p>
 						</div>
 
