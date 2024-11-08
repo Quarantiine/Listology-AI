@@ -135,13 +135,18 @@ export default function Registration() {
 								sizes="true"
 								priority="true"
 							/>
+
 							<p className="text-lg w-[90%]">
 								An easy to use management and light weight tool for your daily
 								life.
 							</p>
 						</div>
 
-						{!switchRegistration ? (
+						<div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center p-3 rounded-xl z-50">
+							<p>Not Taking Logins. View demos for more information.</p>
+						</div>
+
+						{/* {!switchRegistration ? (
 							<SigningUp
 								handleInputChanging={handleInputChanging}
 								handleSubmitBtn={handleSigningUp}
@@ -149,7 +154,7 @@ export default function Registration() {
 							/>
 						) : (
 							<SigningIn handleRegistrationChange={handleRegistrationChange} />
-						)}
+						)} */}
 					</div>
 				</div>
 			</div>
