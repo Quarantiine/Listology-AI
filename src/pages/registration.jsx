@@ -146,7 +146,7 @@ export default function Registration() {
 							<p>Not Taking Logins. View demos for more information.</p>
 						</div>
 
-						{/* {!switchRegistration ? (
+						{!switchRegistration ? (
 							<SigningUp
 								handleInputChanging={handleInputChanging}
 								handleSubmitBtn={handleSigningUp}
@@ -154,7 +154,7 @@ export default function Registration() {
 							/>
 						) : (
 							<SigningIn handleRegistrationChange={handleRegistrationChange} />
-						)} */}
+						)}
 					</div>
 				</div>
 			</div>
